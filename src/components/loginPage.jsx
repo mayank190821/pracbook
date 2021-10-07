@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Avatar,
   Container,
@@ -14,9 +14,8 @@ import {
   IconButton,
   OutlinedInput,
   InputLabel,
-  Card,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -84,17 +83,45 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ImgMediaCard() {
   const classNames = useStyles();
+  const [user, setUser] = useState({
+    email: "",
+    password: ""
+  });
+  const [extras, setExtras] = useState({
+    showPassword: false,
+    error: ""
+  })
+
+  const handleChange = (props) => (event) => {
+    setUser({...user, [props]: event.target.value});
+  }
+  const handleClickShowPassword = () => {
+    setExtras({...extras, showPassword: !extras.showPassword});
+  }
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setExtras({...extras, redirectToReferer : true});
+  }
+
+  if(extras.redirectToReferer){
+    return (
+      <Redirect to="/" />
+    )
+  }
+
   return (
     <div className={classNames.main}>
       <div className={classNames.image}>
         <img
-          data-v-6078420c=""
+          alt=""
           src="https://app.svgator.com/assets/svgator.webapp/log-in-girl.svg"
         ></img>
       </div>
       <Container component="main" maxWidth="xs" className={classNames.card}>
         <div className={classNames.paper}>
-          {/* for lock icon in the page */}
           <Avatar className={classNames.avatar}>
             <LockOutlined />
           </Avatar>
@@ -110,8 +137,8 @@ export default function ImgMediaCard() {
               id="email"
               label="Email Address"
               name="email"
-              // onChange={handleChange("email")}
-              // value={user.email}
+              onChange={handleChange("email")}
+              value={user.email}
               autoComplete="email"
               autoFocus
             />
@@ -119,32 +146,32 @@ export default function ImgMediaCard() {
               <InputLabel htmlFor="password">Password</InputLabel>
               <OutlinedInput
                 id="password"
-                // onChange={handleChange("password")}
-                // value={user.password}
-                // type={extras.showPassword ? "text" : "password"}
+                variant="outlined"
+                onChange={handleChange("password")}
+                value={user.password}
+                type={extras.showPassword ? "text" : "password"}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      //   onClick={handleClickShowPassword}
-                      //   onMouseDown={handleMouseDownPassword}
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
-                      <Visibility />
-                      {/* {extras.showPassword ? <Visibility /> : <VisibilityOff />} */}
+                      {extras.showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 }
-                labelWidth={80}
+                label="Password *"
               />
             </FormControl>
             <br />
-            {/* {extras.error && ( */}
+            {extras.error && (
             <Typography component="p" color="error">
               <Icon color="error">error</Icon>
-              {/* {extras.error} */}
+              {extras.error}
             </Typography>
-            {/* )} */}
+            )}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -154,7 +181,7 @@ export default function ImgMediaCard() {
               fullWidth
               variant="contained"
               color="primary"
-              //   onClick={handleSubmit}
+              onClick={handleSubmit}
               className={classNames.submit}
             >
               Sign In
