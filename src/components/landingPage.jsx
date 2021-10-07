@@ -1,10 +1,9 @@
 import React from 'react';
-import '../styles/landing.css'
 import Button from '@mui/material/Button';
-
 import { makeStyles } from '@mui/styles';
 import source_img from '../images/landing-pic2.jpg';
 import bg_img from '../images/bg-pic-1.jpg';
+
 const useStyles = makeStyles(Theme => ({
     container: {
         height: "100vh",
