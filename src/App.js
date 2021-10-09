@@ -7,9 +7,7 @@ import SideBar from './components/Faculty/SideBar'
 function App() {
   return (
     <React.Fragment>
-
-      
-     
+      <AppRouter/>
     </React.Fragment>
   );
 }
