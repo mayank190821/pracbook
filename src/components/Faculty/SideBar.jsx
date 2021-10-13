@@ -1,4 +1,5 @@
 import React from 'react';
+import StudentInfo from './StudentInfo'
 import Avatar from '@mui/material/Avatar';
 import { makeStyles } from '@mui/styles';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -19,7 +20,7 @@ const useStyles = makeStyles(Themes=>({
         textAlign: "center",
         position: "relative"
     },
-    miniContainer:{
+    miniContainer: {
         margin: "0 auto",
         marginTop: "50px"
     },
@@ -57,7 +58,6 @@ const useStyles = makeStyles(Themes=>({
         marginTop: "20px",
         fontWeight: "400",
     },
-   
 }))
 function SideBar() {
     const style = useStyles();
@@ -73,6 +73,7 @@ function SideBar() {
                     <a href="#" className = {style.items}><PersonOutlineOutlinedIcon style = {{marginRight:"8px" , fontSize: "30px"}}/>Student Profile</a>
                     <a href="#" className = {style.items}><FolderSpecialOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Syllabus</a>
                     <a href="#" className = {style.items}><SettingsOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Settings</a>
+
                 </div>
             </div>
         </>
