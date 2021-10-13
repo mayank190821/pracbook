@@ -18,11 +18,10 @@ const useStyles = makeStyles((theme) => ({
     height: "280px",
     minWidth: "250px",
     margin: "25px",
+    cursor: "pointer",
     transition: "0.5s all linear",
     position: "relative",
     transformStyle: "preserve-3d",
-    zIndex: "-10 !important",
-    backfaceVisibility: "hidden",
   },
   card: {
     width: "100%",
@@ -48,12 +47,16 @@ const SectionCard = ({ props }) => {
   const classNames = useStyles();
   console.log(props);
   function handleCardClick() {
-    const div = document.getElementById(`card-root-${props.section}`);
+    const div = document.getElementById(
+      `card-root-${props.data.section}-${props.i}`
+    );
     div.style.transform = "rotateY(180deg)";
   }
 
   function handleMouseLeave() {
-    const div = document.getElementById(`card-root-${props.section}`);
+    const div = document.getElementById(
+      `card-root-${props.data.section}-${props.i}`
+    );
     div.style.transform = "rotateY(0deg)";
   }
   const subjects = [
@@ -62,20 +65,22 @@ const SectionCard = ({ props }) => {
     "Advanced Data Structures and Algorithms",
     "Python Progamming",
     "Full Stack Technologies",
+    "Full Stack Technologies",
   ];
   return (
     <div
-      id={`card-root-${props.section}`}
+      id={`card-root-${props.data.section}-${props.i}`}
       onClick={handleCardClick}
       onMouseLeave={handleMouseLeave}
       className={classNames.root}
     >
       <Card
         className={classNames.card}
+        style={{ zIndex: "2", backfaceVisibility: "hidden" }}
       >
         <Typography
           className={classNames.mediaHead}
-        >{`Section ${props.section}`}</Typography>
+        >{`Section ${props.data.section}`}</Typography>
         <CardMedia
           component="img"
           height="40%"
@@ -84,14 +89,14 @@ const SectionCard = ({ props }) => {
         />
         <CardContent>
           <Typography variant="body1">
-            <b>Class Advisor:</b> {props.advisor}
+            <b>Class Advisor:</b> {props.data.advisor}
           </Typography>
           <Typography
             variant="body2"
             color="primary"
             style={{ cursor: "pointer", marginTop: "5px" }}
           >
-            {props.email}
+            {props.data.email}
           </Typography>
         </CardContent>
       </Card>

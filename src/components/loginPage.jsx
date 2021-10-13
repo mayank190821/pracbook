@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Container,
@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme) => ({
     height: "fit-content",
     [theme.breakpoints.down("sm")]: {
       right: "0px",
-      left: "0px"
-    }
+      left: "0px",
+    },
   },
   main: {
     height: "100vh",
@@ -85,31 +85,30 @@ export default function ImgMediaCard() {
   const classNames = useStyles();
   const [user, setUser] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [extras, setExtras] = useState({
     showPassword: false,
-    error: ""
-  })
+    error: "",
+    redirect: false,
+  });
 
   const handleChange = (props) => (event) => {
-    setUser({...user, [props]: event.target.value});
-  }
+    setUser({ ...user, [props]: event.target.value });
+  };
   const handleClickShowPassword = () => {
-    setExtras({...extras, showPassword: !extras.showPassword});
-  }
+    setExtras({ ...extras, showPassword: !extras.showPassword });
+  };
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
-  }
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
-    setExtras({...extras, redirectToReferer : true});
-  }
+    setExtras({ ...extras, redirect: true });
+  };
 
-  if(extras.redirectToReferer){
-    return (
-      <Redirect to="/" />
-    )
+  if (extras.redirect) {
+    return <Redirect to="/faculty/dashboard" />;
   }
 
   return (
@@ -154,8 +153,8 @@ export default function ImgMediaCard() {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
                       {extras.showPassword ? <Visibility /> : <VisibilityOff />}
@@ -167,10 +166,10 @@ export default function ImgMediaCard() {
             </FormControl>
             <br />
             {extras.error && (
-            <Typography component="p" color="error">
-              <Icon color="error">error</Icon>
-              {extras.error}
-            </Typography>
+              <Typography component="p" color="error">
+                <Icon color="error">error</Icon>
+                {extras.error}
+              </Typography>
             )}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
