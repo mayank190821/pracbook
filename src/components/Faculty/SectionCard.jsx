@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
     transition: "0.5s all linear",
     position: "relative",
     transformStyle: "preserve-3d",
+    zIndex: "-10 !important",
+    backfaceVisibility: "hidden",
   },
   card: {
     width: "100%",
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     "&::-webkit-scrollbar": {
       display: "none",
     },
-    overflowY:"scroll !important"
+    overflowY: "scroll !important",
   },
   mediaHead: {
     position: "absolute",
@@ -70,7 +72,6 @@ const SectionCard = ({ props }) => {
     >
       <Card
         className={classNames.card}
-        style={{ zIndex: "2", backfaceVisibility: "hidden" }}
       >
         <Typography
           className={classNames.mediaHead}
