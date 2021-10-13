@@ -9,9 +9,9 @@ import { fontWeight, margin } from '@mui/system';
 
 const useStyles = makeStyles(Themes=>({
     containers:{
-        width:"16vw",
+        width:"250px",
         background:"#01579b",
-        height:"100vh",
+        minHeight:"753px",
         display:"flex",
         flexDirection:"column",
         justifyContent: "space-between",
@@ -30,26 +30,34 @@ const useStyles = makeStyles(Themes=>({
     },
     items:{
         padding: "30px 5px",
-        // border: "1px solid black",
-        display: "block",
+        display: "flex",
         margin: "30px 20px",
-        fontSize: "20px",
+        fontSize: "26px",
         textDecoration: "none",
         color: "black",
         borderRadius: "10px",
-        fontWeight: "600",
         "&:hover":{
-            backgroundColor: "white",
-            transition: "0.5s"
+            backgroundColor: "#01579b",
+            marginLeft:"0",
+            color:"white",
+            boxShadow:"inset 0 0 25px black",
+            transition: "0.5s",
+            width:"100%"
+        },
+        "&:focus":{
+            backgroundColor: "#01579b",
+            marginLeft:"0",
+            color:"white",
+            boxShadow:"inset 0 0 25px black",
+            transition: "0.5s",
+            width:"100%"
         }
     },
     user:{
         marginTop: "20px",
         fontWeight: "400",
-        fontSize: "larger",
-    }
-    
-    
+    },
+   
 }))
 function SideBar() {
     const style = useStyles();
@@ -61,7 +69,7 @@ function SideBar() {
                 <h3 className = {style.user}>Username</h3>
                 </div>
                 <div className = {style.sidenav}>
-                    <a href="#" className = {style.items}><HomeOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>DashBoard</a>
+                    <a href="#" className = {style.items}><HomeOutlinedIcon style = {{ marginRight: "8px", fontSize: "30px"}}/>DashBoard</a>
                     <a href="#" className = {style.items}><PersonOutlineOutlinedIcon style = {{marginRight:"8px" , fontSize: "30px"}}/>Student Profile</a>
                     <a href="#" className = {style.items}><FolderSpecialOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Syllabus</a>
                     <a href="#" className = {style.items}><SettingsOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Settings</a>
