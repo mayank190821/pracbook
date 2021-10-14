@@ -4,36 +4,35 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  card: {
     width: "auto",
     maxWidth: "270px",
-    height: "280px",
+    height: "300px",
     minWidth: "250px",
     margin: "25px",
-    cursor: "pointer",
-    transition: "0.5s all linear",
     position: "relative",
-    transformStyle: "preserve-3d",
+    cursor: "pointer",
   },
-  card: {
+  text:{
+    marginTop:"5px !important",
+  },
+  iconButton: {
+    position: "absolute !important",
+    color: "white !important",
     width: "100%",
-    height: "100%",
-    position: "absolute",
+    top:"0px !important",
   },
-  back: {
-    transform: "rotateY(180deg)",
-    "&::-webkit-scrollbar": {
-      display: "none",
-    },
-    overflowY: "scroll !important",
+  icon: {
+    position: "absolute",
+    right: "0px",
+    marginTop: "12px !important",
+    marginRight: "6px !important",
   },
   mediaHead: {
     position: "absolute",
@@ -45,42 +44,21 @@ const useStyles = makeStyles((theme) => ({
 
 const SectionCard = ({ props }) => {
   const classNames = useStyles();
-  console.log(props);
-  function handleCardClick() {
-    const div = document.getElementById(
-      `card-root-${props.data.section}-${props.i}`
-    );
-    div.style.transform = "rotateY(180deg)";
-  }
-
-  function handleMouseLeave() {
-    const div = document.getElementById(
-      `card-root-${props.data.section}-${props.i}`
-    );
-    div.style.transform = "rotateY(0deg)";
-  }
-  const subjects = [
-    "Data Structures and Algorithms",
-    "Competitive Programming",
-    "Advanced Data Structures and Algorithms",
-    "Python Progamming",
-    "Full Stack Technologies",
-    "Full Stack Technologies",
-  ];
+  
   return (
-    <div
-      id={`card-root-${props.data.section}-${props.i}`}
-      onClick={handleCardClick}
-      onMouseLeave={handleMouseLeave}
-      className={classNames.root}
-    >
+      
       <Card
-        className={classNames.card}
-        style={{ zIndex: "2", backfaceVisibility: "hidden" }}
+        className={classNames.card}>
+        <IconButton
+        aria-label="delete exam"
+        className={classNames.iconButton}
       >
+        <CloseIcon className={classNames.icon} />
+      </IconButton>
         <Typography
           className={classNames.mediaHead}
-        >{`Section ${props.data.section}`}</Typography>
+        >{`Section ${props.data.section}`}<br/>
+        {props.data.subject}</Typography>
         <CardMedia
           component="img"
           height="40%"
@@ -88,35 +66,28 @@ const SectionCard = ({ props }) => {
           alt="section k"
         />
         <CardContent>
-          <Typography variant="body1">
-            <b>Class Advisor:</b> {props.data.advisor}
+          <Typography variant="body2"
+          className={classNames.text}>
+            Exam Type : {props.data.exam}
           </Typography>
-          <Typography
-            variant="body2"
-            color="primary"
-            style={{ cursor: "pointer", marginTop: "5px" }}
-          >
-            {props.data.email}
+          <Typography variant="body2"
+          className={classNames.text}>
+            Date : {props.data.date}
+          </Typography>
+          <Typography variant="body2"
+          className={classNames.text}>
+            Time : {props.data.time}
+          </Typography>
+          <Typography variant="body2"
+          className={classNames.text}>
+            Duration : {props.data.length}
+          </Typography>
+          <Typography variant="body2"
+          className={classNames.text}>
+            Max Marks : {props.data.marks}
           </Typography>
         </CardContent>
       </Card>
-      <Card className={[classNames.card, classNames.back]}>
-        <List>
-          {subjects.map((subject) => {
-            return (
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemText
-                    primary={subject}
-                    style={{ textAlign: "center" }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      </Card>
-    </div>
   );
 };
 
