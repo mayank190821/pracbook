@@ -45,9 +45,15 @@ function DashBoard() {
             <Button variant="outlined">4th Year</Button>
           </Stack>
           <Stack className={classes.profileSection} spacing={2} direction="row">
-            <Button variant="contained">
+            <Button variant="standard"
+            className={classes.button}>
               <Add />
-              &nbsp; Add
+              &nbsp; New Question
+            </Button>
+            <Button variant="standard"
+            className={classes.button}>
+              <Add />
+              &nbsp; Schedule Exam
             </Button>
           </Stack>
         </div>
