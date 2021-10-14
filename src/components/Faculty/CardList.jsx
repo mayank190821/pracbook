@@ -55,23 +55,42 @@ const CardList = () => {
   const sectionList = [
     {
       section: "K",
-      advisor: "Rupin Bhugra",
-      email: "rupin.bhugra_cs19@gla.ac.in",
+      subject: "Full Stack Technologies",
+      exam: "Viva (Objective type)",
+      date: "23 Nov 2021, Tuesday",
+      time: "2:45 pm",
+      length: "15 min.",
+      questions: 20,
+      marks: 20,
     },
     {
       section: "L",
-      advisor: "Mayank Bhugra",
-      email: "mayank.bhugra_cs19@gla.ac.in",
+      subject: "Data Structures and Algorithms",
+      exam: "Coding",
+      date: "20 Nov 2021, Saturday",
+      time: "12:30 pm",
+      length: "1 hour",
+      questions: 4,
+      marks: 40,
     },
     {
       section: "A",
-      advisor: "Harsh Gautam",
-      email: "harsh.gautam_cs19@gla.ac.in",
+      subject: "Competitive Programming",
+      exam: "Coding",
+      date: "24 Nov 2021, Wednesday",
+      time: "1:00 pm",
+      length: "2 hours",
+      questions: 6,
+      marks: 60,
     },
     {
       section: "B",
-      advisor: "Mudit Shukla",
-      email: "mudit.shukla_cs19@gla.ac.in",
+      subject: "Python Progamming",
+      exam: "Viva (objective type)",
+      date: "26 Oct 2021, Tuesday",
+      time: "9:45 am",
+      length: "30 min.",
+      marks: 30,
     },
   ];
 
@@ -96,7 +115,7 @@ const CardList = () => {
         </div>
       ) : (
         sectionList.map((data, index) => {
-          return <SectionCard props={{ data: data, i: index }} />;
+          return <SectionCard key={`${data.section}-${index}`} props={{ data: data, i: index }} />;
         })
       )}
     </div>
