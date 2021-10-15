@@ -22,12 +22,6 @@ const useStyles = makeStyles((theme) => ({
   text:{
     marginTop:"5px !important",
   },
-  iconButton: {
-    position: "absolute !important",
-    color: "white !important",
-    width: "100%",
-    top:"0px !important",
-  },
   icon: {
     position: "absolute",
     right: "0px",
@@ -46,48 +40,37 @@ const SectionCard = ({ props }) => {
   const classNames = useStyles();
   
   return (
-      
-      <Card
-        className={classNames.card}>
-        <IconButton
-        aria-label="delete exam"
-        className={classNames.iconButton}
-      >
+    <Card className={classNames.card}>
         <CloseIcon className={classNames.icon} />
-      </IconButton>
-        <Typography
-          className={classNames.mediaHead}
-        >{`Section ${props.data.section}`}<br/>
-        {props.data.subject}</Typography>
-        <CardMedia
-          component="img"
-          height="40%"
-          image="https://gstatic.com/classroom/themes/img_graduation.jpg"
-          alt="section k"
-        />
-        <CardContent>
-          <Typography variant="body2"
-          className={classNames.text}>
-            Exam Type : {props.data.exam}
-          </Typography>
-          <Typography variant="body2"
-          className={classNames.text}>
-            Date : {props.data.date}
-          </Typography>
-          <Typography variant="body2"
-          className={classNames.text}>
-            Time : {props.data.time}
-          </Typography>
-          <Typography variant="body2"
-          className={classNames.text}>
-            Duration : {props.data.length}
-          </Typography>
-          <Typography variant="body2"
-          className={classNames.text}>
-            Max Marks : {props.data.marks}
-          </Typography>
-        </CardContent>
-      </Card>
+      <Typography className={classNames.mediaHead}>
+        {`Section ${props.data.section}`}
+        <br />
+        {props.data.subject}
+      </Typography>
+      <CardMedia
+        component="img"
+        height="40%"
+        image="https://gstatic.com/classroom/themes/img_graduation.jpg"
+        alt="section k"
+      />
+      <CardContent>
+        <Typography variant="body2" className={classNames.text}>
+          <b>Exam Type :</b> {props.data.exam}
+        </Typography>
+        <Typography variant="body2" className={classNames.text}>
+          <b>Date :</b> {props.data.date}
+        </Typography>
+        <Typography variant="body2" className={classNames.text}>
+          <b>Time :</b> {props.data.time}
+        </Typography>
+        <Typography variant="body2" className={classNames.text}>
+          <b>Duration :</b> {props.data.length}
+        </Typography>
+        <Typography variant="body2" className={classNames.text}>
+          <b>Max Marks :</b> {props.data.marks}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 };
 
