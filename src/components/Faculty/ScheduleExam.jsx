@@ -47,23 +47,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide() {
+export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();  
-  const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState(new Date("2014-08-18T21:11:54"));
+  const [exam, setExam] = React.useState("viva");
+  const [unit, setUnit] = React.useState("minute");
 
   const handleDateChange = (newValue) => {
     setDate(newValue);
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const [exam, setExam] = React.useState("viva");
-  const [unit, setUnit] = React.useState("minute");
 
   const handleExamChange = (event) => {
     setExam(event.target.value);
@@ -71,16 +63,12 @@ export default function AlertDialogSlide() {
   const handleUnitChange = (event) => {
     setUnit(event.target.value);
   };
+
   return (
     <div>
-      {/* <Button variant="outlined" onClick={handleClickOpen}> */}
-      <Button variant="standard" onClick={handleClickOpen}>
-        {/* <Add /> */}
-        &nbsp; Schedule Exam
-      </Button>
       <Dialog
         className={classes.dialog}
-        open={open}
+        open={true}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}

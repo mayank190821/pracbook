@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
 import Card from "@mui/material/Card";
 import Add from "@mui/icons-material/Add";
 import CardList from "./CardList";
+import AddQuestion from "./AddQuestion";
+import ScheduleExam from "./ScheduleExam";
 
 const useStyle = makeStyles((theme) => ({
   years: {
@@ -29,13 +31,27 @@ const useStyle = makeStyles((theme) => ({
 }));
 function DashBoard() {
   const classes = useStyle();
-  const [expanded, setExpanded] = React.useState(false);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
+  const [openScheduleDialog, setOpenScheduleDialog] = useState(false);
+  
+  function handleQuestionButtonClick(){
+    setOpenQuestionDialog(true);
+  }
+  const handleAddQuestionClose = () => {
+    setOpenQuestionDialog(false);
   };
+  function handleScheduleButtonClick(){
+    setOpenScheduleDialog(true);
+  }
+  const handleScheduleClose = () => {
+    setOpenScheduleDialog(false);
+  };
+
   return (
     <div>
+      {openQuestionDialog && <AddQuestion handleClose={handleAddQuestionClose}/>}
+      {openScheduleDialog && <ScheduleExam handleClose={handleScheduleClose}/>}
       <Card className={classes.cardBody}>
         <div className={classes.header}>
           <Stack className={classes.years} spacing={2} direction="row">
@@ -46,12 +62,14 @@ function DashBoard() {
           </Stack>
           <Stack className={classes.profileSection} spacing={2} direction="row">
             <Button variant="standard"
-            className={classes.button}>
+            className={classes.button}
+          onClick={handleQuestionButtonClick}>
               <Add />
               &nbsp; New Question
             </Button>
             <Button variant="standard"
-            className={classes.button}>
+            className={classes.button}
+            onClick={handleScheduleButtonClick}>
               <Add />
               &nbsp; Schedule Exam
             </Button>
