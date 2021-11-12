@@ -1,12 +1,10 @@
 import React from 'react';
-import StudentInfo from './StudentInfo'
 import Avatar from '@mui/material/Avatar';
 import { makeStyles } from '@mui/styles';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FolderSpecialOutlinedIcon from '@mui/icons-material/FolderSpecialOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { fontWeight, margin } from '@mui/system';
 
 const useStyles = makeStyles(Themes=>({
     containers:{
@@ -18,7 +16,8 @@ const useStyles = makeStyles(Themes=>({
         justifyContent: "space-between",
         overflow:"hidden",
         textAlign: "center",
-        position: "relative"
+        position: "relative",
+        left: "-250px"
     },
     miniContainer: {
         margin: "0 auto",
@@ -62,21 +61,20 @@ const useStyles = makeStyles(Themes=>({
 function SideBar() {
     const style = useStyles();
     return (
-        <>
+        <React.Fragment>
             <div className={style.containers}>
                 <div className = {style.miniContainer}>
                 <Avatar alt="Remy Sharp" src="https://avatars.dicebear.com/api/avataaars/muditshu.svg" sx={{width:130,height:130}} />
                 <h3 className = {style.user}>Username</h3>
                 </div>
                 <div className = {style.sidenav}>
-                    <a href="#" className = {style.items}><HomeOutlinedIcon style = {{ marginRight: "8px", fontSize: "30px"}}/>DashBoard</a>
-                    <a href="#" className = {style.items}><PersonOutlineOutlinedIcon style = {{marginRight:"8px" , fontSize: "30px"}}/>Student Profile</a>
-                    <a href="#" className = {style.items}><FolderSpecialOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Syllabus</a>
-                    <a href="#" className = {style.items}><SettingsOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Settings</a>
-
+                    <div className = {style.items}><HomeOutlinedIcon style = {{ marginRight: "8px", fontSize: "30px"}}/>DashBoard</div>
+                    <div className = {style.items}><PersonOutlineOutlinedIcon style = {{marginRight:"8px" , fontSize: "30px"}}/>Student Profile</div>
+                    <div className = {style.items}><FolderSpecialOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Syllabus</div>
+                    <div className = {style.items}><SettingsOutlinedIcon style = {{marginRight:"8px", fontSize: "30px"}}/>Settings</div>
                 </div>
             </div>
-        </>
+        </React.Fragment>
     )
 }
 
