@@ -1,5 +1,8 @@
 import express from "express";
 import {getAllCodingProblems, addCodingProblem, executeCode} from "../controllers/coding.problem.controller";
+import {addObjectiveQuestion} from "../controllers/objective";
+import {createFaculty} from "../controllers/faculty";
+import {addExam} from "../controllers/exam";
 const routes = express();
 
 routes.route("/api/faculty/add").post(createFaculty);
