@@ -15,4 +15,18 @@ const addObjectiveQuestion = async(req,res)=>{
         console.log(err);
     }
 }
-export {addObjectiveQuestion};
+const fetchByTopicName=async(req,res)=>{
+    try{
+        const questions = await objectiveProblemModel.findOne({
+            topicName:req.body.topicName
+        })
+        res.status(200).json(questions.questions);
+    }
+    catch (err){
+        console.log(err);
+    }
+}
+const fetchByQuestionID = async(req,res)=>{
+
+}
+export {addObjectiveQuestion,fetchByQuestionID,fetchByTopicName};
