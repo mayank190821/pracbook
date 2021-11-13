@@ -1,8 +1,8 @@
 import express from "express";
-import {addCodingProblem} from "../controllers/coding.problem.controller";
-import {addObjectiveQuestion} from "../controllers/objective";
+import {addCodingProblem} from "../controllers/coding.problem.controller.js";
+import {addObjectiveQuestion} from "../controllers/objective.js";
 import {createFaculty} from "../controllers/faculty.js";
-import {addExam} from "../controllers/exam";
+import {addExam} from "../controllers/exam.js";
 
 const routes = express();
 
