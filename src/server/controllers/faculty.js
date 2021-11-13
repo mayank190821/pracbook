@@ -1,5 +1,4 @@
 import facultyModel  from "../models/faculty.model.js";
-
 const createFaculty = async(req, res) => {
     const faculty = new facultyModel(req.body);
     try{
