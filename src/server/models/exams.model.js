@@ -8,8 +8,8 @@ const exams = new mongoose.Schema({
     duration:Number,
     marks:Number,
     section:String,
-    time : Date,
-    date: Date,
+    time : String,
+    date: String,
     instruction:[String],
     questionIds:[String]
 });
