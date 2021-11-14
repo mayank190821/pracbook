@@ -1,4 +1,8 @@
 import facultyModel from "../models/faculty.model.js";
+import extend from "lodash/extend.js";
+import jwt from "jsonwebtoken";
+import config from "./../../config/config.js";
+
 const createFaculty = async (req, res) => {
     const faculty = new facultyModel(req.body);
     try {
@@ -17,8 +21,9 @@ const login = async (req, res) => {
     try {
         let user = await facultyModel.findOne({ email: req.body.email });
         if (!user) return res.status(401).json({ error: "User not found!" });
-        if (!user.authenticate(req.body.password))
+        if (!user.authenticate(req.body.password)){
             return res.status(401).json({ error: "Email and password don't match!" });
+        }
 
         const token = jwt.sign(
             {
@@ -65,7 +70,13 @@ const facultyById = async (req, res, next, id) => {
 
 const changeFacultyPassword = async (req, res) => {
     if(req.faculty){
-        return res.status(200).json(req.faculty);
+        if (!req.faculty.authenticate(req.body.currentPassword)){
+            return res.status(401).json({ error: "Email and password don't match!" });
+        }
+        let faculty = extend(req.faculty, {password: req.body.newPassword, name: req.body.name});
+        await faculty.save();
+        console.log(faculty);
+        return res.status(200).json({message: "password changed"});
     }
 }
 

@@ -26,7 +26,6 @@ routes.route("/api/student/updateRecord").put(updateRecord);
 // routes.route("/api/student/change-password/:studentId");
 // routes.route("/api/student/result:studentId").get(getResultById).post(updateResultById);
 // routes.route("/api/student/exams/:studentId").get(getExams);
-routes.route("/api/student/")
 
 routes.route("/api/exams/add").post(addExam);
 
