@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 const objectiveProblem = new mongoose.Schema({
     topicName:String,
+    questionID:String,
     questions:[{
         question:String,
         option1:String,

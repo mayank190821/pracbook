@@ -17,16 +17,27 @@ const addObjectiveQuestion = async(req,res)=>{
 }
 const fetchByTopicName=async(req,res)=>{
     try{
-        const questions = await objectiveProblemModel.findOne({
+        const objByTopic = await objectiveProblemModel.findOne({
             topicName:req.body.topicName
         })
-        res.status(200).json(questions.questions);
+        res.status(200).json(objByTopic.questions);
     }
     catch (err){
+        res.status(404).json({
+            message:"error",
+        });
         console.log(err);
     }
 }
 const fetchByQuestionID = async(req,res)=>{
-
+    try{
+        const objQues =await objectiveProblemModel.findOne({
+            questionID:req.body.questionID
+        }) 
+        res.status(200).json(objQues.questions);
+    }
+    catch(err){
+        console.log(err);
+    }
 }
 export {addObjectiveQuestion,fetchByQuestionID,fetchByTopicName};
