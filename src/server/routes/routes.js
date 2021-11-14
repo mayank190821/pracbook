@@ -14,19 +14,22 @@ import {addExam} from "../controllers/exam.js";
 const routes = express();
 
 routes.route("/api/faculty/add").post(createFaculty);
-// routes.route("/api/faculty/change-password/:facultyId");
-// routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty);
-// routes.route("/api/faculty/result/:section").get(getResultBySection);
+routes.route("/api/faculty/signin").get(login);
+// routes.route("/api/faculty/fetch-exams/:facultyId").get(getExamsByFaculty);
 
 routes.route("/api/student/add").post(createStudent);
 routes.route("/api/student/signin").get(signIn);
 routes.route("/api/student/signout").delete(signOut);
+<<<<<<< HEAD
 routes
   .route("/api/student/change-password/:studentId")
   .put(changeStudentPassword);
 // routes.route("/api/student/result:studentId").get(getResultById).post(updateResultById);
 // routes.route("/api/student/exams/:studentId").get(getExams);
 routes.route("/api/student/")
+=======
+routes.route("/api/student/updateRecord").put(updateRecord);
+>>>>>>> parent of 8ec5b5a (Added routes)
 
 routes.route("/api/exams/add").post(addExam);
 
