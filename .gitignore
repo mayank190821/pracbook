@@ -5,7 +5,6 @@
 /.pnp
 /src/config/
 .pnp.js
-
 # testing
 /coverage
 

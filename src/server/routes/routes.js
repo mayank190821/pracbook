@@ -19,6 +19,7 @@ routes.route("/api/faculty/signout").delete(logout);
 routes.route("/api/faculty/change-password/:facultyId").put(changeFacultyPassword);
 // routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty);
 // routes.route("/api/faculty/result/:facultyId").get(getResultBySection);
+// routes.route("/api/faculty/fetch-exams/:facultyId").get(getExamsByFaculty);
 
 routes.route("/api/student/add").post(createStudent);
 routes.route("/api/student/signin").get(signIn);
@@ -26,7 +27,6 @@ routes.route("/api/student/signout").delete(signOut);
 routes.route("/api/student/change-password/:studentId").put(changeStudentPassword);
 // routes.route("/api/student/result:studentId").get(getResultById).post(updateResultById);
 // routes.route("/api/student/exams/:studentId").get(getExams);
-routes.route("/api/student/")
 
 routes.route("/api/exams/add").post(addExam);
 
