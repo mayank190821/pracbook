@@ -4,10 +4,9 @@ const codingProblem = new mongoose.Schema({
 	name: String,
 	questionId: {
 		type: String,
-		default: "cp" + new Date().valueOf()
+		default: "cp" + Math.round(new Date().valueOf() * (Math.random()+ 0.1))
 	},
 	difficulty: String,
-	type: String,
 	problemStatement: String,
 	constraints: String,
 	inputFormat: String,

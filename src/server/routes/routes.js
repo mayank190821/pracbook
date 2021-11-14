@@ -12,7 +12,7 @@ import {
 import {addExam} from "../controllers/exam.js";
 
 const routes = express();
-
+//Faculty API
 routes.route("/api/faculty/add").post(createFaculty);
 routes.route("/api/faculty/signin").get(login);
 routes.route("/api/faculty/signout").delete(logout);
@@ -20,24 +20,23 @@ routes.route("/api/faculty/change-password/:facultyId").put(changeFacultyPasswor
 // routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty);
 // routes.route("/api/faculty/result/:facultyId").get(getResultBySection);
 // routes.route("/api/faculty/fetch-exams/:facultyId").get(getExamsByFaculty);
-
+//Student API
 routes.route("/api/student/add").post(createStudent);
 routes.route("/api/student/signin").get(signIn);
 routes.route("/api/student/signout").delete(signOut);
 routes.route("/api/student/change-password/:studentId").put(changeStudentPassword);
 // routes.route("/api/student/result:studentId").get(getResultById).post(updateResultById);
 // routes.route("/api/student/exams/:studentId").get(getExams);
-
+//Exam API
 routes.route("/api/exams/add").post(addExam);
-
+//Objective Problem API
 routes.route("/api/questions/objective/add").post(addObjectiveQuestion);
 routes.route("/api/questions/objective/fetchByID").get(fetchByQuestionID);
 routes.route("/api/questions/objective/fetchByTopicName").get(fetchByTopicName);
-
+//Coding Problem API
 routes.route("/api/questions/coding/add").post(addCodingProblem);
 routes.route("/api/questions/coding/id").get(getProblemById);
 routes.route("/api/questions/coding/filter").get(filterProblems);
-// routes.route("api/executeCode").post(executeCode);
 routes.param("facultyId", facultyById);
 routes.param("studentId", studentById);
 
