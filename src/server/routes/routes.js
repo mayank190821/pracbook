@@ -21,12 +21,16 @@ routes.route("/api/student/add").post(createStudent);
 routes.route("/api/student/signin").get(signIn);
 routes.route("/api/student/signout").delete(signOut);
 <<<<<<< HEAD
+<<<<<<< HEAD
 routes
   .route("/api/student/change-password/:studentId")
   .put(changeStudentPassword);
 // routes.route("/api/student/result:studentId").get(getResultById).post(updateResultById);
 // routes.route("/api/student/exams/:studentId").get(getExams);
 routes.route("/api/student/")
+=======
+routes.route("/api/student/updateRecord").put(updateRecord);
+>>>>>>> parent of 8ec5b5a (Added routes)
 =======
 routes.route("/api/student/updateRecord").put(updateRecord);
 >>>>>>> parent of 8ec5b5a (Added routes)
