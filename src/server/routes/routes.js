@@ -5,8 +5,9 @@ import {createFaculty, login} from "../controllers/faculty.js";
 import {
   createStudent,
   signIn,
-  updateRecord,
   signOut,
+  studentById,
+  changeStudentPassword,
 } from "../controllers/student.js";
 import {addExam} from "../controllers/exam.js";
 
@@ -20,8 +21,9 @@ routes.route("/api/faculty/add").post(createFaculty);
 routes.route("/api/student/add").post(createStudent);
 routes.route("/api/student/signin").get(signIn);
 routes.route("/api/student/signout").delete(signOut);
-routes.route("/api/student/updateRecord").put(updateRecord);
-// routes.route("/api/student/change-password/:studentId");
+routes
+  .route("/api/student/change-password/:studentId")
+  .put(changeStudentPassword);
 // routes.route("/api/student/result:studentId").get(getResultById).post(updateResultById);
 // routes.route("/api/student/exams/:studentId").get(getExams);
 routes.route("/api/student/")
@@ -36,5 +38,5 @@ routes.route("/api/questions/coding/add").post(addCodingProblem);
 routes.route("/api/questions/coding/id").get(getProblemById);
 routes.route("/api/questions/coding/filter").get(filterProblems);
 // routes.route("api/executeCode").post(executeCode);
-
+routes.param('studentId', studentById);
 export default routes;
