@@ -41,32 +41,32 @@ const signIn = async (req, res) => {
     });
   }
 };
-const signOut = (req, res) => {
+const signOut = (req,res) => {
   res.clearCookie("t");
   return res.status(200).json({
-    message: "Successfully Signed Out",
+    message: "Successfully Signed Out"
   });
 };
-const changeStudentPassword = async (req, res) => {
+//....Not Completed Yet....
+const updateRecord = async(req,res) => {
   // const student = new studentModel(req.body);
-  if(req.student){
-    console.log(req.student);
-    return res.status(200).json(req.student); 
-  }
-};
-
-const studentById = async (req, res, next, id) => {
-  const student = await studentModel.findById(id);
-  try {
-    if (!student) {
-      return res.status(400).json({ message: "Student not found" });
+  studentModel.findOneAndUpdate(
+    { email: req.body.email},
+    req.body ,
+    { new: true },
+    (err, doc) => {
+      console.log(err);
+      console.log(doc);
+      if (err) {
+        console.log("Something wrong when updating data!");
+        return res.status(400).json({ message: err });
+      }
+      else {
+        console.log(doc);
+        return res.status(200).json({ message: "done" });
+        
+      }
     }
-    req.student = student;
-    next();
-  } catch (err) {
-    return res.status(400).json({
-      error: err,
-    });
-  }
-};
-export { createStudent, signIn, changeStudentPassword, signOut, studentById };
+  );
+}
+export { createStudent , signIn , updateRecord , signOut};
