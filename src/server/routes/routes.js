@@ -1,7 +1,7 @@
 import express from "express";
 import {addCodingProblem, filterProblems, getProblemById} from "../controllers/coding.problem.controller.js";
 import {addObjectiveQuestion,fetchByQuestionID,fetchByTopicName} from "../controllers/objective.js";
-import {createFaculty} from "../controllers/faculty.js";
+import {createFaculty, login} from "../controllers/faculty.js";
 import {
   createStudent,
   signIn,
@@ -13,6 +13,7 @@ import {addExam} from "../controllers/exam.js";
 const routes = express();
 
 routes.route("/api/faculty/add").post(createFaculty);
+routes.route("/api/faculty/signin").get(login);
 // routes.route("/api/faculty/fetch-exams/:facultyId").get(getExamsByFaculty);
 
 routes.route("/api/student/add").post(createStudent);
