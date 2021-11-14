@@ -1,10 +1,11 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
-import source_img from "../images/landing-pic2.jpg";
+// import source_img from "../images/landing-pic2.jpg";
 import bg_img from "../images/bg-pic-1.jpg";
 import { Link } from "react-router-dom";
 
+const source_img = "https://cb-thumbnails.s3.ap-south-1.amazonaws.com/accounts-vector.svg"
 const useStyles = makeStyles((Theme) => ({
   container: {
     height: "100vh",
@@ -41,7 +42,9 @@ const useStyles = makeStyles((Theme) => ({
   },
   image: {
     width: "100%",
-    height: "100%",
+    marginTop:"auto",
+    marginBottom:"auto",
+    height: "90%",
   },
   heading_1: {
     fontFamily: "'Lobster', cursive",
