@@ -6,8 +6,10 @@ const facultyModel = new mongoose.Schema({
 	email: String,
 	hashedPassword: String,
 	salt: String,
-	sections: [String], 
-	subjects: [String],
+	sections: [{
+		sectionName: String,
+		subjects: [String]
+	}]
 });
 
 facultyModel.virtual("password").set(function(input){

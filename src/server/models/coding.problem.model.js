@@ -4,7 +4,7 @@ const codingProblem = new mongoose.Schema({
 	name: String,
 	questionId: {
 		type: String,
-		default: "cp" + Math.round(new Date().valueOf() * (Math.random()+ 0.1))
+		default: "cp" + Math.round((new Date() * Math.random()) + 0.1)
 	},
 	difficulty: String,
 	problemStatement: String,
