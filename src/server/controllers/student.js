@@ -69,4 +69,15 @@ const studentById = async (req, res, next, id) => {
     });
   }
 };
-export { createStudent, signIn, changeStudentPassword, signOut, studentById };
+// {
+//   examId: 
+// }
+const getResultById = async (req, res) => {
+  for(let i = 0; i < JSON.parse(JSON.stringify(req.student.results)).length; i++){
+    if (req.student.results[i].examId === req.body.examId) {
+      return res.status(200).json({marks: req.student.results[i].marks});
+    }
+  }
+  return res.status(400).json({message: "not found"});
+};
+export { createStudent, signIn, getResultById, changeStudentPassword, signOut, studentById };
