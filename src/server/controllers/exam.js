@@ -1,6 +1,5 @@
 import examsModel from "../models/exams.model.js";
 const addExam = async (req,res) => {
-    console.log(req.body);
     const exam = new examsModel(req.body);
     try {
         await exam.save();

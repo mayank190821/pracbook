@@ -2,6 +2,7 @@ import codingProblemModel from "../models/coding.problem.model.js";
 
 const addCodingProblem = async (req, res) => {
     const problem = new codingProblemModel(req.body);
+    problem.questionId = "cp" + Math.round((new Date() * Math.random()) + 0.1);
     try{
         await problem.save();
         return res.status(200).json({
