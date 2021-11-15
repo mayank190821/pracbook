@@ -7,6 +7,10 @@ const studentModel = new mongoose.Schema({
     hashedPassword: String,
     salt: String,
     section: String,
+    results: [{
+        examId: String,
+        marks: Number
+    }], 
     subjects: [String],
     upcomingExams: [String],
     completedExams: [{
