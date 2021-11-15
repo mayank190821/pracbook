@@ -9,6 +9,7 @@ const exams = new mongoose.Schema({
     time : String,
     date: String,
     instruction:String,
-    questionIds:[String]
+    questionIds:[String],
+    completed: Boolean
 });
 export default mongoose.model("exams", exams);

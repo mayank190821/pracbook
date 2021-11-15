@@ -1,7 +1,7 @@
 import express from "express";
 import {addCodingProblem, filterProblems, getProblemById} from "../controllers/coding.problem.controller.js";
 import {addObjectiveQuestion,fetchByQuestionID,fetchByTopicName} from "../controllers/objective.js";
-import {createFaculty, facultyById, login, logout, changeFacultyPassword} from "../controllers/faculty.js";
+import {createFaculty, facultyById, login, logout, getExamsByFaculty, changeFacultyPassword} from "../controllers/faculty.js";
 import {
   createStudent,
   signIn,
@@ -19,9 +19,8 @@ routes.route("/api/faculty/add").post(createFaculty);
 routes.route("/api/faculty/signin").get(login);
 routes.route("/api/faculty/signout").delete(logout);
 routes.route("/api/faculty/change-password/:facultyId").put(changeFacultyPassword);
-// routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty);
+routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty);
 // routes.route("/api/faculty/result/:facultyId").get(getResultBySection);
-// routes.route("/api/faculty/fetch-exams/:facultyId").get(getExamsByFaculty);
 
 //Student API
 routes.route("/api/student/add").post(createStudent);
@@ -44,6 +43,7 @@ routes.route("/api/questions/objective/fetchByTopicName").get(fetchByTopicName);
 routes.route("/api/questions/coding/add").post(addCodingProblem);
 routes.route("/api/questions/coding/id").get(getProblemById);
 routes.route("/api/questions/coding/filter").get(filterProblems);
+
 routes.param("facultyId", facultyById);
 routes.param("studentId", studentById);
 

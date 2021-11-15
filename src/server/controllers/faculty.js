@@ -1,4 +1,5 @@
 import facultyModel from "../models/faculty.model.js";
+import examsModel from "../models/exams.model.js";
 import extend from "lodash/extend.js";
 import jwt from "jsonwebtoken";
 import config from "./../../config/config.js";
@@ -80,6 +81,20 @@ const changeFacultyPassword = async (req, res) => {
     }
 }
 
+const getExamsByFaculty = async (req, res) => {
+    let exams = [];
+    if(req.faculty){
+        const sections = req.faculty.sections;
+        for(let i = 0; i < JSON.parse(JSON.stringify(sections)).length; i++){
+            for(let j = 0; j < JSON.parse(JSON.stringify(sections[i].subjects)).length; j++){
+                // console.log(sections[i].sectionName, sections[i].subjects[j]);
+                const exam = await examsModel.find({section: sections[i].sectionName, subject: { $regex: `${sections[i].subjects[j]}`, $options: "i" } });
+                if(exam.length !== 0) exams.push(exam);
+            }
+        }
+    }
+    return res.status(200).json({exams: exams});
+}
 
 
-export { createFaculty, login, logout, facultyById, changeFacultyPassword};
+export { createFaculty, login, logout, facultyById, getExamsByFaculty, changeFacultyPassword};
