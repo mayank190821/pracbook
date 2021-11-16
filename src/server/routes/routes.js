@@ -1,48 +1,78 @@
 import express from "express";
-import {addCodingProblem, filterProblems, getProblemById} from "../controllers/coding.problem.controller.js";
-import {addObjectiveQuestion,fetchByQuestionID,fetchByTopicName} from "../controllers/objective.js";
-import {createFaculty, facultyById, login, logout, getExamsByFaculty, changeFacultyPassword} from "../controllers/faculty.js";
+import {
+  addCodingProblem,
+  filterProblems,
+  getProblemById,
+} from "../controllers/coding.problem.controller.js";
+import {
+  addObjectiveQuestion,
+  fetchByQuestionID,
+  fetchByTopicName,
+} from "../controllers/objective.js";
+import {
+  createFaculty,
+  facultyById,
+  login,
+  logout,
+  getExamsByFaculty,
+  changeFacultyPassword,
+} from "../controllers/faculty.js";
 import {
   createStudent,
   signIn,
   studentById,
   getResultById,
+  uploadResult,
   changeStudentPassword,
+  getExamsByStudentId,
   signOut,
 } from "../controllers/student.js";
-import {addExam} from "../controllers/exam.js";
+import { addExam } from "../controllers/exam.js";
 
 const routes = express();
 
-//Faculty API
-routes.route("/api/faculty/add").post(createFaculty);
-routes.route("/api/faculty/signin").get(login);
-routes.route("/api/faculty/signout").delete(logout);
-routes.route("/api/faculty/change-password/:facultyId").put(changeFacultyPassword);
-routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty);
+//***************************************** Faculty API
+
+routes.route("/api/faculty/add").post(createFaculty);  // req.body = complete faculty model, result = faculty added.
+routes.route("/auth/faculty")
+  .get(login)  // req.body = {email, password}, result = complete user details with token.
+  .put(logout); // empty request body, result = successfully signed out.
+routes
+  .route("/api/faculty/change-password/:facultyId")  // req.body = {currentPassword, newPassword}, result = password changed.
+  .put(changeFacultyPassword);
+routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty);  // empty request body, result = list of exams.
 // routes.route("/api/faculty/result/:facultyId").get(getResultBySection);
 
-//Student API
-routes.route("/api/student/add").post(createStudent);
-routes.route("/api/student/signin").get(signIn);
-routes.route("/api/student/signout").delete(signOut);
-routes.route("/api/student/change-password/:studentId").put(changeStudentPassword);
-routes.route("/api/student/result/:studentId").get(getResultById);
-// .post(updateResultById);
-// routes.route("/api/student/exams/:studentId").get(getExams);
+//***************************************** Student API
 
-//Exam API
-routes.route("/api/exams/add").post(addExam);
+routes.route("/api/student/add").post(createStudent);  // req.body = complete student model, result = student added.
+routes.route("/auth/student")
+  .get(signIn)  // req.body = {email, password}, result = complete student details with token.
+  .put(signOut);  // empty request body, result = successfully signed out.
+routes
+  .route("/api/student/change-password/:studentId")  // req.body = {currentPassword, newPassword}, result = password changed.
+  .put(changeStudentPassword);
+routes
+  .route("/api/student/result/:studentId")
+  .get(getResultById) // req.body = {examId}, result = {marks: value}.
+  .put(uploadResult); // req.body = {examId, marks, submissions}, result = result uploaded.
+routes.route("/api/student/exams/:studentId").get(getExamsByStudentId);  // empty request body, result = list of exams.
 
-//Objective Problem API
-routes.route("/api/questions/objective/add").post(addObjectiveQuestion);
-routes.route("/api/questions/objective/fetchByID").get(fetchByQuestionID);
-routes.route("/api/questions/objective/fetchByTopicName").get(fetchByTopicName);
+//***************************************** Exam API
 
-//Coding Problem API
-routes.route("/api/questions/coding/add").post(addCodingProblem);
-routes.route("/api/questions/coding/id").get(getProblemById);
-routes.route("/api/questions/coding/filter").get(filterProblems);
+routes.route("/api/exams/add").post(addExam);  // req.body = complete exams model, result = exam added.
+
+//***************************************** Objective Problem API
+
+routes.route("/api/questions/objective/add").post(addObjectiveQuestion);  // req.body = complete objective problem model, result = question added.
+routes.route("/api/questions/objective/fetchByID").get(fetchByQuestionID);  // req.body = {questionId}, result = {question}.
+routes.route("/api/questions/objective/fetchByTopicName").get(fetchByTopicName);  // req.body = {topicName}, result = list of questions.
+
+//***************************************** Coding Problem API
+
+routes.route("/api/questions/coding/add").post(addCodingProblem);  // req.body = complete coding problem model, result = question added.
+routes.route("/api/questions/coding/id").get(getProblemById);  // req.body = {id}, result = {question}.
+routes.route("/api/questions/coding/filter").get(filterProblems);  // req.body = {type, difficulty, questionId}, result = list of filtered questions.
 
 routes.param("facultyId", facultyById);
 routes.param("studentId", studentById);
