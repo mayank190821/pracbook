@@ -18,6 +18,7 @@ import {
 import { Link, Redirect } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import {studentSignin} from "../api/auth.api";
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -104,7 +105,15 @@ export default function ImgMediaCard() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    setExtras({ ...extras, redirect: true });
+    studentSignin(user).then((response) => {
+      // console.log(response);
+      if(!response.error){
+        setExtras({ ...extras, redirect: true });
+      }
+      else{
+        alert(response.error);
+      }
+    })
   };
 
   if (extras.redirect) {

@@ -114,11 +114,39 @@ const getExamsByFaculty = async (req, res) => {
   }
 };
 
-const examResults = (req, res) => {
-  if(!req.faculty){
-    res.status(400).json({message: "Faculty not found!"});
+const examResults = async (req, res) => {
+  try {
+    if (!req.faculty) {
+      res.status(400).json({ message: "Faculty not found!" });
+    }
+    let students = await studentModel.find({
+      section: req.body.section,
+      subjects: { $regex: `${req.body.subject}`, $options: "i" },
+    });
+
+    let results = [];
+    students.forEach((student) => {
+      student.exams.forEach((exam) => {
+        if (exam.examId === req.body.examId) {
+          results.push({
+            studentName: student.name,
+            section: student.section,
+            status: "P",
+            marks: exam.result.marksObtained,
+          });
+        }
+      });
+    });
+
+    res.status(200).json({
+      results: results,
+    });
+  } catch (err) {
+    res.status(400).json({
+      error: err,
+    });
   }
-}
+};
 export {
   createFaculty,
   login,
