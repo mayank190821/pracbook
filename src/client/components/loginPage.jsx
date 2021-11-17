@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: "0",
     bottom: "0",
-    right: "100px",
+    right: theme.spacing(4),
     margin: "auto",
     width: "50vw",
     padding: "4%",
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   main: {
     height: "100vh",
-    backgroundColor: "#070C1E",
+    background: "linear-gradient(145deg,#421a3b 2%,#040d21 29% 70%,#053997)",
   },
   image: {
     height: "100vh",
