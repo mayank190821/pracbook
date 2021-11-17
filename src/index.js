@@ -10,6 +10,15 @@ const theme = createTheme({
   typography: {
     useNextVariants: true,
   },
+  breakpoints: {
+    values: {
+      xs: 320,
+      sm: 650,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
 });
 
 ReactDOM.render(

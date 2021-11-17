@@ -8,8 +8,8 @@ import { Switch, Route } from "react-router";
 export default function AppRouter() {
   return (
     <Switch>
-      <Route path="/login" component={LoginPage}/>
-      <Route path="/signup" component={SignupPage}/>
+      <Route path="/login/:role" component={LoginPage}/>
+      <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
       <Route exact path="/" component={LandingPage} />
     </Switch>
