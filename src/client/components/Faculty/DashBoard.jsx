@@ -10,6 +10,7 @@ import CardList from "./CardList";
 import AddQuestion from "./AddQuestion";
 import ScheduleExam from "./ScheduleExam";
 import SideBar from "./SideBar";
+import Editor from "./../Editor";
 
 const useStyle = makeStyles((theme) => ({
   years: {
@@ -85,6 +86,9 @@ function DashBoard() {
           </div>
         </Card>
       </div>
+      {/* <div>
+        <Editor/>
+      </div> */}
       <SideBar/>
     </React.Fragment>
   );

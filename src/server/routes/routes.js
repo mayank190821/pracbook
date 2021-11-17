@@ -48,7 +48,7 @@ routes.route("/api/faculty/result/:facultyId").get(examResults);
 
 //***************************************** Student API
 
-routes.route("/api/student/add").post(createStudent); // req.body = complete student model, result = student added.
+routes.route("/api/student/signup").post(createStudent); // req.body = complete student model, result = student added.
 routes
   .route("/auth/student")
   .post(signIn) // req.body = {email, password}, result = complete student details with token.
