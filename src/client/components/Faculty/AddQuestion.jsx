@@ -163,7 +163,75 @@ export default function AddQuestion({ handleClose }) {
             </InputBox>
           </Box>
         ) : (
-          <div>hi this is coding type</div>
+          <Box component="form" spacing={3} noValidate autoComplete="off">
+            <InputBox>
+              <Typography
+                style={{
+                  lineHeight: "48px",
+                  width: "100px",
+                }}
+              >
+                Question :
+              </Typography>
+              <textarea className={classNames.textArea} />
+            </InputBox>
+            <InputBox>
+              <Typography>Options :</Typography>
+              <Box style={{ marginLeft: "20px" }}>
+                <TextField
+                  className={classNames.input}
+                  label="Option A "
+                  value={options[0]}
+                  size="small"
+                  onChange={handleChange}
+                  variant="filled"
+                />
+                <TextField
+                  className={classNames.input}
+                  label="Option B "
+                  value={options[1]}
+                  size="small"
+                  onChange={handleChange}
+                  variant="filled"
+                />
+                <br />
+                <TextField
+                  className={classNames.input}
+                  label="Option C "
+                  value={options[2]}
+                  size="small"
+                  onChange={handleChange}
+                  variant="filled"
+                />
+                <TextField
+                  className={classNames.input}
+                  label="Option D "
+                  value={options[3]}
+                  size="small"
+                  onChange={handleChange}
+                  variant="filled"
+                />
+              </Box>
+            </InputBox>
+            <InputBox>
+              <Typography style={{ lineHeight: "42px" }}>Answer :</Typography>
+              <RadioGroup
+                row
+                aria-label="Choose Answer"
+                name="answer"
+                spacing="auto"
+              >
+                <FormControlLabel value="A" control={<Radio />} label="A" />
+                <FormControlLabel value="B" control={<Radio />} label="B" />
+                <FormControlLabel value="C" control={<Radio />} label="C" />
+                <FormControlLabel value="D" control={<Radio />} label="D" />
+              </RadioGroup>
+            </InputBox>
+            <InputBox>
+              <Typography> Question : </Typography>
+              <textarea className={classNames.textArea} />
+            </InputBox>
+          </Box>
         )}
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
