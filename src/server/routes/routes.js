@@ -34,7 +34,7 @@ const routes = express();
 
 //***************************************** Faculty API
 
-routes.route("/api/faculty/add").post(createFaculty); // req.body = complete faculty model, result = faculty added.
+routes.route("/api/faculty/signup").post(createFaculty); // req.body = complete faculty model, result = faculty added.
 routes
   .route("/auth/faculty")
   .post(login) // req.body = {email, password}, result = complete user details with token.
