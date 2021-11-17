@@ -36,8 +36,9 @@ const useStyles = makeStyles((theme) => ({
     padding: "4%",
     height: "fit-content",
     [theme.breakpoints.down("sm")]: {
-      right: "0px",
-      left: "0px",
+      width: "90vw !important",
+      right: "0px !important",
+      left: "0px !important",
     },
   },
   main: {
@@ -46,9 +47,9 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     height: "100vh",
-    width: "50vw",
-    "& > *": {
-      height: "100vh",
+    width: "50vw !important",
+    [theme.breakpoints.down("sm")]: {
+      width: "100vw",
     },
   },
   paper: {
@@ -71,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     "&:hover": {
       textDecoration: "underline",
+    },
+    [theme.breakpoints.down("sm")]: {
+      fontSize : "14px !important"
     },
   },
   form: {
@@ -106,7 +110,7 @@ export default function ImgMediaCard() {
   const handleSubmit = (event) => {
     event.preventDefault();
     studentSignin(user).then((response) => {
-      // console.log(response);
+      console.log(response);
       if(!response.error){
         setExtras({ ...extras, redirect: true });
       }
@@ -122,10 +126,11 @@ export default function ImgMediaCard() {
 
   return (
     <div className={classNames.main}>
-      <div className={classNames.image}>
+      <div>
         <img
           alt=""
           src="https://app.svgator.com/assets/svgator.webapp/log-in-girl.svg"
+          className={classNames.image}
         ></img>
       </div>
       <Container component="main" maxWidth="xs" className={classNames.card}>
