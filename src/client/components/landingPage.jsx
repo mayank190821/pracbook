@@ -5,8 +5,6 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-// import source_img from "../images/landing-pic2.jpg";
-import bg_img from "../images/bg-pic-1.jpg";
 import { Link } from "react-router-dom";
 
 const source_img = "https://cb-thumbnails.s3.ap-south-1.amazonaws.com/accounts-vector.svg"
@@ -85,8 +83,6 @@ const useStyles = makeStyles((Theme) => ({
     },
   },
   button_styleFt: {
-    // backgroundColor: "#c333a4 !important",
-    // borderRadius: "100px !important",
     color:"white !important",
     width: "50%",
     marginLeft: "20px !important",
