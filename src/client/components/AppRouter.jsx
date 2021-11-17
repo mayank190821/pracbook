@@ -7,7 +7,7 @@ import { Switch, Route } from "react-router";
 export default function AppRouter() {
   return (
     <Switch>
-      <Route path="/login">
+      <Route path="/login/:role">
         <LoginPage />
       </Route>
       <Route path="/faculty/dashboard" component={DashBoard}/>

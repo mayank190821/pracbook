@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Container,
@@ -15,7 +15,7 @@ import {
   OutlinedInput,
   InputLabel,
 } from "@mui/material";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import {studentSignin} from "../api/auth.api";
@@ -86,8 +86,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ImgMediaCard() {
+export default function ImgMediaCard({location}) {
   const classNames = useStyles();
+  const {role} = useParams();
+  
   const [user, setUser] = useState({
     email: "",
     password: "",

@@ -24,21 +24,21 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     margin: "auto",
     flexDirection: "column",
-    width: "45%",  
+    width: "45%",
     overflow: "hidden",
-    
-    [theme.breakpoints.down("sm")]:{
-      width:"100%",
+
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
     },
-    
+
   },
   card_1: {
     display: "flex",
     width: "45%",
     height: "100%",
     overflow: "hidden",
-    [theme.breakpoints.down("sm")]:{
-      display:"none"
+    [theme.breakpoints.down("sm")]: {
+      display: "none"
     }
   },
   image: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "auto",
     marginBottom: "auto",
     height: "70%",
-    
+
   },
   heading_1: {
     fontFamily: "'Lobster', cursive",
@@ -54,11 +54,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "90px",
     fontWeight: "300 !important",
     margin: "20px",
-    [theme.breakpoints.down("xs")]:{
-      fontSize:"50px",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "50px",
     },
-    [theme.breakpoints.down("sm")]:{
-      fontSize:"70px",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "70px",
     }
   },
   heading_2: {
@@ -76,26 +76,26 @@ const useStyles = makeStyles((theme) => ({
     background: "transparent !important",
     color: "rgb(255,0,0)",
   },
-  button_styleSt:{
-    color:"white !important",
+  button_styleSt: {
+    color: "white !important",
     width: "fit-content",
     marginRight: "20px !important",
     marginLeft: "5px !important",
     "&:hover": {
-      color:"#005cff !important",
+      color: "#005cff !important",
       backgroundColor: "white !important",
-      fontWeight:"700 !important",
+      fontWeight: "700 !important",
       transform: "scale(1.08)",
     },
   },
   button_styleFt: {
-    color:"white !important",
+    color: "white !important",
     width: "fit-content",
     marginLeft: "20px !important",
     "&:hover": {
-      color:"#c333a4 !important",
+      color: "#c333a4 !important",
       backgroundColor: "white !important",
-      fontWeight:"700 !important",
+      fontWeight: "700 !important",
       transform: "scale(1.08)",
     },
   },
@@ -111,22 +111,30 @@ function LandingPage() {
           <div className={style.card_container}>
             <Card className={style.stCard} elevation={0}>
               <CardContent>
-                <Typography style={{marginBottom: "30px", color:"white", fontWeight:"500",fontSize:"20px"}}>
+                <Typography style={{ marginBottom: "30px", color: "white", fontWeight: "500", fontSize: "20px" }}>
                   Login to portal for practical exams.
                 </Typography>
               </CardContent>
-                <CardActions >
-              <Link to="/login" style={{ textDecoration: "none" }}>
-                  <Button varient="contained" style={{backgroundColor:"#005cff"}} className={style.button_styleSt} >
-                    <Typography style={{fontWeight:"700"}} >Student</Typography>
+              <CardActions >
+                <Link
+                  to={{
+                    pathname: "/login/student"
+                  }}
+                  style={{ textDecoration: "none" }}>
+                  <Button varient="contained" style={{ backgroundColor: "#005cff" }} className={style.button_styleSt} >
+                    <Typography style={{ fontWeight: "700" }} >Student</Typography>
                   </Button>
-              </Link>
-              <Link to="/login" style={{ textDecoration: "none" }}>
-                  <Button varient="contained" style={{background:"#c333a4"}} className={style.button_styleFt} >
-                    <Typography style={{fontWeight:"700"}}>faculty</Typography>
+                </Link>
+                <Link
+                  to={{
+                    pathname: "/login/faculty",
+                  }}
+                  style={{ textDecoration: "none" }}>
+                  <Button varient="contained" style={{ background: "#c333a4" }} className={style.button_styleFt} >
+                    <Typography style={{ fontWeight: "700" }}>faculty</Typography>
                   </Button>
-              </Link>
-                </CardActions>
+                </Link>
+              </CardActions>
             </Card>
           </div>
         </div>
