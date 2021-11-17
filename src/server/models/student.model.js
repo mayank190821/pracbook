@@ -8,19 +8,18 @@ const studentModel = new mongoose.Schema({
   salt: String,
   section: String,
   subjects: [String],
-  upcomingExams: [String],
-  completedExams: [
-    {
-      examId: String,
+  exams: [{
+    examId: String,
+    result: {
       marksObtained: Number,
       submissions: [
         {
           index: Number,
           solution: String,
-        },
-      ],
-    },
-  ],
+        }
+      ]
+    }
+  }]
 });
 
 studentModel
