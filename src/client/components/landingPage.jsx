@@ -1,6 +1,10 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 // import source_img from "../images/landing-pic2.jpg";
 import bg_img from "../images/bg-pic-1.jpg";
 import { Link } from "react-router-dom";
@@ -12,8 +16,8 @@ const useStyles = makeStyles((Theme) => ({
     width: "100vw",
     display: "flex",
     justifyContent: "space-around",
-    background: "#01579b",
-    backgroundImage: "url(" + bg_img + ")",
+    background: "linear-gradient(145deg,#053997 2%,#040d21 29% 60%,#421a3b)",
+    // backgroundImage: "url(" + bg_img + ")",
     backgroundPosition: "center",
     backgroundBlendMode: "overlay",
 
@@ -42,9 +46,9 @@ const useStyles = makeStyles((Theme) => ({
   },
   image: {
     width: "100%",
-    marginTop:"auto",
-    marginBottom:"auto",
-    height: "90%",
+    marginTop: "auto",
+    marginBottom: "auto",
+    height: "70%",
   },
   heading_1: {
     fontFamily: "'Lobster', cursive",
@@ -65,22 +69,31 @@ const useStyles = makeStyles((Theme) => ({
     // border: "1px solid red",
     width: "100%",
   },
-  card_container_content: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-around",
-    padding: "12px",
+  stCard: {
+    background: "transparent !important",
     color: "rgb(255,0,0)",
   },
-  button_style: {
-    backgroundColor: "#4cb96eed !important",
-    borderRadius: "100px !important",
-    width: "60%",
+  button_styleSt:{
+    color:"white !important",
+    width: "50%",
     marginLeft: "20px !important",
     "&:hover": {
+      color:"#005cff !important",
       backgroundColor: "white !important",
-      color: "#4cb96eed",
-      fontWeight: "600 !important",
+      fontWeight:"700 !important",
+      transform: "scale(1.08)",
+    },
+  },
+  button_styleFt: {
+    // backgroundColor: "#c333a4 !important",
+    // borderRadius: "100px !important",
+    color:"white !important",
+    width: "50%",
+    marginLeft: "20px !important",
+    "&:hover": {
+      color:"#c333a4 !important",
+      backgroundColor: "white !important",
+      fontWeight:"700 !important",
       transform: "scale(1.08)",
     },
   },
@@ -94,29 +107,34 @@ function LandingPage() {
           <h1 className={style.heading_1}>PracBook</h1>
 
           <div className={style.card_container}>
-            <div className={style.card_container_content}>
-              <h3 className={style.heading_2}>
-                {" "}
-                accusamus expedita voluptate excepturi dicta corporis odio
-                labore maxime illum sint sit sequi beatae alias.
-              </h3>
-              <Link to="/login" style={{textDecoration: "none"}}>
-                <Button variant="contained" className={style.button_style}>
-                    STUDENT LOGIN
-                </Button>
+            <Card className={style.stCard} elevation={0}>
+              <CardContent>
+                <Typography style={{color:"white", fontWeight:"700",fontSize:"18px"}}>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Elig
+                </Typography>
+              </CardContent>
+              <Link to="/login" style={{ textDecoration: "none" }}>
+                <CardActions >
+                  <Button varient="contained" style={{backgroundColor:"#005cff"}} className={style.button_styleSt} >
+                    <Typography style={{fontWeight:"700"}} >Student</Typography>
+                  </Button>
+                </CardActions>
               </Link>
-            </div>
-            <div className={style.card_container_content}>
-              <h3 className={style.heading_2}>
-                qui suscipit ex voluptas, aerat impedit eligendi aliquid eius
-                quam excepturi dolorum cum inventore.
-              </h3>
-              <Link to="/login" style={{textDecoration: "none"}}>
-                <Button variant="contained" className={style.button_style}>
-                  FACULTY LOGIN
-                </Button>
+            </Card>
+            <Card className={style.stCard} elevation={0}>
+              <CardContent>
+                <Typography style={{color:"white", fontWeight:"700",fontSize:"18px"}}>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Elig
+                </Typography>
+              </CardContent>
+              <Link to="/login" style={{ textDecoration: "none" }}>
+                <CardActions>
+                  <Button varient="contained" style={{background:"#c333a4"}} className={style.button_styleFt} >
+                    <Typography style={{fontWeight:"700"}}>faculty</Typography>
+                  </Button>
+                </CardActions>
               </Link>
-            </div>
+            </Card>
           </div>
         </div>
         <div className={style.card_1}>
