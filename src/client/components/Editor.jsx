@@ -10,7 +10,7 @@ const Editor = () => {
     <AceEditor
       placeholder="Placeholder Text"
       mode="javascript"
-      theme="ace/theme/dark"
+      theme="kuroir"
       name="blah2"
       onLoad={onChange}
       onChange={onChange}
