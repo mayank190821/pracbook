@@ -10,6 +10,47 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { makeStyles } from "@mui/styles";
 import Editor from "./Editor";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+
+const languages = [
+  {
+    value: "java",
+    label: "Java",
+  },
+  {
+    value: "javascript",
+    label: "Javascript",
+  },
+  {
+    value: "python",
+    label: "Python",
+  },
+  {
+    value: "c_cpp",
+    label: "C++",
+  }
+];
+const editorThemes = [
+  {
+    value: "github",
+    label: "Github",
+  },
+  {
+    value: "solarized_dark",
+    label: "Solarized",
+  },
+  
+  {
+    value: "eclipse",
+    label: "Eclipse",
+  },
+  {
+    value: "tomorrow_night",
+    label: "Tomorrow",
+  }
+];
+
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -25,6 +66,11 @@ const useStyles = makeStyles((theme) => ({
   mainBox : {
       display:"flex",
       marginTop:"30px"
+  },
+  inputArea: {
+    height:"10% !important",
+    width:"30%",
+    marginBottom: "10px"
   }
 }));
 
@@ -54,7 +100,16 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const classes = useStyles();  
-  const [open, setOpen] = React.useState(false);
+  const [language, setLanguage] = React.useState("java");
+
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
+  const [editorTheme, setEditorTheme] = React.useState("github");
+
+  const handleThemeChange = (event) => {
+    setEditorTheme(event.target.value);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -78,7 +133,11 @@ export default function MiniDrawer() {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 2, p: 5 }} className={classes.mainBox}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 2, p: 5 }}
+        className={classes.mainBox}
+      >
         <Typography paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
@@ -95,7 +154,41 @@ export default function MiniDrawer() {
           faucibus et molestie ac.
         </Typography>
         <div className={classes.editor}>
-        <Editor />
+          <TextField
+            id="outlined-select-language"
+            select
+            // variant="outlined"
+            size="small"
+            // label="Select"
+            value={language}
+            onChange={handleLanguageChange}
+            // helperText="Please select your language"
+            className={classes.inputArea}
+            style={{ marginRight: "5%" }}
+          >
+            {languages.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            id="outlined-select-theme"
+            select
+            // label="Select"
+            value={editorTheme}
+            size="small"
+            onChange={handleThemeChange}
+            // helperText="Please select your theme"
+            className={classes.inputArea}
+          >
+            {editorThemes.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Editor editorTheme={editorTheme} language={language} />
         </div>
       </Box>
     </Box>
