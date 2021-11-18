@@ -17,7 +17,9 @@ import React, { useState } from "react";
 import { Link, Redirect, useParams } from "react-router-dom";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
-import {studentSignup} from "../api/signUp";
+import ErrorIcon from '@mui/icons-material/Error';
+import {signup } from "../api/auth.api";
+import image from "./../images/pracbook.png";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -53,6 +55,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  logo: {
+    height: "20px",
+    width: "fit-content",
+  },
   avatar: {
     marginBottom: theme.spacing(1),
     backgroundColor: `${theme.palette.primary.light} !important`,
@@ -81,6 +87,7 @@ export default function Signup(props) {
     firstName: "",
     lastName: "",
     password: "",
+    section: "",
     confirmPassword: "",
     email: "",
   });
@@ -128,16 +135,23 @@ export default function Signup(props) {
       const user_data = {
         name: user.firstName + " " + user.lastName,
         email: user.email,
+        section: user.section,
         password: user.password,
       };
-      studentSignup(user_data).then((res) =>{
-          if(!res.error){
-              setExtras({...extras,open:true});
-          }
-          else{
-              alert("Check your data connection ");
-          }
-      });
+      if(/([a-zA-Z0-9])+@([a-zA-Z0-9])+.([a-zA-Z])+/.test(user_data.email)){
+        signup(user_data, role).then((res) =>{
+            if(!res.error){
+                setExtras({...extras,open:true});
+            }
+            else{
+                alert("Check your data connection ");
+            }
+        });
+        setExtras({...extras, error: ""})
+      }
+      else{
+        setExtras({...extras, error: "Enter a valid Email address!"})
+      }
     }
   };
 
@@ -199,7 +213,9 @@ export default function Signup(props) {
                   autoComplete="text"
                 />
               </Grid>
-              <Grid item xs={6}>
+              {(role === "student")?
+              (<React.Fragment>
+                <Grid item xs={6}>
                 <TextField
                   variant="outlined"
                   required
@@ -217,14 +233,27 @@ export default function Signup(props) {
                   variant="outlined"
                   required
                   fullWidth
-                  id="role"
-                  label="Role"
-                  name="role"
-                  onChange={handleChange("role")}
-                  value={user.role}
+                  id="section"
+                  label="Section"
+                  name="section"
+                  onChange={handleChange("section")}
+                  value={user.section}
                   autoComplete="text"
                 />
-              </Grid>
+              </Grid></React.Fragment>):
+              <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Id"
+                name="email"
+                onChange={handleChange("email")}
+                value={user.email}
+                autoComplete="email"
+              />
+            </Grid>}
               <Grid item xs={12}>
                 <FormControl variant="outlined" required fullWidth>
                   <InputLabel htmlFor="password">Password</InputLabel>
@@ -285,8 +314,8 @@ export default function Signup(props) {
               </Grid>
               <br />
               {extras.error && (
-                <Typography component="p" color="error">
-                  <Icon color="error">error</Icon>
+                <Typography component="p" color="error" style={{display: "flex", alignItems: "center", lineHeight: "10px"}}>
+                  <ErrorIcon sx={{ fontSize: 25 }}/>
                   {extras.error}
                 </Typography>
               )}
@@ -313,7 +342,7 @@ export default function Signup(props) {
         </div>
         <Box mt={2}>
           <Typography variant="body2" color="textSecondary" align="center">
-            {"Copyright "} &copy; {"Pracbook 2021."}
+            {"Copyright "} &copy; <img alt="Pracbook" className={classNames.logo} src={image}/> {"2021."}
           </Typography>
         </Box>
       </Container>
