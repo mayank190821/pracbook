@@ -205,7 +205,7 @@ export default function ImgMediaCard({location}) {
               <Link to="/forgot" className={classNames.text}>
                 {"Forgot password?"}
               </Link>
-              <Link to="/signup" className={classNames.text}>
+              <Link to={`/signup/${role}`} className={classNames.text}>
                 {"New user? Sign Up"}
               </Link>
             </div>

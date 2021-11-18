@@ -2,7 +2,7 @@ const studentSignup = async(data)=>{
     try{
         let response = await fetch("/api/student/signup",{
             method:"POST",
-            header:{
+            headers:{
                 Accept:"application/json",
                 "Content-Type":"application/json",
             },

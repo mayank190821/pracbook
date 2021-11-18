@@ -14,7 +14,7 @@ import {
   Box,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useParams } from "react-router-dom";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import {studentSignup} from "../api/signUp";
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup(props) {
   const classNames = useStyles();
-
+  const {role} = useParams();
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -146,7 +146,7 @@ export default function Signup(props) {
     return (
       <Redirect
         to={{
-          pathname: "/login",
+          pathname: `/login/${role}`,
           state: { from: props.location },
         }}
       />
@@ -306,7 +306,7 @@ export default function Signup(props) {
                 </Button>
               </Grid>
             </Grid>
-            <Link to="/login" className={classNames.text}>
+            <Link to={`/login/${role}`} className={classNames.text}>
               {"Already have an account? Sign In"}
             </Link>
           </form>
