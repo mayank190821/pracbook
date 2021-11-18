@@ -34,7 +34,7 @@ const routes = express();
 
 //***************************************** Faculty API
 
-routes.route("/api/faculty/signup").post(createFaculty); // req.body = complete faculty model, result = faculty added.
+routes.route("/auth/faculty/signup").post(createFaculty); // req.body = complete faculty model, result = faculty added.
 routes
   .route("/auth/faculty")
   .post(login) // req.body = {email, password}, result = complete user details with token.
@@ -48,7 +48,7 @@ routes.route("/api/faculty/result/:facultyId").get(examResults);
 
 //***************************************** Student API
 
-routes.route("/api/student/signup").post(createStudent); // req.body = complete student model, result = student added.
+routes.route("/auth/student/signup").post(createStudent); // req.body = complete student model, result = student added.
 routes
   .route("/auth/student")
   .post(signIn) // req.body = {email, password}, result = complete student details with token.

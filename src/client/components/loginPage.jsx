@@ -17,8 +17,10 @@ import {
 } from "@mui/material";
 import { Link, Redirect, useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
+import ErrorIcon from '@mui/icons-material/Error';
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
-import {studentSignin} from "../api/auth.api";
+import image from "./../images/pracbook.png";
+import {signin} from "../api/auth.api";
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -77,6 +79,10 @@ const useStyles = makeStyles((theme) => ({
       fontSize : "14px !important"
     },
   },
+  logo: {
+    height: "20px",
+    width: "fit-content",
+  },
   form: {
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
@@ -98,10 +104,15 @@ export default function ImgMediaCard({location}) {
     showPassword: false,
     error: "",
     redirect: false,
+    remember: false,
   });
 
   const handleChange = (props) => (event) => {
     setUser({ ...user, [props]: event.target.value });
+  };
+  const handleChecked = (event) => {
+    if (event.target.checked) setExtras({ ...extras, remember: true });
+    else setExtras({ ...extras, remember: false });
   };
   const handleClickShowPassword = () => {
     setExtras({ ...extras, showPassword: !extras.showPassword });
@@ -111,13 +122,14 @@ export default function ImgMediaCard({location}) {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    studentSignin(user).then((response) => {
-      console.log(response);
+    signin(user, role).then((response) => {
       if(!response.error){
-        setExtras({ ...extras, redirect: true });
+        setExtras({ ...extras, redirect: true, error: "" });
+        // if(extras.remember)
+          // localStorage.setItem("PRID", encrypt(user.email, user.password));
       }
       else{
-        alert(response.error);
+        setExtras({ ...extras, error: response.error });
       }
     })
   };
@@ -182,14 +194,15 @@ export default function ImgMediaCard({location}) {
             </FormControl>
             <br />
             {extras.error && (
-              <Typography component="p" color="error">
-                <Icon color="error">error</Icon>
+              <Typography component="p" color="error" style={{display: "flex", alignItems: "center", lineHeight: "10px"}}>
+              <ErrorIcon sx={{ fontSize: 25 }}/>
                 {extras.error}
               </Typography>
             )}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
+              onChange={handleChecked}
             />
             <Button
               type="submit"
@@ -205,7 +218,7 @@ export default function ImgMediaCard({location}) {
               <Link to="/forgot" className={classNames.text}>
                 {"Forgot password?"}
               </Link>
-              <Link to="/signup" className={classNames.text}>
+              <Link to={`/signup/${role}`} className={classNames.text}>
                 {"New user? Sign Up"}
               </Link>
             </div>
@@ -213,7 +226,7 @@ export default function ImgMediaCard({location}) {
         </div>
         <Box mt={4}>
           <Typography variant="body2" color="textSecondary" align="center">
-            {"Copyright "} &copy; {"Pracbook 2021."}
+            {"Copyright "} &copy; <img alt="Pracbook" className={classNames.logo} src={image}/> {"2021."}
           </Typography>
         </Box>
       </Container>

@@ -4,11 +4,13 @@ import SignupPage from "./signupPage";
 import LandingPage from "./landingPage";
 import DashBoard from "./Faculty/Dashboard";
 import { Switch, Route } from "react-router";
+import ExamPage from "./ExamPage";
 
 
 export default function AppRouter() {
   return (
     <Switch>
+      <Route path="/exam/:examId" component={ExamPage}/>
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
