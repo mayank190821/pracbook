@@ -2,8 +2,9 @@ import React from "react";
 import LoginPage from "./loginPage";
 import SignupPage from "./signupPage";
 import LandingPage from "./landingPage";
-import DashBoard from "./Faculty/DashBoard";
+import DashBoard from "./Faculty/Dashboard";
 import { Switch, Route } from "react-router";
+
 
 export default function AppRouter() {
   return (

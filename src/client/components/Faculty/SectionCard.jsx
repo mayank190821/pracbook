@@ -27,12 +27,13 @@ const useStyles = makeStyles((theme) => ({
     right: "0px",
     marginTop: "12px !important",
     marginRight: "6px !important",
+    color: "white"
   },
   mediaHead: {
     position: "absolute",
     color: "white",
     padding: "15px",
-    fontSize: "25px",
+    fontSize: "18px",
   },
 }));
 
