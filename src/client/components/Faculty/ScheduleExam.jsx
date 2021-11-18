@@ -13,8 +13,8 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import TimePicker from "@mui/lab/TimePicker";
 const useStyles = makeStyles((theme) => ({
   dialog: {
-    "& .css-1t1j96h-MuiPaper-root-MuiDialog-paper": {
-      padding: "40px",
+    "& .css-fzk8t3-MuiPaper-root-MuiDialog-paper": {
+      padding: "40px !important",
     },
   },
   elements : {
