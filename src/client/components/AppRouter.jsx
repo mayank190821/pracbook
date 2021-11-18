@@ -2,9 +2,10 @@ import React from "react";
 import LoginPage from "./loginPage";
 import SignupPage from "./signupPage";
 import LandingPage from "./landingPage";
-import DashBoard from "./Faculty/Dashboard";
+import DashBoard from "./Faculty/DashBoard";
 import { Switch, Route } from "react-router";
 import ExamPage from "./ExamPage";
+import InstructionPage from "./instructionPage";
 
 
 export default function AppRouter() {
@@ -14,7 +15,7 @@ export default function AppRouter() {
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
-      <Route exact path="/" component={LandingPage} />
+      <Route exact path="/" component={InstructionPage} />
     </Switch>
   );
 }
