@@ -12,6 +12,10 @@ import { makeStyles } from "@mui/styles";
 import Editor from "./Editor";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import Button from '@mui/material/Button';
+
+
 
 const languages = [
   {
@@ -40,7 +44,7 @@ const editorThemes = [
     value: "solarized_dark",
     label: "Solarized",
   },
-  
+
   {
     value: "eclipse",
     label: "Eclipse",
@@ -63,14 +67,28 @@ const useStyles = makeStyles((theme) => ({
   listItemText: {
     textAlign: "center",
   },
-  mainBox : {
-      display:"flex",
-      marginTop:"30px"
+  mainBox: {
+    display: "flex",
+    marginTop: "30px"
   },
   inputArea: {
-    height:"10% !important",
-    width:"30%",
+    height: "10% !important",
+    width: "30%",
     marginBottom: "10px"
+  },
+  testCases: {
+    width: "800px",
+    resize: "none",
+    height: "100px !important",
+    overflow: "auto !important",
+    marginLeft: "20px"
+  },
+  buttons:{
+    display: "flex",
+    float: "right",
+  },
+  editor:{
+    marginTop: "10px"
   }
 }));
 
@@ -99,7 +117,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
-  const classes = useStyles();  
+  const classes = useStyles();
   const [language, setLanguage] = React.useState("java");
 
   const handleLanguageChange = (event) => {
@@ -164,7 +182,7 @@ export default function MiniDrawer() {
             onChange={handleLanguageChange}
             // helperText="Please select your language"
             className={classes.inputArea}
-            style={{ marginRight: "5%" }}
+            style={{ marginRight: "5%", marginLeft: "20px" }}
           >
             {languages.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -189,6 +207,15 @@ export default function MiniDrawer() {
             ))}
           </TextField>
           <Editor editorTheme={editorTheme} language={language} />
+          <h2 style={{ marginLeft: "20px", fontSize: "25px", fontWeight: "400", padding: "5px" }}>Output</h2>
+          <TextareaAutosize
+            aria-label="empty textarea"
+            className={classes.testCases}
+          />
+          <div className = {classes.buttons}>
+            <Button variant="outlined" className={classes.runCode} style={{margin: "10px", marginBottom: "5px"}}>Run Code</Button>
+            <Button variant="contained" className={classes.submitCode} style={{margin: "10px", marginBottom: "5px"}}>Submit</Button>
+          </div>
         </div>
       </Box>
     </Box>
