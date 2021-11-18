@@ -9,10 +9,11 @@ import ExamPage from "./ExamPage";
 export default function AppRouter() {
   return (
     <Switch>
+      <Route path="/exam/:examId" component={ExamPage}/>
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
-      <Route exact path="/" component={ExamPage} />
+      <Route exact path="/" component={LandingPage} />
     </Switch>
   );
 }
