@@ -1,5 +1,7 @@
 import React, {useEffect} from "react";
 import AceEditor from "react-ace";
+import { makeStyles } from "@mui/styles";
+
 import "ace-builds/src-noconflict/ext-language_tools";
 
 import "ace-builds/src-noconflict/mode-java";
@@ -12,7 +14,19 @@ import "ace-builds/src-noconflict/theme-solarized_dark";
 import "ace-builds/src-noconflict/theme-eclipse";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 
-const Editor = ({editorTheme, language}) => {
+const Editor = ({editorTheme, language}) => { 
+
+  const useStyles = makeStyles((theme) => ({
+    editorClass: {
+      marginLeft: "20px",
+      minWidth: "800px",
+      maxHeight: "400px",
+      border: "2px solid black"
+    }
+  }))
+
+  const classes = useStyles();
+  
   const onChange = (value) => {
     console.log(value);
   };
@@ -25,8 +39,8 @@ const Editor = ({editorTheme, language}) => {
   }, [language, editorTheme])
   return (
     <AceEditor
-      style={{ border:"2px solid black" }}
-      placeholder="Placeholder Text"
+    className={classes.editorClass}
+      placeholder=""
       mode={mode}
       theme={theme}
       name="blah2"
@@ -36,9 +50,7 @@ const Editor = ({editorTheme, language}) => {
       showPrintMargin={true}
       showGutter={true}
       highlightActiveLine={true}
-      value={`function onLoad(editor) {
-      console.log("i've loaded");
-      }`}
+      value={"// Write your code here"}
       setOptions={{
         enableBasicAutocompletion: false,
         enableLiveAutocompletion: false,

@@ -122,7 +122,7 @@ function LandingPage() {
                   }}
                   style={{ textDecoration: "none" }}>
                   <Button varient="contained" style={{ backgroundColor: "#005cff" }} className={style.button_styleSt} >
-                    <Typography style={{ fontWeight: "700" }} >Student</Typography>
+                    <Typography style={{ fontWeight: "700", padding: "4px 12px", fontSize: "20px"}} >Student</Typography>
                   </Button>
                 </Link>
                 <Link
@@ -131,7 +131,7 @@ function LandingPage() {
                   }}
                   style={{ textDecoration: "none" }}>
                   <Button varient="contained" style={{ background: "#c333a4" }} className={style.button_styleFt} >
-                    <Typography style={{ fontWeight: "700" }}>faculty</Typography>
+                    <Typography style={{ fontWeight: "500", padding: "4px 12px", fontSize: "20px"}}>faculty</Typography>
                   </Button>
                 </Link>
               </CardActions>
