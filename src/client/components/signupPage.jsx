@@ -9,7 +9,6 @@ import {
   IconButton,
   OutlinedInput,
   Grid,
-  Icon,
   InputLabel,
   Box,
 } from "@mui/material";

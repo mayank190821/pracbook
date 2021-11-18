@@ -13,5 +13,14 @@ const addExam = async (req, res) => {
     });
   }
 };
-
-export { addExam };
+const getExamById = async (req, res) => {
+  try{
+    const exam = await examsModel.findById({_id: req.headers.id});
+    res.status(200).json(exam);
+  }catch(err){
+    res.status(400).json({
+      error: err.message
+    })
+  }
+}
+export { addExam, getExamById };
