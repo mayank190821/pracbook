@@ -12,10 +12,11 @@ export default function AppRouter() {
   return (
     <Switch>
       <Route path="/exam/:examId" component={ExamPage}/>
+      <Route path="/exam/instruction/:examId" component={InstructionPage}/>
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
-      <Route exact path="/" component={InstructionPage} />
+      <Route exact path="/" component={ExamPage} />
     </Switch>
   );
 }
