@@ -1,36 +1,42 @@
-import request from 'request';
+import axios from "axios";
 import config from "../../config/config";
+
 const fetchExam = async (id) => {
-    let response = await fetch("/api/exam", {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-            id: id
-        }
-    })
-    return await response.json();
-}
-
-const compileCode = () => {
-    var program = {
-        script : "print(2+3)",
-        language: "python3",
-        versionIndex: "0",
-        clientId: config.clientId,
-        clientSecret:config.clientSecret
-    };
-    request({
-        url: 'https://api.jdoodle.com/v1/execute',
-        mode: "no_cors",
-        method: "POST",
-        json: program
+  let response = await fetch("/api/exam", {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      id: id,
     },
-    setTimeout(3000),
-    function (error, response, body) {
-        console.log('error:', error);
-        console.log('statusCode:', response && response.statusCode);
-        console.log('body:', body);
-    });
-}
+  });
+  return await response.json();
+};
 
-export { fetchExam, compileCode }
+const compile = async (code) => {
+  var options = {
+    method: "POST",
+    url: "https://judge0-ce.p.rapidapi.com/submissions",
+    params: { base64_encoded: "false", fields: "*", wait: true },
+    headers: {
+      "content-type": "application/json",
+      "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+      "x-rapidapi-key": "d325964fcamsh45becd7c7e264c2p14f9d3jsna1e660b7b5ee",
+    },
+    data: {
+      language_id: 71,
+      source_code: code,
+      stdin: "123456",
+    },
+  };
+
+  return await axios
+    .request(options)
+    .then((response) => {
+        return response.data;
+    })
+    .catch(function (error) {
+      return error;
+    });
+};
+
+export { fetchExam, compile };
