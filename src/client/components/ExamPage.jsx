@@ -1,5 +1,5 @@
 import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -34,7 +34,11 @@ const languages = [
   {
     value: "c_cpp",
     label: "C++",
-  }
+  },
+  {
+    value: "c_cpp",
+    label: "C",
+  },
 ];
 const editorThemes = [
   {
@@ -70,15 +74,19 @@ const useStyles = makeStyles((theme) => ({
   },
   mainBox: {
     display: "flex",
-    marginTop: "30px"
+    marginTop: "30px",
+    overflow: "hidden",
+    height: "calc(100vh - 30px)",
+    paddingRight: "20px !important",
   },
   inputArea: {
-    height: "10% !important",
-    width: "30%",
-    marginBottom: "10px"
+    height: "8% !important",
+    width: "15%",
+    minWidth: "150px !important",
+    marginBottom: "0px !important",
   },
   testCases: {
-    width: "800px",
+    width: "calc(100% - 20px)",
     resize: "none",
     height: "100px !important",
     overflow: "auto !important",
@@ -89,7 +97,14 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
   },
   editor:{
-    marginTop: "10px"
+    marginTop: "10px",
+    height: "100vh",
+  },
+  problem: {
+    height: "100vh",
+    overflowY: "scroll",
+    overflowX: "auto",
+    padding: "0px 10px",
   }
 }));
 
@@ -169,7 +184,7 @@ export default function MiniDrawer() {
         sx={{ flexGrow: 2, p: 5 }}
         className={classes.mainBox}
       >
-        <Typography paragraph>
+        <Typography className={classes.problem} paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
           dolor purus non enim praesent elementum facilisis leo vel. Risus at

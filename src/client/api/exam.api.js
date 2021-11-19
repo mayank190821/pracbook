@@ -1,5 +1,4 @@
 import axios from "axios";
-import config from "../../config/config";
 
 const fetchExam = async (id) => {
   let response = await fetch("/api/exam", {
