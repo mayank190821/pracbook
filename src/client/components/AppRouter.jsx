@@ -16,7 +16,7 @@ export default function AppRouter() {
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
-      <Route exact path="/" component={ExamPage} />
+      <Route exact path="/" component={LandingPage} />
     </Switch>
   );
 }

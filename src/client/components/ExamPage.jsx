@@ -14,8 +14,9 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import Button from '@mui/material/Button';
-import {compileCode} from "./../api/exam.api";
-
+import {compile} from "./../api/exam.api";
+import { useSelector } from "react-redux";
+import { getCode } from "../redux/selectors/code.selector";
 
 const languages = [
   {
@@ -119,6 +120,9 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   const classes = useStyles();
   const [language, setLanguage] = React.useState("java");
+  const [output, setOutput] = React.useState("");
+
+  const {sourceCode} = useSelector(getCode);
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
@@ -130,8 +134,11 @@ export default function MiniDrawer() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("aya");
-    compileCode().then((response) =>{
+    compile(sourceCode).then((response) =>{
+      if(response.stderr)
+        setOutput(response.stderr);
+      else 
+        setOutput(response.stdout);
       console.log(response);
     })
   }
@@ -217,6 +224,7 @@ export default function MiniDrawer() {
           <TextareaAutosize
             aria-label="empty textarea"
             className={classes.testCases}
+            value={output}
           />
           <div className = {classes.buttons}>
             <Button variant="outlined" className={classes.runCode} style={{margin: "10px", marginBottom: "5px"}}>Run Code</Button>
