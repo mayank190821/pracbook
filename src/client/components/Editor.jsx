@@ -1,6 +1,9 @@
 import React, {useEffect} from "react";
 import AceEditor from "react-ace";
 import { makeStyles } from "@mui/styles";
+import { useDispatch } from "react-redux";
+import { saveCode } from "../redux/actions/code.action";
+
 
 import "ace-builds/src-noconflict/ext-language_tools";
 
@@ -24,12 +27,12 @@ const Editor = ({editorTheme, language}) => {
       border: "2px solid black"
     }
   }))
+  
+  const [sourceCode, setSourceCode] = React.useState("// Write your code here");
+  const dispatch = useDispatch();
 
   const classes = useStyles();
   
-  const onChange = (value) => {
-    console.log(value);
-  };
   const [theme, setTheme] = React.useState(editorTheme);
   const [mode, setMode] = React.useState(language);
 
@@ -37,20 +40,25 @@ const Editor = ({editorTheme, language}) => {
     setTheme(editorTheme);
     setMode(language);
   }, [language, editorTheme])
+
+  useEffect(() => {
+    dispatch(saveCode(sourceCode));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceCode])
+
   return (
     <AceEditor
     className={classes.editorClass}
       placeholder=""
       mode={mode}
       theme={theme}
-      name="blah2"
-      onLoad={onChange}
-      onChange={onChange}
+      name="editor"
+      onChange={(value) => setSourceCode(value)}
       fontSize={14}
       showPrintMargin={true}
       showGutter={true}
       highlightActiveLine={true}
-      value={"// Write your code here"}
+      value={sourceCode}
       setOptions={{
         enableBasicAutocompletion: false,
         enableLiveAutocompletion: false,
