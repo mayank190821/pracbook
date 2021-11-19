@@ -11,6 +11,9 @@ import {
   RadioGroup,
   Radio,
   FormControlLabel,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
 
@@ -27,6 +30,26 @@ const types = [
     value: "Coding",
     label: "Coding Problem",
   },
+];
+const difficulties = [
+  {
+    value: "easy",
+    label: "Easy",
+  },
+  {
+    value: "medium",
+    label: "Medium",
+  },
+  {
+    value: "hard",
+    label: "Hard",
+  },
+];
+
+const steps = [
+  "Problem",
+  "Format",
+  "Sample Cases",
 ];
 
 const InputBox = styled("div")(({ theme }) => ({
@@ -58,12 +81,62 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddQuestion({ handleClose }) {
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [skipped, setSkipped] = React.useState(new Set());
+
+  const isStepOptional = (step) => {
+    return step === 1;
+  };
+
+  const isStepSkipped = (step) => {
+    return skipped.has(step);
+  };
+
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped(newSkipped);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleSkip = () => {
+    if (!isStepOptional(activeStep)) {
+      // You probably want to guard against something like this,
+      // it should never occur unless someone's actively trying to break something.
+      throw new Error("You can't skip a step that isn't optional.");
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped((prevSkipped) => {
+      const newSkipped = new Set(prevSkipped.values());
+      newSkipped.add(activeStep);
+      return newSkipped;
+    });
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+
   const classNames = useStyles();
   const [QuestionType, setQuestionType] = useState("Objective");
+  const [difficulty, setDifficultyLevel] = useState("easy");
   const [options, setOptions] = useState(["", "", "", ""]);
 
   function handleChange(event) {
     setQuestionType(event.target.value);
+  }
+  function handleDifficultyChange(event) {
+    setDifficultyLevel(event.target.value);
   }
 
   return (
@@ -163,7 +236,71 @@ export default function AddQuestion({ handleClose }) {
             </InputBox>
           </Box>
         ) : (
-          <Box component="form" spacing={3} noValidate autoComplete="off">
+          <Box sx={{ width: '100%', padding:"10" }}>
+            <Stepper activeStep={activeStep} sx={{margin:"10"}}>
+              {steps.map((label, index) => {
+                const stepProps = {};
+                const labelProps = {};
+                {/* if (isStepOptional(index)) {
+                  labelProps.optional = (
+                    <Typography variant="caption">Optional</Typography>
+                  );
+                }
+                if (isStepSkipped(index)) {
+                  stepProps.completed = false;
+                } */}
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
+            {activeStep === steps.length ? (
+              <React.Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>
+                  All steps completed - you&apos;re finished
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Box sx={{ flex: '1 1 auto' }} />
+                  <Button onClick={handleReset}>Reset</Button>
+                </Box>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                  {/* <Box sx={{ flex: '1 1 auto' }} />
+                  {isStepOptional(activeStep) && (
+                    <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                      Skip
+                    </Button>
+                  )} */}
+
+                  <Button onClick={handleNext}>
+                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                  </Button>
+                </Box>
+              </React.Fragment>
+            )}
+          </Box>
+          /* <Box
+            component="form"
+            sx={{
+              width: 600,
+              height: 600,
+            }}
+            noValidate
+            autoComplete="off"
+          >
             <InputBox>
               <Typography
                 style={{
@@ -171,72 +308,78 @@ export default function AddQuestion({ handleClose }) {
                   width: "100px",
                 }}
               >
-                Question :
+                Name:
+              </Typography>
+              <textarea className={classNames.textArea} />
+            </InputBox>
+            <TextField
+              id="outlined-select-language"
+              select
+              // variant="outlined"
+              size="small"
+              label="Difficulty"
+              value={difficulty}
+              onChange={handleDifficultyChange}
+              // helperText="Please select your language"
+              // className={classes.inputArea}
+              style={{ width: "100%", marginTop: "23px" }}
+            >
+              {difficulties.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <InputBox>
+              <Typography
+                style={{
+                  // lineHeight: "48px",
+                  width: "100px",
+                }}
+              >
+                Question:
               </Typography>
               <textarea className={classNames.textArea} />
             </InputBox>
             <InputBox>
-              <Typography>Options :</Typography>
-              <Box style={{ marginLeft: "20px" }}>
-                <TextField
-                  className={classNames.input}
-                  label="Option A "
-                  value={options[0]}
-                  size="small"
-                  onChange={handleChange}
-                  variant="filled"
-                />
-                <TextField
-                  className={classNames.input}
-                  label="Option B "
-                  value={options[1]}
-                  size="small"
-                  onChange={handleChange}
-                  variant="filled"
-                />
-                <br />
-                <TextField
-                  className={classNames.input}
-                  label="Option C "
-                  value={options[2]}
-                  size="small"
-                  onChange={handleChange}
-                  variant="filled"
-                />
-                <TextField
-                  className={classNames.input}
-                  label="Option D "
-                  value={options[3]}
-                  size="small"
-                  onChange={handleChange}
-                  variant="filled"
-                />
-              </Box>
-            </InputBox>
-            <InputBox>
-              <Typography style={{ lineHeight: "42px" }}>Answer :</Typography>
-              <RadioGroup
-                row
-                aria-label="Choose Answer"
-                name="answer"
-                spacing="auto"
+              <Typography
+                style={{
+                  // lineHeight: "48px",
+                  width: "100px",
+                }}
               >
-                <FormControlLabel value="A" control={<Radio />} label="A" />
-                <FormControlLabel value="B" control={<Radio />} label="B" />
-                <FormControlLabel value="C" control={<Radio />} label="C" />
-                <FormControlLabel value="D" control={<Radio />} label="D" />
-              </RadioGroup>
-            </InputBox>
-            <InputBox>
-              <Typography> Question : </Typography>
+                Constraints:
+              </Typography>
               <textarea className={classNames.textArea} />
             </InputBox>
-          </Box>
+            <InputBox>
+              <Typography
+                style={{
+                  // lineHeight: "48px",
+                  width: "100px",
+                }}
+              >
+                Input Format:
+              </Typography>
+              <textarea className={classNames.textArea} />
+            </InputBox>
+            <InputBox>
+              <Typography
+                style={{
+                  // lineHeight: "48px",
+                  width: "100px",
+                }}
+              >
+                Output Format:
+              </Typography>
+              <textarea className={classNames.textArea} />
+            </InputBox>
+          </Box> */
         )}
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
           <Button onClick={handleClose}>Agree</Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </div>
   );
