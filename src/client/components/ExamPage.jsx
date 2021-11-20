@@ -21,23 +21,15 @@ import { getCode } from "../redux/selectors/code.selector";
 const languages = [
   {
     value: "java",
-    label: "Java",
+    label: "Java (13.0.1)",
   },
   {
     value: "javascript",
-    label: "Javascript",
+    label: "JavaScript (12.14.0)",
   },
   {
     value: "python",
-    label: "Python",
-  },
-  {
-    value: "c_cpp",
-    label: "C++",
-  },
-  {
-    value: "c_cpp",
-    label: "C",
+    label: "Python3 (3.8.1)",
   },
 ];
 const editorThemes = [
@@ -63,7 +55,6 @@ const editorThemes = [
 
 const useStyles = makeStyles((theme) => ({
   list: {
-    // margin: "20px !important",
     width: "80px",
   },
   listItem: {
@@ -88,6 +79,8 @@ const useStyles = makeStyles((theme) => ({
   testCases: {
     width: "calc(100% - 20px)",
     resize: "none",
+    paddingLeft: "5px",
+    paddingTop: "5px",
     height: "100px !important",
     overflow: "auto !important",
     marginLeft: "20px"
@@ -134,27 +127,43 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const classes = useStyles();
-  const [language, setLanguage] = React.useState("java");
+  const [language, setLanguage] = React.useState({
+    value: "java",
+    code: 62
+  });
   const [output, setOutput] = React.useState("");
 
   const {sourceCode} = useSelector(getCode);
 
   const handleLanguageChange = (event) => {
-    setLanguage(event.target.value);
+    let code;
+    switch(event.target.value){
+      case "javascript" : code = 63; break;
+      case "python" : code = 71; break;
+      default : code = 62;
+    }
+    setLanguage({...language, value: event.target.value, code: code});
   };
   const [editorTheme, setEditorTheme] = React.useState("github");
 
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    compile(sourceCode).then((response) =>{
+  const handleSubmit = () => {
+    let data = {
+      language_id: language.code,
+      source_code: sourceCode,
+      stdin: "123456",
+    }
+    console.log(language.code);
+    compile(data).then((response) =>{
       if(response.stderr)
-        setOutput(response.stderr);
-      else 
-        setOutput(response.stdout);
-      console.log(response);
+        setOutput(response.status.description + "\n\n" + response.stderr);
+      else if(response.stdout)
+        setOutput(response.status.description + "\n\n" + response.stdout);
+      else
+        setOutput("");
+      console.log(response.status, response);
     })
   }
   return (
@@ -206,7 +215,7 @@ export default function MiniDrawer() {
             // variant="outlined"
             size="small"
             // label="Select"
-            value={language}
+            value={language.value}
             onChange={handleLanguageChange}
             // helperText="Please select your language"
             className={classes.inputArea}
@@ -234,7 +243,7 @@ export default function MiniDrawer() {
               </MenuItem>
             ))}
           </TextField>
-          <Editor editorTheme={editorTheme} language={language} />
+          <Editor editorTheme={editorTheme} language={language.value} />
           <h2 style={{ marginLeft: "20px", fontSize: "25px", fontWeight: "400", padding: "5px" }}>Output</h2>
           <TextareaAutosize
             aria-label="empty textarea"

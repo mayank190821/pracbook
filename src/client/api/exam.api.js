@@ -11,7 +11,7 @@ const fetchExam = async (id) => {
   return await response.json();
 };
 
-const compile = async (code) => {
+const compile = async (data) => {
   var options = {
     method: "POST",
     url: "https://judge0-ce.p.rapidapi.com/submissions",
@@ -20,12 +20,8 @@ const compile = async (code) => {
       "content-type": "application/json",
       "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
       "x-rapidapi-key": "d325964fcamsh45becd7c7e264c2p14f9d3jsna1e660b7b5ee",
-    },
-    data: {
-      language_id: 71,
-      source_code: code,
-      stdin: "123456",
-    },
+    }, 
+    data: data
   };
 
   return await axios
