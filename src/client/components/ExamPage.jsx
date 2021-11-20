@@ -1,5 +1,5 @@
 import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -21,20 +21,16 @@ import { getCode } from "../redux/selectors/code.selector";
 const languages = [
   {
     value: "java",
-    label: "Java",
+    label: "Java (13.0.1)",
   },
   {
     value: "javascript",
-    label: "Javascript",
+    label: "JavaScript (12.14.0)",
   },
   {
     value: "python",
-    label: "Python",
+    label: "Python3 (3.8.1)",
   },
-  {
-    value: "c_cpp",
-    label: "C++",
-  }
 ];
 const editorThemes = [
   {
@@ -59,7 +55,6 @@ const editorThemes = [
 
 const useStyles = makeStyles((theme) => ({
   list: {
-    // margin: "20px !important",
     width: "80px",
   },
   listItem: {
@@ -70,16 +65,22 @@ const useStyles = makeStyles((theme) => ({
   },
   mainBox: {
     display: "flex",
-    marginTop: "30px"
+    marginTop: "30px",
+    overflow: "hidden",
+    height: "calc(100vh - 30px)",
+    paddingRight: "20px !important",
   },
   inputArea: {
-    height: "10% !important",
-    width: "30%",
-    marginBottom: "10px"
+    height: "8% !important",
+    width: "15%",
+    minWidth: "150px !important",
+    marginBottom: "0px !important",
   },
   testCases: {
-    width: "800px",
+    width: "calc(100% - 20px)",
     resize: "none",
+    paddingLeft: "5px",
+    paddingTop: "5px",
     height: "100px !important",
     overflow: "auto !important",
     marginLeft: "20px"
@@ -89,7 +90,14 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
   },
   editor:{
-    marginTop: "10px"
+    marginTop: "10px",
+    height: "100vh",
+  },
+  problem: {
+    height: "100vh",
+    overflowY: "scroll",
+    overflowX: "auto",
+    padding: "0px 10px",
   }
 }));
 
@@ -119,27 +127,43 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const classes = useStyles();
-  const [language, setLanguage] = React.useState("java");
+  const [language, setLanguage] = React.useState({
+    value: "java",
+    code: 62
+  });
   const [output, setOutput] = React.useState("");
 
   const {sourceCode} = useSelector(getCode);
 
   const handleLanguageChange = (event) => {
-    setLanguage(event.target.value);
+    let code;
+    switch(event.target.value){
+      case "javascript" : code = 63; break;
+      case "python" : code = 71; break;
+      default : code = 62;
+    }
+    setLanguage({...language, value: event.target.value, code: code});
   };
   const [editorTheme, setEditorTheme] = React.useState("github");
 
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    compile(sourceCode).then((response) =>{
+  const handleSubmit = () => {
+    let data = {
+      language_id: language.code,
+      source_code: sourceCode,
+      stdin: "123456",
+    }
+    console.log(language.code);
+    compile(data).then((response) =>{
       if(response.stderr)
-        setOutput(response.stderr);
-      else 
-        setOutput(response.stdout);
-      console.log(response);
+        setOutput(response.status.description + "\n\n" + response.stderr);
+      else if(response.stdout)
+        setOutput(response.status.description + "\n\n" + response.stdout);
+      else
+        setOutput("");
+      console.log(response.status, response);
     })
   }
   return (
@@ -169,7 +193,7 @@ export default function MiniDrawer() {
         sx={{ flexGrow: 2, p: 5 }}
         className={classes.mainBox}
       >
-        <Typography paragraph>
+        <Typography className={classes.problem} paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
           dolor purus non enim praesent elementum facilisis leo vel. Risus at
@@ -191,7 +215,7 @@ export default function MiniDrawer() {
             // variant="outlined"
             size="small"
             // label="Select"
-            value={language}
+            value={language.value}
             onChange={handleLanguageChange}
             // helperText="Please select your language"
             className={classes.inputArea}
@@ -219,7 +243,7 @@ export default function MiniDrawer() {
               </MenuItem>
             ))}
           </TextField>
-          <Editor editorTheme={editorTheme} language={language} />
+          <Editor editorTheme={editorTheme} language={language.value} />
           <h2 style={{ marginLeft: "20px", fontSize: "25px", fontWeight: "400", padding: "5px" }}>Output</h2>
           <TextareaAutosize
             aria-label="empty textarea"
