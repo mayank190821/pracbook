@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SectionCard = ({ props }) => {
   const classNames = useStyles();
-  
+  // console.log(props);
   return (
     <Card className={classNames.card}>
         <CloseIcon className={classNames.icon} />
@@ -65,7 +65,7 @@ const SectionCard = ({ props }) => {
           <b>Time :</b> {props.data.time}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Duration :</b> {props.data.length}
+          <b>Duration :</b> {props.data.duration}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
           <b>Max Marks :</b> {props.data.marks}
