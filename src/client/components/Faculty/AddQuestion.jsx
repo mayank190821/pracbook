@@ -236,8 +236,8 @@ export default function AddQuestion({ handleClose }) {
             </InputBox>
           </Box>
         ) : (
-          <Box sx={{ width: '100%', padding:"10" }}>
-            <Stepper activeStep={activeStep} sx={{margin:"10"}}>
+          <Box sx={{ padding:"10px 30px !important" }}>
+            <Stepper activeStep={activeStep} >
               {steps.map((label, index) => {
                 const stepProps = {};
                 const labelProps = {};
