@@ -6,9 +6,8 @@ const exams = new mongoose.Schema({
   duration: Number,
   marks: Number,
   section: String,
-  time: String,
+  time: String, 
   date: String,
-  instruction: String,
   questionIds: [String],
   completed: Boolean,
 });

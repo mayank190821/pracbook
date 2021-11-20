@@ -11,35 +11,26 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Stack from "@mui/material/Stack";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import TimePicker from "@mui/lab/TimePicker";
+import {scheduleExam} from "../../api/exam.api";
 const useStyles = makeStyles((theme) => ({
   dialog: {
     "& .css-fzk8t3-MuiPaper-root-MuiDialog-paper": {
       padding: "40px !important",
     },
   },
-  elements : {
-    marginLeft: "25px !important"
-  }
+  elements: {
+    marginLeft: "25px !important",
+  },
 }));
 
-const currencies = [
+const exams = [
   {
-    value: "viva",
-    label: "Viva",
+    value: "midterm",
+    label: "Mid term",
   },
   {
-    value: "coding",
-    label: "Coding",
-  },
-];
-const units = [
-  {
-    value: "minute",
-    label: "Minute",
-  },
-  {
-    value: "hour",
-    label: "Hour",
+    value: "endterm",
+    label: "End Term",
   },
 ];
 
@@ -48,20 +39,42 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ScheduleExam({ handleClose }) {
-  const classes = useStyles();  
-  const [date, setDate] = React.useState(new Date("2014-08-18T21:11:54"));
-  const [exam, setExam] = React.useState("viva");
-  const [unit, setUnit] = React.useState("minute");
-
-  const handleDateChange = (newValue) => {
-    setDate(newValue);
+  const classes = useStyles();
+  const [value, setValue] = React.useState(null);
+  const [data, setData] = React.useState({
+    name: "",
+    date: "2014-08-18T21:11:54",
+    duration: 0,
+    subject:"",
+    marks: 0,
+    section: "",
+    time: "",
+    completed: false,
+  });
+  const handleScheduleExam = (event) => { 
+    
+     scheduleExam(data);
   };
-
-  const handleExamChange = (event) => {
-    setExam(event.target.value);
-  };
-  const handleUnitChange = (event) => {
-    setUnit(event.target.value);
+  const handleChange = (props) => (event) => {
+    if(props === "time"){
+      let time = event.toLocaleString().split(", ")[1];
+      time = time.slice(0, time.length - 6) + time.slice(time.length-3);
+     setData({
+      ...data,
+      time:
+        time,
+     });
+     setValue(event);
+    }
+    else if(props === "date") {
+      setData({
+        ...data,
+        date: event.toLocaleString().split(",")[0],
+      });
+      setValue(event);
+    }
+    else
+      setData({ ...data, [props]: event.target.value });
   };
 
   return (
@@ -79,10 +92,10 @@ export default function ScheduleExam({ handleClose }) {
             id="outlined-select-exam-type"
             select
             label="Exam Type"
-            value={exam}
-            onChange={handleExamChange}
+            value={data.name}
+            onChange={handleChange("name")}
           >
-            {currencies.map((option) => (
+            {exams.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
@@ -91,20 +104,31 @@ export default function ScheduleExam({ handleClose }) {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
               label="Date desktop"
-              inputFormat="MM/dd/yyyy"
-              value={date}
-              onChange={handleDateChange}
+              inputFormat="dd/MM/yyyy"
+              value={value}
+              onChange={handleChange("date")}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <TimePicker
               label="Time"
-              value={date}
-              onChange={handleExamChange}
+              value={value}
+              onChange={handleChange("time")}
+              // onChange={(newValue) => {
+              //   setValue(newValue);
+              // }}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+          <TextField
+            required
+            id="outlined-required"
+            label="Subject"
+            defaultValue=" "
+            value={data.subject}
+            onChange={handleChange("subject")}
+          />
           <Box
             component="form"
             sx={{
@@ -117,31 +141,32 @@ export default function ScheduleExam({ handleClose }) {
             <TextField
               required
               id="outlined-required"
-              label="Time Duration"
+              label="Section"
               defaultValue=" "
+              value={data.section}
+              onChange={handleChange("section")}
             />
             <TextField
+              required
               className={classes.elements}
-              id="outlined-select-unit-type"
-              select
-              label="Unit"
-              value={unit}
-              onChange={handleUnitChange}
-            >
-              {units.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+              id="outlined-required"
+              label="Time Duration"
+              defaultValue=" "
+              value={data.duration}
+              onChange={handleChange("duration")}
+            />
           </Box>
           <TextField
             required
             id="outlined-required"
             label="Maximum Marks"
             defaultValue=" "
+            value={data.marks}
+            onChange={handleChange("marks")}
           />
-          <Button variant="contained">Add Exam</Button>
+          <Button variant="contained" onClick={handleScheduleExam}>
+            Add Exam
+          </Button>
         </Stack>
       </Dialog>
     </div>
