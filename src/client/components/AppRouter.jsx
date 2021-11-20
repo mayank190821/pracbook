@@ -11,8 +11,8 @@ import InstructionPage from "./instructionPage";
 export default function AppRouter() {
   return (
     <Switch>
-      <Route path="/exam/:examId" component={ExamPage}/>
       <Route path="/exam/instruction/:examId" component={InstructionPage}/>
+      <Route path="/exam/:examId" component={ExamPage}/>
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>

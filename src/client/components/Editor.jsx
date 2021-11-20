@@ -22,8 +22,8 @@ const Editor = ({editorTheme, language}) => {
   const useStyles = makeStyles((theme) => ({
     editorClass: {
       marginLeft: "20px",
-      minWidth: "800px",
-      maxHeight: "400px",
+      minWidth: "55vw",
+      maxHeight: "50vh",
       border: "2px solid black"
     }
   }))
