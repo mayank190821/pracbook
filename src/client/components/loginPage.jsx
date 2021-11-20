@@ -20,6 +20,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import image from "./../images/pracbook.png";
 import {signin} from "../api/auth.api";
+import Snackbars from "./ErrorMessages";
 
 const useStyles = makeStyles((theme) => ({
   test: {
@@ -95,7 +96,9 @@ export default function ImgMediaCard({location}) {
   const classNames = useStyles();
   const {role} = useParams();
   
-  const [user, setUser] = useState({
+  const [open, setOpen] = useState(false);
+
+    const [user, setUser] = useState({
     email: "",
     password: "",
   });
@@ -119,6 +122,8 @@ export default function ImgMediaCard({location}) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     signin(user, role).then((response) => {
@@ -129,6 +134,7 @@ export default function ImgMediaCard({location}) {
       }
       else{
         setExtras({ ...extras, error: response.error });
+        setOpen(true);
       }
     })
   };
@@ -192,12 +198,12 @@ export default function ImgMediaCard({location}) {
               />
             </FormControl>
             <br />
-            {extras.error && (
+            {/* {extras.error && (
               <Typography component="p" color="error" style={{display: "flex", alignItems: "center", lineHeight: "10px"}}>
               <ErrorIcon sx={{ fontSize: 25 }}/>
                 {extras.error}
               </Typography>
-            )}
+            )} */}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -229,6 +235,7 @@ export default function ImgMediaCard({location}) {
           </Typography>
         </Box>
       </Container>
+      <Snackbars open = {open} setOpen={setOpen} status = "error" message = {extras.error}/>
     </div>
   );
 }

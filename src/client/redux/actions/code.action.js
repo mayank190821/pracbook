@@ -4,3 +4,9 @@ export const saveCode = (code) => {
         code: code
     }
 }
+export const saveQuestion=(question)=>{
+    return {
+        type:"ADD_QUESTION",
+        question:question
+    }
+}
