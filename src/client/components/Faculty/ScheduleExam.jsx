@@ -125,7 +125,6 @@ export default function ScheduleExam({ handleClose }) {
             required
             id="outlined-required"
             label="Subject"
-            defaultValue=" "
             value={data.subject}
             onChange={handleChange("subject")}
           />
