@@ -236,10 +236,10 @@ export default function AddQuestion({ handleClose }) {
                 <FormControlLabel value="D" control={<Radio />} label="D" />
               </RadioGroup>
             </InputBox>
-            <InputBox>
+            {/* <InputBox>
               <Typography> Question : </Typography>
               <textarea className={classNames.textArea} />
-            </InputBox>
+            </InputBox> */}
             <DialogActions>
               <Button onClick={handleClose}>Disagree</Button>
               <Button onClick={handleClose}>Agree</Button>

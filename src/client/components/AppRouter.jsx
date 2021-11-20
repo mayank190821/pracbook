@@ -6,6 +6,7 @@ import DashBoard from "./Faculty/DashBoard";
 import { Switch, Route } from "react-router";
 import ExamPage from "./ExamPage";
 import InstructionPage from "./instructionPage";
+import AddQuestion from "./Faculty/AddQuestion";
 
 
 export default function AppRouter() {
@@ -17,6 +18,7 @@ export default function AppRouter() {
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
       <Route exact path="/" component={DashBoard} />
+      {/* <Route exact path="/" component={AddQuestion} />  */}
     </Switch>
   );
 }
