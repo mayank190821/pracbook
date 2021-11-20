@@ -30,10 +30,10 @@ const fetchByTopicName = async (req, res) => {
 
 const fetchByQuestionID = async (req, res) => {
   try {
-    const objQues = await objectiveProblemModel.findOne({
-      questionId: req.body.questionId,
+    const question = await objectiveProblemModel.findOne({
+      questionId: req.headers.id,
     });
-    res.status(200).json(objQues.questions);
+    res.status(200).json({question: question});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

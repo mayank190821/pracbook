@@ -28,12 +28,12 @@ const filterProblems = async (req, res) => {
 
 const getProblemById = async (req, res) => {
   try {
-    const problem = await codingProblemModel.findOne({ _id: req.body.id });
-    return res.status(200).json(problem);
-  } catch (err) {
-    return res.status(400).json({
-      error: err.message,
+    const problem = await codingProblemModel.findOne({
+      questionId: req.headers.id,
     });
+    res.status(200).json({question: problem});
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 

@@ -3,7 +3,9 @@ import { makeStyles } from "@mui/styles";
 import { Button } from "@mui/material";
 import {Redirect} from "react-router-dom";
 import image from "./../images/pracbook.png";
-import { fetchExam } from "../api/exam.api";
+import { fetchExam, fetchExamQuestion } from "../api/exam.api";
+import {useDispatch} from "react-redux";
+import {saveQuestion} from "../redux/actions/code.action";
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
         width: "100vw",
@@ -65,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function InstructionPage({examId}) {
     const classNames = useStyles();
+    const dispatch = useDispatch();
     const [redirect, setRedirect] = React.useState(false);
 
     function handleClick(event){
@@ -79,10 +82,19 @@ export default function InstructionPage({examId}) {
         instruction: "",
         questionIds: [],
       });
+    const [questions, setQuestions] = React.useState([]);
 
     useEffect(() => {
-        fetchExam("6191513c0d975acc5bace6b3").then((exam) => {
+        fetchExam("61993ec64e97f8c10c05202f").then((exam) => {
             setExam(exam);
+            for(let i = 0 ; i < exam.questionIds.length; i++){
+                fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
+                    let currentQues = questions;
+                    currentQues.push(response.question);
+                    setQuestions(currentQues);
+                    dispatch(saveQuestion(currentQues));
+                })
+            }   
         })
     }, []);
 
