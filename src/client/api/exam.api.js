@@ -10,6 +10,17 @@ const fetchExam = async (id) => {
   });
   return await response.json();
 };
+const scheduleExam = async (data) => {
+  let response = await fetch("/api/exam", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+};
 
 const fetchExamQuestion = async (id) =>{
   let model;
@@ -53,4 +64,4 @@ const compile = async (data) => {
     });
 };
 
-export { fetchExam, fetchExamQuestion, compile };
+export { fetchExam, fetchExamQuestion, scheduleExam, compile };

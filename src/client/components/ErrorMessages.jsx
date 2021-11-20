@@ -8,12 +8,11 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Snackbars(props) {
-    const [open, setOpen] = React.useState(false);
+export default function Snackbars({setOpen, open, status, message}) {
 
-    const handleClick = () => {
-        setOpen(true);
-    };
+    // const handleClick = () => {
+    //     setOpen(true);
+    // };
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -25,12 +24,12 @@ export default function Snackbars(props) {
 
     return (
         <Stack spacing={2} sx={{ width: '100%' }}>
-            <Button variant="outlined" onClick={handleClick}>
+            {/* <Button variant="outlined" onClick={handleClick}>
                 Open success snackbar
-            </Button>
+            </Button> */}
             <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity={props.status} sx={{ width: '100%' }}>
-                    {props.message}
+                <Alert onClose={handleClose} severity={status} sx={{ width: '100%' }}>
+                    {message}
                 </Alert>
             </Snackbar>
         </Stack>

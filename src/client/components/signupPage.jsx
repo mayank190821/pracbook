@@ -19,6 +19,7 @@ import { makeStyles } from "@mui/styles";
 import ErrorIcon from '@mui/icons-material/Error';
 import {signup } from "../api/auth.api";
 import image from "./../images/pracbook.png";
+import Snackbars from "./ErrorMessages";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -97,6 +98,7 @@ export default function Signup(props) {
     error: "",
     message: "",
   });
+  const [openSnackBar, setOpenSnackBar] =  useState(false);
 
   const handleChange = (name) => (event) => {
     setUser({ ...user, [name]: event.target.value });
@@ -129,6 +131,7 @@ export default function Signup(props) {
         error: "Confirm password is different",
         message: "",
       });
+      setOpenSnackBar(true);
       return;
     } else {
       const user_data = {
@@ -143,13 +146,15 @@ export default function Signup(props) {
                 setExtras({...extras,open:true});
             }
             else{
-                alert("Check your data connection ");
+                setExtras({error : "Check your internet connection"})
+                setOpenSnackBar(true)
             }
         });
         setExtras({...extras, error: ""})
       }
       else{
         setExtras({...extras, error: "Enter a valid Email address!"})
+        setOpenSnackBar(true);
       }
     }
   };
@@ -312,7 +317,7 @@ export default function Signup(props) {
                 </FormControl>
               </Grid>
               <br />
-              {extras.error && (
+              {/* {extras.error && (
                 <Typography component="p" color="error" style={{display: "flex", alignItems: "center", lineHeight: "10px"}}>
                   <ErrorIcon sx={{ fontSize: 25 }}/>
                   {extras.error}
@@ -320,7 +325,7 @@ export default function Signup(props) {
               )}
               {extras.message && (
                 <p style={{ color: "#4caf50" }}>{extras.message}</p>
-              )}
+              )} */}
               <Grid item xs={12}>
                 <Button
                   className={classNames.submit}
@@ -345,6 +350,7 @@ export default function Signup(props) {
           </Typography>
         </Box>
       </Container>
+      <Snackbars open = {openSnackBar} setOpen={setOpenSnackBar} status = "error" message = {extras.error}/>
     </div>
   );
 }

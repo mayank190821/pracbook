@@ -166,7 +166,13 @@ export default function AddQuestion({ handleClose }) {
           ))}
         </TextField>
         {QuestionType === "Objective" ? (
-          <Box component="form" spacing={3} noValidate autoComplete="off">
+          <Box
+            component="form"
+            spacing={3}
+            noValidate
+            autoComplete="off"
+            sx={{ padding: "30px !important" }}
+          >
             <InputBox>
               <Typography
                 style={{
@@ -234,21 +240,17 @@ export default function AddQuestion({ handleClose }) {
               <Typography> Question : </Typography>
               <textarea className={classNames.textArea} />
             </InputBox>
+            <DialogActions>
+              <Button onClick={handleClose}>Disagree</Button>
+              <Button onClick={handleClose}>Agree</Button>
+            </DialogActions>
           </Box>
         ) : (
-          <Box sx={{ width: '100%', padding:"10" }}>
-            <Stepper activeStep={activeStep} sx={{margin:"10"}}>
+          <Box sx={{ padding: "10px 30px !important" }}>
+            <Stepper activeStep={activeStep}>
               {steps.map((label, index) => {
                 const stepProps = {};
                 const labelProps = {};
-                {/* if (isStepOptional(index)) {
-                  labelProps.optional = (
-                    <Typography variant="caption">Optional</Typography>
-                  );
-                }
-                if (isStepSkipped(index)) {
-                  stepProps.completed = false;
-                } */}
                 return (
                   <Step key={label} {...stepProps}>
                     <StepLabel {...labelProps}>{label}</StepLabel>
@@ -261,15 +263,106 @@ export default function AddQuestion({ handleClose }) {
                 <Typography sx={{ mt: 2, mb: 1 }}>
                   All steps completed - you&apos;re finished
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                  <Box sx={{ flex: '1 1 auto' }} />
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Box sx={{ flex: "1 1 auto" }} />
                   <Button onClick={handleReset}>Reset</Button>
                 </Box>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                <Typography sx={{ mt: 2, mb: 1 }}>
+                  {(() => {
+                    if (activeStep === 0) {
+                      return (
+                        <React.Fragment>
+                          <TextField
+                            id="outlined-select-language"
+                            select
+                            // variant="outlined"
+                            size="small"
+                            label="Difficulty"
+                            value={difficulty}
+                            onChange={handleDifficultyChange}
+                            // helperText="Please select your language"
+                            // className={classes.inputArea}
+                            style={{ width: "100%", marginTop: "23px" }}
+                          >
+                            {difficulties.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                          <InputBox 
+                            sx={{padding:"10px !important"}}
+                          >
+                            <Typography
+                              style={{
+                                lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Name:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Question:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                        </React.Fragment>
+                      );
+                    } else if (activeStep === 1) {
+                      return (
+                        <React.Fragment>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Constraints:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Input Format:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Output Format:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                        </React.Fragment>
+                      );
+                    } else {
+                      return <div>catch all</div>;
+                    }
+                  })()}
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                   <Button
                     color="inherit"
                     disabled={activeStep === 0}
@@ -278,108 +371,14 @@ export default function AddQuestion({ handleClose }) {
                   >
                     Back
                   </Button>
-                  {/* <Box sx={{ flex: '1 1 auto' }} />
-                  {isStepOptional(activeStep) && (
-                    <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                      Skip
-                    </Button>
-                  )} */}
-
                   <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
                   </Button>
                 </Box>
               </React.Fragment>
             )}
           </Box>
-          /* <Box
-            component="form"
-            sx={{
-              width: 600,
-              height: 600,
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <InputBox>
-              <Typography
-                style={{
-                  lineHeight: "48px",
-                  width: "100px",
-                }}
-              >
-                Name:
-              </Typography>
-              <textarea className={classNames.textArea} />
-            </InputBox>
-            <TextField
-              id="outlined-select-language"
-              select
-              // variant="outlined"
-              size="small"
-              label="Difficulty"
-              value={difficulty}
-              onChange={handleDifficultyChange}
-              // helperText="Please select your language"
-              // className={classes.inputArea}
-              style={{ width: "100%", marginTop: "23px" }}
-            >
-              {difficulties.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <InputBox>
-              <Typography
-                style={{
-                  // lineHeight: "48px",
-                  width: "100px",
-                }}
-              >
-                Question:
-              </Typography>
-              <textarea className={classNames.textArea} />
-            </InputBox>
-            <InputBox>
-              <Typography
-                style={{
-                  // lineHeight: "48px",
-                  width: "100px",
-                }}
-              >
-                Constraints:
-              </Typography>
-              <textarea className={classNames.textArea} />
-            </InputBox>
-            <InputBox>
-              <Typography
-                style={{
-                  // lineHeight: "48px",
-                  width: "100px",
-                }}
-              >
-                Input Format:
-              </Typography>
-              <textarea className={classNames.textArea} />
-            </InputBox>
-            <InputBox>
-              <Typography
-                style={{
-                  // lineHeight: "48px",
-                  width: "100px",
-                }}
-              >
-                Output Format:
-              </Typography>
-              <textarea className={classNames.textArea} />
-            </InputBox>
-          </Box> */
         )}
-        {/* <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose}>Agree</Button>
-        </DialogActions> */}
       </Dialog>
     </div>
   );
