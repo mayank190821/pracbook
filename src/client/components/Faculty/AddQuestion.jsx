@@ -16,6 +16,7 @@ import {
   StepLabel,
 } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
+import { addVivaQuestion } from "../../api/exam.api";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -135,9 +136,19 @@ export default function AddQuestion({ handleClose }) {
   function handleChange(event) {
     setQuestionType(event.target.value);
   }
+
   function handleDifficultyChange(event) {
     setDifficultyLevel(event.target.value);
   }
+
+  const [vivaData, setVivaData] = useState({
+    question: "",
+    option1: "",
+    option2: "",
+    option3: "",
+    option4: "",
+    answer: "",
+  })
 
   return (
     <div>
@@ -166,13 +177,7 @@ export default function AddQuestion({ handleClose }) {
           ))}
         </TextField>
         {QuestionType === "Objective" ? (
-          <Box
-            component="form"
-            spacing={3}
-            noValidate
-            autoComplete="off"
-            sx={{ padding: "30px !important" }}
-          >
+          <Box component="form" spacing={3} noValidate autoComplete="off">
             <InputBox>
               <Typography
                 style={{
@@ -182,7 +187,7 @@ export default function AddQuestion({ handleClose }) {
               >
                 Question :
               </Typography>
-              <textarea className={classNames.textArea} />
+              <textarea className={classNames.textArea} onChange={(e) => setVivaData({ ...setVivaData, question: e.target.value })} />
             </InputBox>
             <InputBox>
               <Typography>Options :</Typography>
@@ -190,34 +195,34 @@ export default function AddQuestion({ handleClose }) {
                 <TextField
                   className={classNames.input}
                   label="Option A "
-                  value={options[0]}
+                  value={vivaData.option1}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option1: e.target.value })}
                   variant="filled"
                 />
                 <TextField
                   className={classNames.input}
                   label="Option B "
-                  value={options[1]}
+                  value={vivaData.option2}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option2: e.target.value })}
                   variant="filled"
                 />
                 <br />
                 <TextField
                   className={classNames.input}
                   label="Option C "
-                  value={options[2]}
+                  value={vivaData.option3}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option3: e.target.value })}
                   variant="filled"
                 />
                 <TextField
                   className={classNames.input}
                   label="Option D "
-                  value={options[3]}
+                  value={vivaData.option4}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option4: e.target.value })}
                   variant="filled"
                 />
               </Box>
@@ -229,25 +234,24 @@ export default function AddQuestion({ handleClose }) {
                 aria-label="Choose Answer"
                 name="answer"
                 spacing="auto"
+                value={vivaData.answer}
+                onChange={(event) => setVivaData({ ...vivaData, answer: event.target.value })}
               >
                 <FormControlLabel value="A" control={<Radio />} label="A" />
                 <FormControlLabel value="B" control={<Radio />} label="B" />
                 <FormControlLabel value="C" control={<Radio />} label="C" />
                 <FormControlLabel value="D" control={<Radio />} label="D" />
               </RadioGroup>
+              {vivaData.answer}
             </InputBox>
-            {/* <InputBox>
-              <Typography> Question : </Typography>
-              <textarea className={classNames.textArea} />
-            </InputBox> */}
             <DialogActions>
               <Button onClick={handleClose}>Disagree</Button>
-              <Button onClick={handleClose}>Agree</Button>
+              <Button onClick={() => {addVivaQuestion(vivaData); handleClose();}}>Agree</Button>
             </DialogActions>
           </Box>
         ) : (
-          <Box sx={{ padding: "10px 30px !important" }}>
-            <Stepper activeStep={activeStep}>
+          <Box sx={{ width: '100%', padding: "10" }}>
+            <Stepper activeStep={activeStep} sx={{ margin: "10" }}>
               {steps.map((label, index) => {
                 const stepProps = {};
                 const labelProps = {};
@@ -263,106 +267,15 @@ export default function AddQuestion({ handleClose }) {
                 <Typography sx={{ mt: 2, mb: 1 }}>
                   All steps completed - you&apos;re finished
                 </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                  <Box sx={{ flex: "1 1 auto" }} />
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Box sx={{ flex: '1 1 auto' }} />
                   <Button onClick={handleReset}>Reset</Button>
                 </Box>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1 }}>
-                  {(() => {
-                    if (activeStep === 0) {
-                      return (
-                        <React.Fragment>
-                          <TextField
-                            id="outlined-select-language"
-                            select
-                            // variant="outlined"
-                            size="small"
-                            label="Difficulty"
-                            value={difficulty}
-                            onChange={handleDifficultyChange}
-                            // helperText="Please select your language"
-                            // className={classes.inputArea}
-                            style={{ width: "100%", marginTop: "23px" }}
-                          >
-                            {difficulties.map((option) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                          <InputBox 
-                            sx={{padding:"10px !important"}}
-                          >
-                            <Typography
-                              style={{
-                                lineHeight: "48px",
-                                width: "100px",
-                              }}
-                            >
-                              Name:
-                            </Typography>
-                            <textarea className={classNames.textArea} />
-                          </InputBox>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "100px",
-                              }}
-                            >
-                              Question:
-                            </Typography>
-                            <textarea className={classNames.textArea} />
-                          </InputBox>
-                        </React.Fragment>
-                      );
-                    } else if (activeStep === 1) {
-                      return (
-                        <React.Fragment>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "100px",
-                              }}
-                            >
-                              Constraints:
-                            </Typography>
-                            <textarea className={classNames.textArea} />
-                          </InputBox>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "100px",
-                              }}
-                            >
-                              Input Format:
-                            </Typography>
-                            <textarea className={classNames.textArea} />
-                          </InputBox>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "100px",
-                              }}
-                            >
-                              Output Format:
-                            </Typography>
-                            <textarea className={classNames.textArea} />
-                          </InputBox>
-                        </React.Fragment>
-                      );
-                    } else {
-                      return <div>catch all</div>;
-                    }
-                  })()}
-                </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                   <Button
                     color="inherit"
                     disabled={activeStep === 0}
@@ -372,7 +285,7 @@ export default function AddQuestion({ handleClose }) {
                     Back
                   </Button>
                   <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </Box>
               </React.Fragment>
