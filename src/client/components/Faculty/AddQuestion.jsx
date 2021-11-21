@@ -294,7 +294,98 @@ export default function AddQuestion({ handleClose }) {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+                  <Typography sx={{ mt: 2, mb: 1 }}>
+                  {(() => {
+                    if (activeStep === 0) {
+                      return (
+                        <React.Fragment>
+                          <TextField
+                            id="outlined-select-language"
+                            select
+                            // variant="outlined"
+                            size="small"
+                            label="Difficulty"
+                            value={difficulty}
+                            onChange={handleDifficultyChange}
+                            // helperText="Please select your language"
+                            // className={classes.inputArea}
+                            style={{ width: "100%", marginTop: "23px" }}
+                          >
+                            {difficulties.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                          <InputBox 
+                            sx={{padding:"10px !important"}}
+                          >
+                            <Typography
+                              style={{
+                                lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Name:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Question:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                        </React.Fragment>
+                      );
+                    } else if (activeStep === 1) {
+                      return (
+                        <React.Fragment>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Constraints:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Input Format:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Output Format:
+                            </Typography>
+                            <textarea className={classNames.textArea} />
+                          </InputBox>
+                        </React.Fragment>
+                      );
+                    } else {
+                      return <div>catch all</div>;
+                    }
+                  })()}
+                </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                   <Button
                     color="inherit"

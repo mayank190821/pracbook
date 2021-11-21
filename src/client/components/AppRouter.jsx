@@ -7,7 +7,7 @@ import { Switch, Route } from "react-router";
 import ExamPage from "./ExamPage";
 import InstructionPage from "./instructionPage";
 import AddQuestion from "./Faculty/AddQuestion";
-
+import SendingFile from "./Faculty/sendingFile";
 
 export default function AppRouter() {
   return (
@@ -17,8 +17,8 @@ export default function AppRouter() {
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
-      {/* <Route exact path="/" component={DashBoard} /> */}
-      <Route exact path="/" component={AddQuestion} /> 
+      <Route exact path="/" component={AddQuestion} />
+      {/* <Route exact path="/" component={SendingFile} />  */}
     </Switch>
   );
 }
