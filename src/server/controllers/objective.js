@@ -1,6 +1,7 @@
 import objectiveProblemModel from "../models/objective.problem.model.js";
 
 const addObjectiveQuestion = async (req, res) => {
+  console.log(req.body);
   const problem = new objectiveProblemModel(req.body);
   problem.questionId = "ob" + Math.round(new Date() * Math.random() + 0.1);
   try {

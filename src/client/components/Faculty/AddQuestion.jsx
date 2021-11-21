@@ -16,6 +16,7 @@ import {
   StepLabel,
 } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
+import { addVivaQuestion } from "../../api/exam.api";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -78,6 +79,14 @@ const useStyles = makeStyles((theme) => ({
     overflowWrap: "break-word !important",
     height: `${theme.spacing(10)} !important`,
   },
+  topicname:{
+    width: "100%",
+    margin: theme.spacing(0, 2),
+    outline: "none",
+    resize: "none",
+    overflowWrap: "break-word !important",
+    height: "50px !important"
+  }
 }));
 
 export default function AddQuestion({ handleClose }) {
@@ -135,9 +144,20 @@ export default function AddQuestion({ handleClose }) {
   function handleChange(event) {
     setQuestionType(event.target.value);
   }
+
   function handleDifficultyChange(event) {
     setDifficultyLevel(event.target.value);
   }
+
+  const [vivaData, setVivaData] = useState({
+    topicName: "",
+    question: "",
+    option1: "",
+    option2: "",
+    option3: "",
+    option4: "",
+    answer: "",
+  })
 
   return (
     <div>
@@ -165,14 +185,19 @@ export default function AddQuestion({ handleClose }) {
             </MenuItem>
           ))}
         </TextField>
+        <InputBox>
+              <Typography
+                style={{
+                  width: "100px",
+                }}
+              >
+                Topic Name :
+              </Typography>
+              <textarea className={classNames.topicname} onChange={(e) => setVivaData({ ...setVivaData, topicName: e.target.value })} />
+            </InputBox>
         {QuestionType === "Objective" ? (
-          <Box
-            component="form"
-            spacing={3}
-            noValidate
-            autoComplete="off"
-            sx={{ padding: "30px !important" }}
-          >
+          <Box component="form" spacing={3} noValidate autoComplete="off">
+            
             <InputBox>
               <Typography
                 style={{
@@ -182,7 +207,7 @@ export default function AddQuestion({ handleClose }) {
               >
                 Question :
               </Typography>
-              <textarea className={classNames.textArea} />
+              <textarea className={classNames.textArea} onChange={(e) => setVivaData({ ...setVivaData, question: e.target.value })} />
             </InputBox>
             <InputBox>
               <Typography>Options :</Typography>
@@ -190,34 +215,34 @@ export default function AddQuestion({ handleClose }) {
                 <TextField
                   className={classNames.input}
                   label="Option A "
-                  value={options[0]}
+                  value={vivaData.option1}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option1: e.target.value })}
                   variant="filled"
                 />
                 <TextField
                   className={classNames.input}
                   label="Option B "
-                  value={options[1]}
+                  value={vivaData.option2}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option2: e.target.value })}
                   variant="filled"
                 />
                 <br />
                 <TextField
                   className={classNames.input}
                   label="Option C "
-                  value={options[2]}
+                  value={vivaData.option3}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option3: e.target.value })}
                   variant="filled"
                 />
                 <TextField
                   className={classNames.input}
                   label="Option D "
-                  value={options[3]}
+                  value={vivaData.option4}
                   size="small"
-                  onChange={handleChange}
+                  onChange={(e) => setVivaData({ ...vivaData, option4: e.target.value })}
                   variant="filled"
                 />
               </Box>
@@ -229,25 +254,24 @@ export default function AddQuestion({ handleClose }) {
                 aria-label="Choose Answer"
                 name="answer"
                 spacing="auto"
+                value={vivaData.answer}
+                onChange={(event) => setVivaData({ ...vivaData, answer: event.target.value })}
               >
                 <FormControlLabel value="A" control={<Radio />} label="A" />
                 <FormControlLabel value="B" control={<Radio />} label="B" />
                 <FormControlLabel value="C" control={<Radio />} label="C" />
                 <FormControlLabel value="D" control={<Radio />} label="D" />
               </RadioGroup>
-            </InputBox>
-            <InputBox>
-              <Typography> Question : </Typography>
-              <textarea className={classNames.textArea} />
+              {vivaData.answer}
             </InputBox>
             <DialogActions>
               <Button onClick={handleClose}>Disagree</Button>
-              <Button onClick={handleClose}>Agree</Button>
+              <Button onClick={() => {addVivaQuestion(vivaData); handleClose();}}>Agree</Button>
             </DialogActions>
           </Box>
         ) : (
-          <Box sx={{ padding: "10px 30px !important" }}>
-            <Stepper activeStep={activeStep}>
+          <Box sx={{ width: '100%', padding: "10" }}>
+            <Stepper activeStep={activeStep} sx={{ margin: "10" }}>
               {steps.map((label, index) => {
                 const stepProps = {};
                 const labelProps = {};
@@ -263,14 +287,14 @@ export default function AddQuestion({ handleClose }) {
                 <Typography sx={{ mt: 2, mb: 1 }}>
                   All steps completed - you&apos;re finished
                 </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                  <Box sx={{ flex: "1 1 auto" }} />
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Box sx={{ flex: '1 1 auto' }} />
                   <Button onClick={handleReset}>Reset</Button>
                 </Box>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1 }}>
+                  <Typography sx={{ mt: 2, mb: 1 }}>
                   {(() => {
                     if (activeStep === 0) {
                       return (
@@ -362,7 +386,7 @@ export default function AddQuestion({ handleClose }) {
                     }
                   })()}
                 </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                   <Button
                     color="inherit"
                     disabled={activeStep === 0}
@@ -372,7 +396,7 @@ export default function AddQuestion({ handleClose }) {
                     Back
                   </Button>
                   <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </Box>
               </React.Fragment>

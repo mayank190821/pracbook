@@ -37,6 +37,15 @@ const fetchExamQuestion = async (id) =>{
       "Content-Type": "application/json",
       id: id
     }
+
+const addVivaQuestion = async (data) => {
+  let response = await fetch("/api/questions/objective/add", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   });
   return await response.json();
 }
@@ -64,4 +73,4 @@ const compile = async (data) => {
     });
 };
 
-export { fetchExam, fetchExamQuestion, scheduleExam, compile };
+export { fetchExam, fetchExamQuestion, scheduleExam, addVivaQuestion, compile };
