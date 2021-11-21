@@ -3,6 +3,8 @@ import SectionCard from "./SectionCard";
 import { makeStyles } from "@mui/styles";
 import image from "../../images/exam.png";
 import { fetchCardDetails } from "../../api/utilities.api";
+import {Link} from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   empty: {
     width: "100%",
@@ -91,12 +93,12 @@ const CardList = () => {
         </div>
       ) : (
         Array.from(data[0]).map((dat, index) => {
-          {/* console.log(data[0]); */}
           return (
+            <Link to={`/exam/instruction/${dat._id}`}>
             <SectionCard
               key={`${dat.section}-${index}`}
               props={{ data: dat, i: index }}
-            />
+            /></Link>
           );
         })
       )}

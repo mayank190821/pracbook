@@ -16,7 +16,6 @@ import React, { useState } from "react";
 import { Link, Redirect, useParams } from "react-router-dom";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
-import ErrorIcon from '@mui/icons-material/Error';
 import {signup } from "../api/auth.api";
 import image from "./../images/pracbook.png";
 import Snackbars from "./ErrorMessages";

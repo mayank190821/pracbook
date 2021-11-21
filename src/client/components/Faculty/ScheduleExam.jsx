@@ -12,6 +12,7 @@ import Stack from "@mui/material/Stack";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import TimePicker from "@mui/lab/TimePicker";
 import {scheduleExam} from "../../api/exam.api";
+import { daysToWeeks } from "date-fns/esm";
 const useStyles = makeStyles((theme) => ({
   dialog: {
     "& .css-fzk8t3-MuiPaper-root-MuiDialog-paper": {
@@ -40,20 +41,30 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(null);
+  const [date, setDate] = React.useState(null);
+  const [time, setTime] = React.useState(null);
   const [data, setData] = React.useState({
     name: "",
-    date: "2014-08-18T21:11:54",
-    duration: 0,
+    date: "",
+    duration: null,
     subject:"",
-    marks: 0,
+    marks: null,
     section: "",
     time: "",
+    objectCount: null,
+    codingCount: null,
     completed: false,
   });
-  const handleScheduleExam = (event) => { 
+
+  const getQuestionIds = (oCount, cCount) => {
+    let questions = [];
     
+    return [];
+  }
+  const handleScheduleExam = () => { 
+     let questions = getQuestionIds(data.objectCount, data.codingCount);
      scheduleExam(data);
+     handleClose();
   };
   const handleChange = (props) => (event) => {
     if(props === "time"){
@@ -64,14 +75,14 @@ export default function ScheduleExam({ handleClose }) {
       time:
         time,
      });
-     setValue(event);
+     setTime(event);
     }
     else if(props === "date") {
       setData({
         ...data,
         date: event.toLocaleString().split(",")[0],
       });
-      setValue(event);
+      setDate(event);
     }
     else
       setData({ ...data, [props]: event.target.value });
@@ -105,7 +116,8 @@ export default function ScheduleExam({ handleClose }) {
             <DesktopDatePicker
               label="Date desktop"
               inputFormat="dd/MM/yyyy"
-              value={value}
+              value={date}
+              disablePast
               onChange={handleChange("date")}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -113,14 +125,18 @@ export default function ScheduleExam({ handleClose }) {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <TimePicker
               label="Time"
-              value={value}
+              value={time}
               onChange={handleChange("time")}
-              // onChange={(newValue) => {
-              //   setValue(newValue);
-              // }}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+          <Box
+            component="form"
+            sx={12}
+            spacing={1}
+            noValidate
+            autoComplete="off"
+          >
           <TextField
             required
             id="outlined-required"
@@ -128,41 +144,62 @@ export default function ScheduleExam({ handleClose }) {
             value={data.subject}
             onChange={handleChange("subject")}
           />
-          <Box
+          
+            <TextField
+              required
+              id="outlined-required"
+              className={classes.elements}
+              label="Section"
+              value={data.section}
+              onChange={handleChange("section")}
+            />
+            </Box>
+            <Box
             component="form"
-            sx={{
-              "& > :not(style)": { m: 0, width: "25ch" },
-            }}
-            spacing={3}
+            sx={12}
+            spacing={1}
             noValidate
             autoComplete="off"
           >
             <TextField
               required
               id="outlined-required"
-              label="Section"
-              defaultValue=" "
-              value={data.section}
-              onChange={handleChange("section")}
-            />
-            <TextField
-              required
-              className={classes.elements}
-              id="outlined-required"
               label="Time Duration"
-              defaultValue=" "
               value={data.duration}
               onChange={handleChange("duration")}
             />
-          </Box>
           <TextField
             required
             id="outlined-required"
             label="Maximum Marks"
-            defaultValue=" "
+            className={classes.elements}
             value={data.marks}
             onChange={handleChange("marks")}
           />
+          </Box>
+          <Box
+            component="form"
+            sx={12}
+            spacing={1}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              required
+              id="outlined-required"
+              label="Objective Count"
+              value={data.objectCount}
+              onChange={handleChange("objectCount")}
+            />
+          <TextField
+            required
+            id="outlined-required"
+            label="Coding Count"
+            className={classes.elements}
+            value={data.codingCount}
+            onChange={handleChange("codingCount")}
+          />
+          </Box>
           <Button variant="contained" onClick={handleScheduleExam}>
             Add Exam
           </Button>

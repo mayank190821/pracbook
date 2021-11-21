@@ -87,15 +87,18 @@ export default function InstructionPage({examId}) {
     useEffect(() => {
         fetchExam("61993ec64e97f8c10c05202f").then((exam) => {
             setExam(exam);
-            for(let i = 0 ; i < exam.questionIds.length; i++){
-                fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
-                    let currentQues = questions;
-                    currentQues.push(response.question);
-                    setQuestions(currentQues);
-                    dispatch(saveQuestion(currentQues));
-                })
-            }   
+            if(questions.length === 0){
+                for(let i = 0 ; i < exam.questionIds.length; i++){
+                    fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
+                        let currentQues = questions;
+                        currentQues.push(response.question);
+                        setQuestions(currentQues);
+                        dispatch(saveQuestion(currentQues));
+                    })
+                }   
+            }
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if(redirect){
