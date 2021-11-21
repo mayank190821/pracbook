@@ -22,6 +22,25 @@ const scheduleExam = async (data) => {
   return await response.json();
 };
 
+const fetchExamQuestion = async (id) =>{
+  let model;
+  if(id.slice(0, 2) === "ob"){
+    model = "objective";
+  }
+  else{
+    model = "coding";
+  }
+  let response = await fetch(`/api/questions/${model}/fetchByID`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      id: id
+    }
+  })
+  return await response.json();
+}
+
 const addVivaQuestion = async (data) => {
   let response = await fetch("/api/questions/objective/add", {
     method: "POST",
@@ -57,4 +76,4 @@ const compile = async (data) => {
     });
 };
 
-export { fetchExam, compile, scheduleExam, addVivaQuestion};
+export { fetchExam, fetchExamQuestion, scheduleExam, addVivaQuestion, compile };

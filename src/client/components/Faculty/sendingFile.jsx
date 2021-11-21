@@ -7,8 +7,9 @@ export default function SendingFile(){
                 <label htmlFor="attackFile">
                     Attach File
                 </label>
-                <input type="file"  accept=".in"/>
+                <input type="file"  accept=".txt"/>
             </form>
+            <button type="submit"></button>
         </>
     )
 }

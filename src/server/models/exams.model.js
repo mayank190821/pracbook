@@ -9,6 +9,8 @@ const exams = new mongoose.Schema({
   time: String, 
   date: String,
   questionIds: [String],
+  objectCount: Number,
+  codingCount: Number,
   completed: Boolean,
 });
 

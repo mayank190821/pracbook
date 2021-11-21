@@ -1,9 +1,11 @@
 import React , {useEffect} from "react";
 import { makeStyles } from "@mui/styles";
 import { Button } from "@mui/material";
-import {Redirect} from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 import image from "./../images/pracbook.png";
-import { fetchExam } from "../api/exam.api";
+import { fetchExam, fetchExamQuestion } from "../api/exam.api";
+import {useDispatch} from "react-redux";
+import {saveQuestion} from "../redux/actions/code.action";
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
         width: "100vw",
@@ -63,9 +65,11 @@ const useStyles = makeStyles((theme) => ({
         fontSize:"20px"
     }
 }));
-export default function InstructionPage({examId}) {
+export default function InstructionPage() {
     const classNames = useStyles();
+    const dispatch = useDispatch();
     const [redirect, setRedirect] = React.useState(false);
+    const {examId} = useParams();
 
     function handleClick(event){
         event.preventDefault();
@@ -79,11 +83,23 @@ export default function InstructionPage({examId}) {
         instruction: "",
         questionIds: [],
       });
+    const [questions, setQuestions] = React.useState([]);
 
     useEffect(() => {
-        fetchExam("6191513c0d975acc5bace6b3").then((exam) => {
+        fetchExam(examId).then((exam) => {
             setExam(exam);
+            if(questions.length === 0){
+                for(let i = 0 ; i < exam.questionIds.length; i++){
+                    fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
+                        let currentQues = questions;
+                        currentQues.push(response.question);
+                        setQuestions(currentQues);
+                        dispatch(saveQuestion(currentQues));
+                    })
+                }   
+            }
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if(redirect){
@@ -104,7 +120,6 @@ export default function InstructionPage({examId}) {
                 <div className={classNames.container2}>
                     <h1>Intructions</h1>
                     <ol>
-                        <li>{exam.instruction}</li>
                         <li>This is a timed test. Please make sure you are not interrupted during the test, as the timer cannot be paused once started.
                         </li>
                         <li>Please ensure you have a stable internet connection.

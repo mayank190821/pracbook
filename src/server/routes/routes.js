@@ -77,7 +77,7 @@ routes.route("/api/questions/objective/fetchQuestions").get(fetchQuestions); // 
 //***************************************** Coding Problem API
 
 routes.route("/api/questions/coding/add").post(addCodingProblem); // req.body = complete coding problem model, result = question added.
-routes.route("/api/questions/coding/id").get(getProblemById); // req.body = {id}, result = {question}.
+routes.route("/api/questions/coding/fetchByID").get(getProblemById); // req.body = {id}, result = {question}.
 routes.route("/api/questions/coding/filter").get(filterProblems); // req.body = {type, difficulty, questionId}, result = list of filtered questions.
 
 routes.param("facultyId", facultyById);
