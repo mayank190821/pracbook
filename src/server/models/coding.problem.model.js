@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const codingProblem = new mongoose.Schema({
+  topicName:String,
   name: String,
   questionId: {
     type: String,

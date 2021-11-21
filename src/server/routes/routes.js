@@ -8,6 +8,7 @@ import {
   addObjectiveQuestion,
   fetchByQuestionID,
   fetchByTopicName,
+  fetchQuestions,
 } from "../controllers/objective.js";
 import {
   createFaculty,
@@ -70,7 +71,8 @@ routes.route("/api/exam").post(addExam).get(getExamById); // req.body = complete
 
 routes.route("/api/questions/objective/add").post(addObjectiveQuestion); // req.body = complete objective problem model, result = question added.
 routes.route("/api/questions/objective/fetchByID").get(fetchByQuestionID); // req.body = {questionId}, result = {question}.
-routes.route("/api/questions/objective/fetchByTopicName").get(fetchByTopicName); // req.body = {topicName}, result = list of questions.
+routes.route("/api/questions/objective/fetchByTopicName").get(fetchByTopicName);
+routes.route("/api/questions/objective/fetchQuestions").get(fetchQuestions); // req.body = {topicName}, result = list of questions.
 
 //***************************************** Coding Problem API
 

@@ -70,13 +70,13 @@ const CardList = () => {
   },[]);
 
 
-  // data.sort((a, b) => {
-  //   a = a.section.toLowerCase();
-  //   b = b.section.toLowerCase();
-  //   if (a < b) return -1;
-  //   else if (a > b) return 1;
-  //   else return 0;
-  // });
+  data.sort((a, b) => {
+    a = a.section.toLowerCase();
+    b = b.section.toLowerCase();
+    if (a < b) return -1;
+    else if (a > b) return 1;
+    else return 0;
+  });
 
   return (
     <div className={classNames.cards}>
