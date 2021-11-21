@@ -75,7 +75,6 @@ const CardList = () => {
   },[]);
 
   React.useEffect(()=>{
-    console.log(exams);
   },[exams]);
 
 
