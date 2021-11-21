@@ -12,6 +12,9 @@ import Stack from "@mui/material/Stack";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import TimePicker from "@mui/lab/TimePicker";
 import {scheduleExam} from "../../api/exam.api";
+import { fetchCardDetails } from "../../api/utilities.api";
+import {useDispatch} from "react-redux";
+import { loadExams } from "../../redux/actions/code.action";
 
 const useStyles = makeStyles((theme) => ({
   dialog: {
@@ -41,6 +44,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
   const [time, setTime] = React.useState(null);
   const [data, setData] = React.useState({
@@ -57,7 +61,11 @@ export default function ScheduleExam({ handleClose }) {
   });
 
   const handleScheduleExam = () => { 
-     scheduleExam(data);
+     scheduleExam(data).then(() => {
+       fetchCardDetails("61914f010d975acc5bace6a9").then((res) => {
+        dispatch(loadExams(res.exams));
+      });
+     })
      handleClose();
   };
   const handleChange = (props) => (event) => {
