@@ -1,7 +1,7 @@
 import React , {useEffect} from "react";
 import { makeStyles } from "@mui/styles";
 import { Button } from "@mui/material";
-import {Redirect} from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 import image from "./../images/pracbook.png";
 import { fetchExam, fetchExamQuestion } from "../api/exam.api";
 import {useDispatch} from "react-redux";
@@ -65,10 +65,11 @@ const useStyles = makeStyles((theme) => ({
         fontSize:"20px"
     }
 }));
-export default function InstructionPage({examId}) {
+export default function InstructionPage() {
     const classNames = useStyles();
     const dispatch = useDispatch();
     const [redirect, setRedirect] = React.useState(false);
+    const {examId} = useParams();
 
     function handleClick(event){
         event.preventDefault();
@@ -85,7 +86,7 @@ export default function InstructionPage({examId}) {
     const [questions, setQuestions] = React.useState([]);
 
     useEffect(() => {
-        fetchExam("61993ec64e97f8c10c05202f").then((exam) => {
+        fetchExam(examId).then((exam) => {
             setExam(exam);
             if(questions.length === 0){
                 for(let i = 0 ; i < exam.questionIds.length; i++){
@@ -119,7 +120,6 @@ export default function InstructionPage({examId}) {
                 <div className={classNames.container2}>
                     <h1>Intructions</h1>
                     <ol>
-                        <li>{exam.instruction}</li>
                         <li>This is a timed test. Please make sure you are not interrupted during the test, as the timer cannot be paused once started.
                         </li>
                         <li>Please ensure you have a stable internet connection.

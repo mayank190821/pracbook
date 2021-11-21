@@ -37,6 +37,9 @@ const fetchExamQuestion = async (id) =>{
       "Content-Type": "application/json",
       id: id
     }
+  })
+  return await response.json();
+}
 
 const addVivaQuestion = async (data) => {
   let response = await fetch("/api/questions/objective/add", {

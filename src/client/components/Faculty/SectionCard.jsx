@@ -55,7 +55,7 @@ const SectionCard = ({ props }) => {
       />
       <CardContent>
         <Typography variant="body2" className={classNames.text}>
-          <b>Exam Type :</b> {props.data.exam}
+          <b>Exam Type :</b> {props.data.name}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
           <b>Date :</b> {props.data.date}

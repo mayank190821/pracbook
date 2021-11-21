@@ -12,7 +12,7 @@ import Stack from "@mui/material/Stack";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import TimePicker from "@mui/lab/TimePicker";
 import {scheduleExam} from "../../api/exam.api";
-import { daysToWeeks } from "date-fns/esm";
+
 const useStyles = makeStyles((theme) => ({
   dialog: {
     "& .css-fzk8t3-MuiPaper-root-MuiDialog-paper": {
@@ -46,23 +46,17 @@ export default function ScheduleExam({ handleClose }) {
   const [data, setData] = React.useState({
     name: "",
     date: "",
-    duration: null,
+    duration: "",
     subject:"",
-    marks: null,
+    marks: "",
     section: "",
     time: "",
-    objectCount: null,
-    codingCount: null,
+    objectCount: "",
+    codingCount: "",
     completed: false,
   });
 
-  const getQuestionIds = (oCount, cCount) => {
-    let questions = [];
-    
-    return [];
-  }
   const handleScheduleExam = () => { 
-     let questions = getQuestionIds(data.objectCount, data.codingCount);
      scheduleExam(data);
      handleClose();
   };
