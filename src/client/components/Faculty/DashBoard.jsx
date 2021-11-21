@@ -21,6 +21,8 @@ import FolderSpecialOutlinedIcon from '@mui/icons-material/FolderSpecialOutlined
 import Dashboard  from './DashBoardContent';
 import { Navbar } from './DashBoardContent';
 import LogoutIcon from '@mui/icons-material/Logout';
+import QuestionCard from "../Faculty/QuestionCard";
+import StudentInfo from "./StudentInfo";
 
 
 
@@ -95,7 +97,12 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function Sidebar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [selectedTab, setSelectedTab] = React.useState("Dashboard");
 
+  const handleChange = (prop) => (event) => {
+    setSelectedTab(prop);
+    console.log(selectedTab);
+  }
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -133,23 +140,23 @@ export default function Sidebar() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem button>
+          <ListItem button onClick ={handleChange("dashboard")}>
               <ListItemIcon>
                 {<HomeOutlinedIcon/>}
               </ListItemIcon>
               <ListItemText primary="DashBoard" />
             </ListItem>
-          <ListItem button>
+          <ListItem button onClick ={handleChange("profile")}>
               <ListItemIcon>
                 {<PersonOutlineOutlinedIcon/>}
               </ListItemIcon>
               <ListItemText primary="Profile" />
             </ListItem>
-          <ListItem button>
+          <ListItem button onClick ={handleChange("bank")}>
               <ListItemIcon>
                 {<FolderSpecialOutlinedIcon/>}
               </ListItemIcon>
-              <ListItemText primary="Question Bank" />
+              <ListItemText primary="Question Bank"/>
             </ListItem>
           <ListItem button>
               <ListItemIcon>
@@ -162,7 +169,16 @@ export default function Sidebar() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <Dashboard/>
+        {(() => {
+          if(selectedTab === "dashboard"){
+            console.log("hello");
+            return <Dashboard/>
+          }else if(selectedTab === "profile"){
+             return <StudentInfo/>
+          }else{
+            return <QuestionCard/>
+          }
+        })()}
       </Box>
     </Box>
   );

@@ -20,4 +20,14 @@ const fetchQuesDetails = async () => {
   return await response.json();
 };
 
-export { fetchCardDetails, fetchQuesDetails };
+const fetchCpQuesDetails = async () => {
+  let response = await fetch(`/api/questions/coding/fetchCpQuestions`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+};
+export { fetchCardDetails, fetchQuesDetails , fetchCpQuesDetails};

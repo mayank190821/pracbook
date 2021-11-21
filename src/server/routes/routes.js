@@ -3,6 +3,7 @@ import {
   addCodingProblem,
   filterProblems,
   getProblemById,
+  fetchCpQuestions,
 } from "../controllers/coding.problem.controller.js";
 import {
   addObjectiveQuestion,
@@ -79,6 +80,7 @@ routes.route("/api/questions/objective/fetchQuestions").get(fetchQuestions); // 
 routes.route("/api/questions/coding/add").post(addCodingProblem); // req.body = complete coding problem model, result = question added.
 routes.route("/api/questions/coding/fetchByID").get(getProblemById); // req.body = {id}, result = {question}.
 routes.route("/api/questions/coding/filter").get(filterProblems); // req.body = {type, difficulty, questionId}, result = list of filtered questions.
+routes.route("/api/questions/coding/fetchCpQuestions").get(fetchCpQuestions);
 
 routes.param("facultyId", facultyById);
 routes.param("studentId", studentById);
