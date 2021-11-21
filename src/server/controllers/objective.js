@@ -39,5 +39,18 @@ const fetchByQuestionID = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+const fetchQuestions = async (req, res) => {
+  try {
+    const objQues = await objectiveProblemModel.find({});
+    res.status(200).json({questions:objQues});
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
 
-export { addObjectiveQuestion, fetchByQuestionID, fetchByTopicName };
+export {
+  addObjectiveQuestion,
+  fetchByQuestionID,
+  fetchByTopicName,
+  fetchQuestions,
+};

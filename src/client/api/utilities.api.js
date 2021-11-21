@@ -9,4 +9,15 @@ const fetchCardDetails = async (id) => {
   return await response.json();
 };
 
-export { fetchCardDetails };
+const fetchQuesDetails = async () => {
+  let response = await fetch(`/api/questions/objective/fetchQuestions`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+};
+
+export { fetchCardDetails, fetchQuesDetails };
