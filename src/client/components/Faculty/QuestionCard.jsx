@@ -5,6 +5,7 @@ import { fetchQuesDetails } from "../../api/utilities.api";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import BankCodingQuestion from "../Faculty/bank.coding.question"
 
 const types = [
   {
@@ -29,18 +30,7 @@ export default function QuestionCard() {
       answer: "",
     },
   ]);
-  const [codeQues, setCodeQues] = React.useState([
-    {
-      topicName: "",
-      name: "",
-      difficulty: "",
-      type: "",
-      problemStatement: "",
-      inputFormat: "",
-      outputFormat: "",
-      answer: "",
-    },
-  ]);
+  
 
   React.useEffect(() => {
     fetchQuesDetails().then((res) => {
@@ -117,7 +107,9 @@ export default function QuestionCard() {
           );
         })
       ) : (
-        <div></div>
+        <div>
+          <BankCodingQuestion></BankCodingQuestion>
+        </div>
       )}
     </React.Fragment>
   );
