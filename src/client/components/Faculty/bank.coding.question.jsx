@@ -21,6 +21,7 @@ export default function ControlledAccordions() {
             problemStatement: "",
             inputFormat: "",
             outputFormat: "",
+            constraints:"",
             answer: "",
         },
     ]);
@@ -30,7 +31,19 @@ export default function ControlledAccordions() {
             console.log(res.questions);
         });
     }, [])
-
+    function changeColor(difficultyData){
+        var color;
+        if(difficultyData === "easy"){
+            color = "green";
+        }
+        else if(difficultyData === "medium"){
+            color="orange";
+        }
+        else{
+            color="red";
+        }
+        return color;
+    }
     return (
         <>
             {
@@ -45,13 +58,29 @@ export default function ControlledAccordions() {
                                 >
                                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
                                         {data.name}
-                                        {console.log(codeQues)}
                                     </Typography>
-                                    <Typography sx={{ color: 'text.secondary' }}>{data.difficulty}</Typography>
+                                    <Typography style={{"color":changeColor(data.difficulty)}}>
+
+                                        {data.difficulty}
+                                        
+                                    </Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Typography>
+                                        <h3>Problem Statement</h3>
                                         {data.problemStatement}
+                                    </Typography>
+                                    <br />
+                                    <Typography>
+                                        <h5>Input:</h5>  {data.inputFormat}
+                                    </Typography>
+                                    <br />
+                                    <Typography>
+                                        <h5>Output:</h5>  {data.outputFormat}
+                                    </Typography>
+                                    <br />
+                                    <Typography>
+                                       <h5>Constraints:</h5>  {data.constraints}
                                     </Typography>
                                 </AccordionDetails>
                             </Accordion>

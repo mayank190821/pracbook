@@ -23,6 +23,8 @@ import { Navbar } from './DashBoardContent';
 import LogoutIcon from '@mui/icons-material/Logout';
 import QuestionCard from "../Faculty/QuestionCard";
 import StudentInfo from "./StudentInfo";
+import { Redirect} from "react-router-dom";
+import LandingPage from '../landingPage';
 
 
 
@@ -97,11 +99,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function Sidebar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [selectedTab, setSelectedTab] = React.useState("Dashboard");
-
+  const [selectedTab, setSelectedTab] = React.useState("dashboard");
+  const [redirect,setRedirect] = React.useState(false);
   const handleChange = (prop) => (event) => {
     setSelectedTab(prop);
-    console.log(selectedTab);
+  }
+  const handleLogOut = () => {
+    console.log("agaya");
+    setRedirect(true);
+    
   }
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -110,7 +116,11 @@ export default function Sidebar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  if(redirect) {
+    return <Redirect to={{
+      pathname: "/"
+    }}/>;
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -158,7 +168,7 @@ export default function Sidebar() {
               </ListItemIcon>
               <ListItemText primary="Question Bank"/>
             </ListItem>
-          <ListItem button>
+          <ListItem button onClick = {handleLogOut}>
               <ListItemIcon>
                 {<LogoutIcon/>}
               </ListItemIcon>
@@ -171,7 +181,6 @@ export default function Sidebar() {
         <DrawerHeader />
         {(() => {
           if(selectedTab === "dashboard"){
-            console.log("hello");
             return <Dashboard/>
           }else if(selectedTab === "profile"){
              return <StudentInfo/>
