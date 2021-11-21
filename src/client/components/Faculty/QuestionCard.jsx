@@ -77,7 +77,7 @@ export default function QuestionCard() {
         vivaQues.map((data, index) => {
           console.log(data);
           return (
-            <Card sx={{ minWidth: 275 }}>
+            <Card sx={{ minWidth: 275 }} style={{"marginBottom":"15px"}}>
               <CardContent>
                 <Typography
                   sx={{ fontSize: 22 }}
