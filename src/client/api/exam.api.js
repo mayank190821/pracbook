@@ -22,6 +22,18 @@ const scheduleExam = async (data) => {
   return await response.json();
 };
 
+const addVivaQuestion = async (data) => {
+  let response = await fetch("/api/questions/objective/add", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+}
+
 const compile = async (data) => {
   var options = {
     method: "POST",
@@ -45,4 +57,4 @@ const compile = async (data) => {
     });
 };
 
-export { fetchExam, compile, scheduleExam};
+export { fetchExam, compile, scheduleExam, addVivaQuestion};
