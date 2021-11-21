@@ -37,4 +37,13 @@ const getProblemById = async (req, res) => {
   }
 };
 
-export { addCodingProblem, filterProblems, getProblemById };
+const fetchCpQuestions = async (req, res) => {
+  try {
+    const cpQues = await codingProblemModel.find({});
+    res.status(200).json({questions:cpQues});
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+export { addCodingProblem, filterProblems, getProblemById , fetchCpQuestions};
