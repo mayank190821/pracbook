@@ -10,3 +10,9 @@ export const saveQuestion=(question)=>{
         question:question
     }
 }
+export const loadExams=(exams)=>{
+    return {
+        type:"LOAD_EXAMS",
+        exams:exams
+    }
+}

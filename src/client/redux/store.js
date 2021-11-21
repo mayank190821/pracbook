@@ -1,9 +1,10 @@
-import {sourceCode,ques} from "./reducers/code.reducer";
+import {sourceCode,ques, exams} from "./reducers/code.reducer";
 import {createStore, combineReducers} from "redux";
 
 export const reducer = combineReducers({
     sourceCode,
-    ques
+    ques,
+    exams
 })
 
 export const store = createStore(

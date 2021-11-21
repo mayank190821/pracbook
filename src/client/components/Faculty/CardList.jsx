@@ -4,7 +4,9 @@ import { makeStyles } from "@mui/styles";
 import image from "../../images/exam.png";
 import { fetchCardDetails } from "../../api/utilities.api";
 import {Link} from "react-router-dom";
-
+import {useDispatch, useSelector} from "react-redux";
+import {loadExams} from "../../redux/actions/code.action";
+import { getExams } from "../../redux/selectors/code.selector";
 const useStyles = makeStyles((theme) => ({
   empty: {
     width: "100%",
@@ -54,7 +56,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 const CardList = () => {
   const classNames = useStyles();
-  // const [value, setValue] = React.useState(null);
+  const dispatch = useDispatch();
+  const exams = useSelector(getExams);
   const [data, setData] = React.useState([{
     name: "",
     date: "",
@@ -67,9 +70,13 @@ const CardList = () => {
   React.useEffect(()=>{
     fetchCardDetails("61914f010d975acc5bace6a9").then((res) => {
       setData(res.exams);
-      // console.log(res.exams);
+      dispatch(loadExams(res.exams));
     });
   },[]);
+
+  React.useEffect(()=>{
+    console.log(exams);
+  },[exams]);
 
 
   // data.sort((a, b) => {
@@ -82,7 +89,7 @@ const CardList = () => {
 
   return (
     <div className={classNames.cards}>
-      {!data || !data[0] || data.length === 0 ? (
+      {!exams || !exams[0] || exams.length === 0 ? (
         <div className={classNames.empty}>
           <div className={classNames.imageContainer}>
             <img alt="No Class" src={image} className={classNames.image}></img>
@@ -92,14 +99,16 @@ const CardList = () => {
           </div>
         </div>
       ) : (
-        Array.from(data[0]).map((dat, index) => {
+        Array.from(exams).map((dat, index) => {
+          return Array.from(dat).map((da, jndex) => {
           return (
-            <Link to={`/exam/instruction/${dat._id}`}>
+            <Link to={`/exam/instruction/${da._id}`}>
             <SectionCard
-              key={`${dat.section}-${index}`}
-              props={{ data: dat, i: index }}
+              key={`${da.section}-${index}`}
+              props={{ data: da, i: index }}
             /></Link>
           );
+          });
         })
       )}
     </div>
