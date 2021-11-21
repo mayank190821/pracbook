@@ -5,6 +5,7 @@ import {Redirect, useParams} from "react-router-dom";
 import image from "./../images/pracbook.png";
 import { fetchExam, fetchExamQuestion } from "../api/exam.api";
 import {useDispatch} from "react-redux";
+import { fetchQuesDetails } from "../api/utilities.api";
 import {saveQuestion} from "../redux/actions/code.action";
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
@@ -82,25 +83,51 @@ export default function InstructionPage() {
         marks: 0,
         instruction: "",
         questionIds: [],
+        objectCount: 0,
+        codingCount: 0
       });
     const [questions, setQuestions] = React.useState([]);
 
     useEffect(() => {
-        fetchExam(examId).then((exam) => {
-            setExam(exam);
-            if(questions.length === 0){
-                for(let i = 0 ; i < exam.questionIds.length; i++){
-                    fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
-                        let currentQues = questions;
-                        currentQues.push(response.question);
-                        setQuestions(currentQues);
-                        dispatch(saveQuestion(currentQues));
-                    })
-                }   
-            }
+        fetchExam(examId).then((curExam) => {
+            fetchQuesDetails().then((res) => {
+                // console.log(res.questions, res.questions.length);
+                let number = Math.floor(Math.random() * res.questions.length);
+                let count = 0;
+                let questionIds = [];
+                let visited = new Array(res.questions.length).fill(false);
+                console.log(visited + " " + number + "/ " + curExam.objectCount);
+                for(let i = number; count < curExam.objectCount; i=(i+number)% (res.questions.length)){
+                    if(!visited[i]){
+                        visited[i] = true;
+                        questionIds.push(res.questions[i].questionId);
+                        count++;
+                    }
+                    else{
+                        i++;
+                    }
+                }
+                curExam.questionIds = questionIds;
+                setExam(curExam);
+            })
+            
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        console.log(exam);
+        if(questions.length === 0 && exam.questionIds.length !== 0){
+            for(let i = 0 ; i < exam.objectCount; i++){
+                fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
+                    let currentQues = questions;
+                    currentQues.push(response.question);
+                    setQuestions(currentQues);
+                    dispatch(saveQuestion(currentQues));
+                })
+            }   
+        }
+    }, [exam]);
 
     if(redirect){
         return <Redirect to={`/exam/${examId}`}/>
@@ -114,7 +141,7 @@ export default function InstructionPage() {
                         Welcome To Pracbook Go For Assessment
                     </p>
                     <p className={classNames.time}>Test Duration: {exam.duration} min</p>
-                    <p className={classNames.ques}>No. of questions: {exam.questionIds.length}</p>
+                    <p className={classNames.ques}>No. of questions: {parseInt(exam.objectCount) + parseInt(exam.codingCount)}</p>
                     <p className={classNames.ques}>Max. Marks: {exam.marks}</p>
                 </div>
                 <div className={classNames.container2}>

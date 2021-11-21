@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-around",
     background: "linear-gradient(145deg,#053997 2%,#040d21 29% 60%,#421a3b)",
-    // backgroundImage: "url(" + bg_img + ")",
     backgroundPosition: "center",
     backgroundBlendMode: "overlay",
   },
