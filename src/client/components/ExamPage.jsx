@@ -16,7 +16,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import Button from '@mui/material/Button';
 import {compile} from "./../api/exam.api";
 import { useSelector } from "react-redux";
-import { getCode } from "../redux/selectors/code.selector";
+import { getCode, getQuestion } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 
 const languages = [
@@ -135,6 +135,7 @@ export default function MiniDrawer() {
   const [output, setOutput] = React.useState("");
 
   const {sourceCode} = useSelector(getCode);
+  const {ques} = useSelector(getQuestion);
 
   const handleLanguageChange = (event) => {
     let code;
@@ -146,10 +147,14 @@ export default function MiniDrawer() {
     setLanguage({...language, value: event.target.value, code: code});
   };
   const [editorTheme, setEditorTheme] = React.useState("github");
+  const [curQuestion, setCurrentQuestion] = React.useState({});
 
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
   };
+  const questionChange = (index) => {
+    setCurrentQuestion(ques[index]);
+  }
   const handleSubmit = () => {
     let data = {
       language_id: language.code,
@@ -180,7 +185,8 @@ export default function MiniDrawer() {
         <DrawerHeader></DrawerHeader>
         <List className={classes.list}>
           {["1", "2", "3", "4"].map((text, index) => (
-            <ListItem button key={text} className={classes.listItem}>
+            <ListItem button key={text} className={classes.listItem}
+            onClick={() => questionChange(index)}>
               <ListItemText
                 primary={index + 1}
                 className={classes.listItemText}
@@ -195,7 +201,8 @@ export default function MiniDrawer() {
         className={classes.mainBox}
       >
         <div className={classes.problem}>
-          <CodingQuestion/>
+          {(curQuestion.questionId.slice(0,2) === "cp") ? (<CodingQuestion ques={curQuestion}/>) : ("bye")}
+          {/* {(curQuestion.questionId.slice(0, 2) === "cp") ? <CodingQuestion ques={curQuestion}/>: <div>{curQuestion.questionId}</div>} */}
         </div>
         <div className={classes.editor}>
           <TextField

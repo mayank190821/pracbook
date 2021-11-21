@@ -37,17 +37,17 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 
-export default function CodingQuestion() {
-    const { ques } = useSelector(getQuestion);
-        const questionName = ques[1].name;
-        const difficulty = ques[1].difficulty;
-        const statement = ques[1].problemStatement;
-        const constraints = ques[1].contraints;
-    const sampleInput = ques[1].sampleInput.map((data, index) => {
+export default function CodingQuestion({ques}) {
+
+        const questionName = ques.name;
+        const difficulty = ques.difficulty;
+        const statement = ques.problemStatement;
+        const constraints = ques.contraints;
+    const sampleInput = ques.sampleInput.map((data, index) => {
         return <Typography>data</Typography>;
     })
-    const sampleOutput = ques[1].sampleOutput[0];
-    const explanation = ques[1].explanation;
+    const sampleOutput = ques.sampleOutput[0];
+    const explanation = ques.explanation;
     const style = useStyle();
     return (
         <>

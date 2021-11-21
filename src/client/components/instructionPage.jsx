@@ -135,14 +135,14 @@ export default function InstructionPage() {
     useEffect(() => {
         console.log(exam);
         if(questions.length === 0 && exam.questionIds.length !== 0){
-            for(let i = 0 ; i < exam.objectCount; i++){
+            for(let i = 0 ; i < exam.questionIds.length; i++){
                 fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
                     let currentQues = questions;
                     currentQues.push(response.question);
                     setQuestions(currentQues);
                     dispatch(saveQuestion(currentQues));
                 })
-            }   
+            } 
         }
     }, [exam]);
 
