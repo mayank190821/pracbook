@@ -140,23 +140,23 @@ export default function Sidebar() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem button>
+          <ListItem button onClick ={handleChange("dashboard")}>
               <ListItemIcon>
                 {<HomeOutlinedIcon/>}
               </ListItemIcon>
-              <ListItemText primary="DashBoard" onClick ={handleChange("dashboard")}/>
+              <ListItemText primary="DashBoard" />
             </ListItem>
-          <ListItem button>
+          <ListItem button onClick ={handleChange("profile")}>
               <ListItemIcon>
                 {<PersonOutlineOutlinedIcon/>}
               </ListItemIcon>
-              <ListItemText primary="Profile" onClick ={handleChange("profile")}/>
+              <ListItemText primary="Profile" />
             </ListItem>
-          <ListItem button>
+          <ListItem button onClick ={handleChange("bank")}>
               <ListItemIcon>
                 {<FolderSpecialOutlinedIcon/>}
               </ListItemIcon>
-              <ListItemText primary="Question Bank"  onClick ={handleChange("bank")}/>
+              <ListItemText primary="Question Bank"/>
             </ListItem>
           <ListItem button>
               <ListItemIcon>
