@@ -8,6 +8,7 @@ import ExamPage from "./ExamPage";
 import InstructionPage from "./instructionPage";
 import AddQuestion from "./Faculty/AddQuestion";
 import SendingFile from "./Faculty/sendingFile";
+import QuestionCard from "./Faculty/QuestionCard"
 
 export default function AppRouter() {
   return (
