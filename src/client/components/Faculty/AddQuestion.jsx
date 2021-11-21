@@ -79,6 +79,14 @@ const useStyles = makeStyles((theme) => ({
     overflowWrap: "break-word !important",
     height: `${theme.spacing(10)} !important`,
   },
+  topicname:{
+    width: "100%",
+    margin: theme.spacing(0, 2),
+    outline: "none",
+    resize: "none",
+    overflowWrap: "break-word !important",
+    height: "50px !important"
+  }
 }));
 
 export default function AddQuestion({ handleClose }) {
@@ -142,6 +150,7 @@ export default function AddQuestion({ handleClose }) {
   }
 
   const [vivaData, setVivaData] = useState({
+    topicName: "",
     question: "",
     option1: "",
     option2: "",
@@ -176,8 +185,19 @@ export default function AddQuestion({ handleClose }) {
             </MenuItem>
           ))}
         </TextField>
+        <InputBox>
+              <Typography
+                style={{
+                  width: "100px",
+                }}
+              >
+                Topic Name :
+              </Typography>
+              <textarea className={classNames.topicname} onChange={(e) => setVivaData({ ...setVivaData, topicName: e.target.value })} />
+            </InputBox>
         {QuestionType === "Objective" ? (
           <Box component="form" spacing={3} noValidate autoComplete="off">
+            
             <InputBox>
               <Typography
                 style={{
