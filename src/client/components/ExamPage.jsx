@@ -12,12 +12,24 @@ import { makeStyles } from "@mui/styles";
 import Editor from "./Editor";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import Button from '@mui/material/Button';
-import {compile} from "./../api/exam.api";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+import Button from "@mui/material/Button";
+import { compile } from "./../api/exam.api";
+import {
+  Card,
+  CardContent,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+} from "@mui/material";
 import { useSelector } from "react-redux";
-import { getCode, getQuestion } from "../redux/selectors/code.selector";
+import {
+  getCode,
+  getQuestion,
+  getExams,
+} from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
+import { useParams } from "react-router-dom";
 
 const languages = [
   {
@@ -50,9 +62,8 @@ const editorThemes = [
   {
     value: "tomorrow_night",
     label: "Tomorrow",
-  }
+  },
 ];
-
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -84,22 +95,23 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "5px",
     height: "100px !important",
     overflow: "auto !important",
-    marginLeft: "20px"
+    marginLeft: "20px",
   },
-  buttons:{
+  buttons: {
     display: "flex",
     float: "right",
   },
-  editor:{
+  editor: {
     marginTop: "10px",
     height: "100vh",
   },
   problem: {
     width: "100vw",
+    height: "calc(100vh - 80px)",
     overflowY: "scroll",
-    overflowX: "auto",
+    overflowX: "wrap",
     padding: "0px 10px",
-  }
+  },
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -126,52 +138,63 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: "border-box",
 }));
 
-export default function MiniDrawer() {
+export default function ExamPage() {
   const classes = useStyles();
   const [language, setLanguage] = React.useState({
     value: "java",
-    code: 62
+    code: 62,
   });
   const [output, setOutput] = React.useState("");
-
-  const {sourceCode} = useSelector(getCode);
-  const {ques} = useSelector(getQuestion);
+  const { examId } = useParams();
+  const { sourceCode } = useSelector(getCode);
+  const { ques } = useSelector(getQuestion);
 
   const handleLanguageChange = (event) => {
     let code;
-    switch(event.target.value){
-      case "javascript" : code = 63; break;
-      case "python" : code = 71; break;
-      default : code = 62;
+    switch (event.target.value) {
+      case "javascript":
+        code = 63;
+        break;
+      case "python":
+        code = 71;
+        break;
+      default:
+        code = 62;
     }
-    setLanguage({...language, value: event.target.value, code: code});
+    setLanguage({ ...language, value: event.target.value, code: code });
   };
+  React.useEffect(() => {}, [examId]);
   const [editorTheme, setEditorTheme] = React.useState("github");
-  const [curQuestion, setCurrentQuestion] = React.useState({});
+  const [curQuestion, setCurQuestion] = React.useState({
+    question: ques[0],
+    index: 0
+  });
+  const [answer, setAnswer] = React.useState("");
 
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
   };
   const questionChange = (index) => {
-    setCurrentQuestion(ques[index]);
-  }
+    setCurQuestion({
+      question: ques[index],
+      index : index
+    });
+  };
   const handleSubmit = () => {
     let data = {
       language_id: language.code,
       source_code: sourceCode,
       stdin: "123456",
-    }
-    console.log(language.code);
-    compile(data).then((response) =>{
-      if(response.stderr)
+    };
+    compile(data).then((response) => {
+      if (response.stderr)
         setOutput(response.status.description + "\n\n" + response.stderr);
-      else if(response.stdout)
+      else if (response.stdout)
         setOutput(response.status.description + "\n\n" + response.stdout);
-      else
-        setOutput("");
+      else setOutput("");
       console.log(response.status, response);
-    })
-  }
+    });
+  };
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
@@ -184,9 +207,13 @@ export default function MiniDrawer() {
       <Drawer variant="permanent">
         <DrawerHeader></DrawerHeader>
         <List className={classes.list}>
-          {["1", "2", "3", "4"].map((text, index) => (
-            <ListItem button key={text} className={classes.listItem}
-            onClick={() => questionChange(index)}>
+          {new Array(ques.length).fill().map((text, index) => (
+            <ListItem
+              button
+              key={text}
+              className={classes.listItem}
+              onClick={() => questionChange(index)}
+            >
               <ListItemText
                 primary={index + 1}
                 className={classes.listItemText}
@@ -200,60 +227,115 @@ export default function MiniDrawer() {
         sx={{ flexGrow: 2, p: 5 }}
         className={classes.mainBox}
       >
-        <div className={classes.problem}>
-          {(curQuestion.questionId.slice(0,2) === "cp") ? (<CodingQuestion ques={curQuestion}/>) : ("bye")}
-          {/* {(curQuestion.questionId.slice(0, 2) === "cp") ? <CodingQuestion ques={curQuestion}/>: <div>{curQuestion.questionId}</div>} */}
-        </div>
-        <div className={classes.editor}>
-          <TextField
-            id="outlined-select-language"
-            select
-            // variant="outlined"
-            size="small"
-            // label="Select"
-            value={language.value}
-            onChange={handleLanguageChange}
-            // helperText="Please select your language"
-            className={classes.inputArea}
-            style={{ marginRight: "5%", marginLeft: "20px" }}
-          >
-            {languages.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="outlined-select-theme"
-            select
-            // label="Select"
-            value={editorTheme}
-            size="small"
-            onChange={handleThemeChange}
-            // helperText="Please select your theme"
-            className={classes.inputArea}
-          >
-            {editorThemes.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Editor editorTheme={editorTheme} language={language.value} />
-          <h2 style={{ marginLeft: "20px", fontSize: "25px", fontWeight: "400", padding: "5px" }}>Output</h2>
-          <TextareaAutosize
-            aria-label="empty textarea"
-            className={classes.testCases}
-            value={output}
-          />
-          <div className = {classes.buttons}>
-            <Button variant="outlined" className={classes.runCode} style={{margin: "10px", marginBottom: "5px"}}>Run Code</Button>
-            <Button onClick={handleSubmit} variant="contained" className={classes.submitCode} style={{margin: "10px", marginBottom: "5px"}}>Submit</Button>
-          </div>
-        </div>
+        {curQuestion.question.questionId.slice(0, 2) === "cp" ? (
+          <>
+            <div className={classes.problem}>
+              <CodingQuestion ques={curQuestion.question} />
+            </div>
+            <div className={classes.editor}>
+              <TextField
+                id="outlined-select-language"
+                select
+                // variant="outlined"
+                size="small"
+                // label="Select"
+                value={language.value}
+                onChange={handleLanguageChange}
+                // helperText="Please select your language"
+                className={classes.inputArea}
+                style={{ marginRight: "5%", marginLeft: "20px" }}
+              >
+                {languages.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                id="outlined-select-theme"
+                select
+                // label="Select"
+                value={editorTheme}
+                size="small"
+                onChange={handleThemeChange}
+                // helperText="Please select your theme"
+                className={classes.inputArea}
+              >
+                {editorThemes.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <Editor editorTheme={editorTheme} language={language.value} />
+              <h2
+                style={{
+                  marginLeft: "20px",
+                  fontSize: "25px",
+                  fontWeight: "400",
+                  padding: "5px",
+                }}
+              >
+                Output
+              </h2>
+              <TextareaAutosize
+                aria-label="empty textarea"
+                className={classes.testCases}
+                value={output}
+              />
+              <div className={classes.buttons}>
+                <Button
+                  variant="outlined"
+                  className={classes.runCode}
+                  style={{ margin: "10px", marginBottom: "5px" }}
+                >
+                  Run Code
+                </Button>
+                <Button
+                  onClick={handleSubmit}
+                  variant="contained"
+                  className={classes.submitCode}
+                  style={{ margin: "10px", marginBottom: "5px" }}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Card sx={{ minWidth: 275 }} elevation={0} style={{ marginBottom: "15px" }}>
+            <CardContent>
+              <Typography
+                sx={{ fontSize: 22 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                {curQuestion.index+1}
+                {". " + curQuestion.question.question}
+              </Typography>
+              <br/>
+              <RadioGroup
+                column
+                aria-label="Choose Answer"
+                name="answer"
+                spacing="auto"
+                value={answer}
+                onChange={(event) =>{
+                  console.log(event.target.value);
+                  setAnswer(event.target.value )
+                }
+                }
+              >
+                <FormControlLabel value={curQuestion.question.option1} control={<Radio />} label={`A. ${curQuestion.question.option1}`} />
+                <FormControlLabel value={curQuestion.question.option2} control={<Radio />} label={`B. ${curQuestion.question.option2}`} />
+                <FormControlLabel value={curQuestion.question.option3} control={<Radio />} label={`C. ${curQuestion.question.option3}`} />
+                <FormControlLabel value={curQuestion.question.option4} control={<Radio />} label={`D. ${curQuestion.question.option4}`} />
+              </RadioGroup>
+              <br />
+            </CardContent>
+          </Card>
+        )}
       </Box>
     </Box>
   );
 }
-
-
