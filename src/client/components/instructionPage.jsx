@@ -5,7 +5,7 @@ import {Redirect, useParams} from "react-router-dom";
 import image from "./../images/pracbook.png";
 import { fetchExam, fetchExamQuestion } from "../api/exam.api";
 import {useDispatch} from "react-redux";
-import { fetchQuesDetails } from "../api/utilities.api";
+import { fetchQuesDetails,fetchCpQuesDetails } from "../api/utilities.api";
 import {saveQuestion} from "../redux/actions/code.action";
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
@@ -90,14 +90,31 @@ export default function InstructionPage() {
 
     useEffect(() => {
         fetchExam(examId).then((curExam) => {
+            let questionIds = [];
             fetchQuesDetails().then((res) => {
                 // console.log(res.questions, res.questions.length);
                 let number = Math.floor(Math.random() * res.questions.length);
                 let count = 0;
-                let questionIds = [];
                 let visited = new Array(res.questions.length).fill(false);
                 console.log(visited + " " + number + "/ " + curExam.objectCount);
                 for(let i = number; count < curExam.objectCount; i=(i+number)% (res.questions.length)){
+                    if(!visited[i]){
+                        visited[i] = true;
+                        questionIds.push(res.questions[i].questionId);
+                        count++;
+                    }
+                    else{
+                        i++;
+                    }
+                }
+            })
+            fetchCpQuesDetails().then((res) => {
+                // console.log(res.questions, res.questions.length);
+                let number = Math.floor(Math.random() * res.questions.length);
+                let count = 0;
+                let visited = new Array(res.questions.length).fill(false);
+                console.log(visited + " " + number + "/ " + curExam.codingCount);
+                for(let i = number; count < curExam.codingCount; i=(i+number)% (res.questions.length)){
                     if(!visited[i]){
                         visited[i] = true;
                         questionIds.push(res.questions[i].questionId);
