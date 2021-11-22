@@ -10,6 +10,7 @@ import AddQuestion from "./Faculty/AddQuestion";
 import SendingFile from "./Faculty/sendingFile";
 import QuestionCard from "./Faculty/QuestionCard"
 import StudentDashBoard from "./Student/StudentDashboard"
+import ExamHistory from "../components/Student/ExamHistory"
 
 export default function AppRouter() {
   return (
@@ -19,7 +20,7 @@ export default function AppRouter() {
       <Route path="/login/:role" component={LoginPage}/>
       <Route path="/signup/:role" component={SignupPage}/>
       <Route path="/faculty/dashboard" component={DashBoard}/>
-      <Route exact path="/" component={StudentDashBoard} />
+      <Route exact path="/" component={ExamHistory} />
       {/* <Route exact path="/" component={SendingFile} />  */}
     </Switch>
   );
