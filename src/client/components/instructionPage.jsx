@@ -96,7 +96,7 @@ export default function InstructionPage() {
                 let number = Math.floor(Math.random() * res.questions.length);
                 let count = 0;
                 let visited = new Array(res.questions.length).fill(false);
-                console.log(visited + " " + number + "/ " + curExam.objectCount);
+                // console.log(visited + " " + number + "/ " + curExam.objectCount);
                 for(let i = number; count < curExam.objectCount; i=(i+number)% (res.questions.length)){
                     if(!visited[i]){
                         visited[i] = true;
@@ -133,7 +133,7 @@ export default function InstructionPage() {
     }, []);
 
     useEffect(() => {
-        console.log(exam);
+        // console.log(exam);
         if(questions.length === 0 && exam.questionIds.length !== 0){
             for(let i = 0 ; i < exam.questionIds.length; i++){
                 fetchExamQuestion(exam.questionIds[i]).then(async (response) => {

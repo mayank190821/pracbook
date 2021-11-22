@@ -101,7 +101,7 @@ const CardList = () => {
         Array.from(exams).map((dat, index) => {
           return Array.from(dat).map((da, jndex) => {
           return (
-            <Link to={`/exam/instruction/${da._id}`}>
+            <Link to={`/exam/instruction/${da._id}`} style={{textDecoration: "none"}}>
             <SectionCard
               key={`${da.section}-${index}`}
               props={{ data: da, i: index }}
