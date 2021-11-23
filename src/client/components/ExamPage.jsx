@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -23,11 +24,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import {
-  getCode,
-  getQuestion,
-  getExams,
-} from "../redux/selectors/code.selector";
+import { getCode, getQuestion } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { useParams } from "react-router-dom";
 
@@ -97,6 +94,13 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto !important",
     marginLeft: "20px",
   },
+  status: {
+    width: "calc(100% - 20px)",
+    paddingBottom: "15px",
+    fontSize: "15px",
+    height: "20px !important",
+    marginLeft: "20px",
+  },
   buttons: {
     display: "flex",
     float: "right",
@@ -145,6 +149,7 @@ export default function ExamPage() {
     code: 62,
   });
   const [output, setOutput] = React.useState("");
+  const [status, setStatus] = React.useState("");
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
   const { ques } = useSelector(getQuestion);
@@ -167,7 +172,7 @@ export default function ExamPage() {
   const [editorTheme, setEditorTheme] = React.useState("github");
   const [curQuestion, setCurQuestion] = React.useState({
     question: ques[0],
-    index: 0
+    index: 0,
   });
   const [answer, setAnswer] = React.useState("");
 
@@ -177,24 +182,50 @@ export default function ExamPage() {
   const questionChange = (index) => {
     setCurQuestion({
       question: ques[index],
-      index : index
+      index: index,
     });
   };
-  const handleSubmit = () => {
-    let data = {
-      language_id: language.code,
-      source_code: sourceCode,
-      stdin: "123456",
-    };
-    compile(data).then((response) => {
-      if (response.stderr)
-        setOutput(response.status.description + "\n\n" + response.stderr);
-      else if (response.stdout)
-        setOutput(response.status.description + "\n\n" + response.stdout);
-      else setOutput("");
-      console.log(response.status, response);
-    });
+  const handleSubmit = async (testCases) => {
+    let data;
+    let err = false;
+    setOutput("");
+    setStatus("");
+    let result = "";
+    // console.log(curQuestion.question.length);
+    for (let i = 0; i < (testCases.input ? testCases.input.length : 0); i++) {
+      data = {
+        language_id: language.code,
+        source_code: sourceCode,
+        stdin: testCases.input[i],
+        expected_output: testCases.output[i],
+      };
+      await compile(data)
+        .then((response) => {
+          if (response.stderr) {
+            setOutput(response.status.description + "\n\n" + response.stderr);
+            err = true;
+          } else if (response.stdout) {
+            if (!err) {
+              result += "TestCase " + i + ": " + response.stdout + "\n";
+            }
+            console.log(response.status, response, output);
+          } else {
+            setOutput("");
+          }
+        })
+        .then(async () => {
+          await setOutput(result);
+        })
+        .then(() => {
+          if (err) {
+            setStatus("Error");
+          } else {
+            setStatus("Accepted");
+          }
+        });
+    }
   };
+
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
@@ -210,7 +241,7 @@ export default function ExamPage() {
           {new Array(ques.length).fill().map((text, index) => (
             <ListItem
               button
-              key={text}
+              key={index}
               className={classes.listItem}
               onClick={() => questionChange(index)}
             >
@@ -227,114 +258,165 @@ export default function ExamPage() {
         sx={{ flexGrow: 2, p: 5 }}
         className={classes.mainBox}
       >
-        {curQuestion.question.questionId.slice(0, 2) === "cp" ? (
-          <>
-            <div className={classes.problem}>
-              <CodingQuestion ques={curQuestion.question} />
-            </div>
-            <div className={classes.editor}>
-              <TextField
-                id="outlined-select-language"
-                select
-                // variant="outlined"
-                size="small"
-                // label="Select"
-                value={language.value}
-                onChange={handleLanguageChange}
-                // helperText="Please select your language"
-                className={classes.inputArea}
-                style={{ marginRight: "5%", marginLeft: "20px" }}
-              >
-                {languages.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                id="outlined-select-theme"
-                select
-                // label="Select"
-                value={editorTheme}
-                size="small"
-                onChange={handleThemeChange}
-                // helperText="Please select your theme"
-                className={classes.inputArea}
-              >
-                {editorThemes.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <Editor editorTheme={editorTheme} language={language.value} />
-              <h2
-                style={{
-                  marginLeft: "20px",
-                  fontSize: "25px",
-                  fontWeight: "400",
-                  padding: "5px",
-                }}
-              >
-                Output
-              </h2>
-              <TextareaAutosize
-                aria-label="empty textarea"
-                className={classes.testCases}
-                value={output}
-              />
-              <div className={classes.buttons}>
-                <Button
-                  variant="outlined"
-                  className={classes.runCode}
-                  style={{ margin: "10px", marginBottom: "5px" }}
-                >
-                  Run Code
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  variant="contained"
-                  className={classes.submitCode}
-                  style={{ margin: "10px", marginBottom: "5px" }}
-                >
-                  Submit
-                </Button>
+        {curQuestion &&
+          curQuestion.question &&
+          (curQuestion.question.questionId.slice(0, 2) === "cp" ? (
+            <>
+              <div className={classes.problem}>
+                <CodingQuestion ques={curQuestion.question} />
               </div>
-            </div>
-          </>
-        ) : (
-          <Card sx={{ minWidth: 275 }} elevation={0} style={{ marginBottom: "15px" }}>
-            <CardContent>
-              <Typography
-                sx={{ fontSize: 22 }}
-                color="text.secondary"
-                gutterBottom
-              >
-                {curQuestion.index+1}
-                {". " + curQuestion.question.question}
-              </Typography>
-              <br/>
-              <RadioGroup
-                column
-                aria-label="Choose Answer"
-                name="answer"
-                spacing="auto"
-                value={answer}
-                onChange={(event) =>{
-                  console.log(event.target.value);
-                  setAnswer(event.target.value )
-                }
-                }
-              >
-                <FormControlLabel value={curQuestion.question.option1} control={<Radio />} label={`A. ${curQuestion.question.option1}`} />
-                <FormControlLabel value={curQuestion.question.option2} control={<Radio />} label={`B. ${curQuestion.question.option2}`} />
-                <FormControlLabel value={curQuestion.question.option3} control={<Radio />} label={`C. ${curQuestion.question.option3}`} />
-                <FormControlLabel value={curQuestion.question.option4} control={<Radio />} label={`D. ${curQuestion.question.option4}`} />
-              </RadioGroup>
-              <br />
-            </CardContent>
-          </Card>
-        )}
+              <div className={classes.editor}>
+                <TextField
+                  id="outlined-select-language"
+                  select
+                  // variant="outlined"
+                  size="small"
+                  // label="Select"
+                  value={language.value}
+                  onChange={handleLanguageChange}
+                  // helperText="Please select your language"
+                  className={classes.inputArea}
+                  style={{ marginRight: "5%", marginLeft: "20px" }}
+                >
+                  {languages.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  id="outlined-select-theme"
+                  select
+                  // label="Select"
+                  value={editorTheme}
+                  size="small"
+                  onChange={handleThemeChange}
+                  // helperText="Please select your theme"
+                  className={classes.inputArea}
+                >
+                  {editorThemes.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <Editor editorTheme={editorTheme} language={language.value} />
+                <h2
+                  style={{
+                    marginLeft: "20px",
+                    fontSize: "25px",
+                    fontWeight: "400",
+                    padding: "5px",
+                  }}
+                >
+                  Output
+                </h2>
+                {(() => {
+                  if (status === "Accepted") {
+                    return (
+                      <div
+                        className={classes.status}
+                        style={{ color: "green" }}
+                      >
+                        Status: {status}
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className={classes.status} style={{ color: "red" }}>
+                        Status: {status}
+                      </div>
+                    );
+                  }
+                })()}
+
+                <TextareaAutosize
+                  aria-label="empty textarea"
+                  className={classes.testCases}
+                  value={output}
+                />
+                <div className={classes.buttons}>
+                  <Button
+                    variant="outlined"
+                    className={classes.runCode}
+                    onClick={() =>
+                      handleSubmit({
+                        input: curQuestion.question.sampleInput,
+                        output: curQuestion.question.sampleOutput,
+                      })
+                    }
+                    style={{ margin: "10px", marginBottom: "5px" }}
+                  >
+                    Run Code
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      handleSubmit({
+                        input: curQuestion.question.inputTestCases,
+                        output: curQuestion.question.outputTestCases,
+                      })
+                    }
+                    variant="contained"
+                    className={classes.submitCode}
+                    style={{ margin: "10px", marginBottom: "5px" }}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <Card
+              sx={{ minWidth: 275 }}
+              elevation={0}
+              style={{ marginBottom: "15px" }}
+            >
+              <CardContent>
+                <Typography
+                  sx={{ fontSize: 22 }}
+                  color="text.secondary"
+                  gutterBottom
+                >
+                  {curQuestion.index + 1}
+                  {". " + curQuestion.question.question}
+                </Typography>
+                <br />
+                <RadioGroup
+                  column
+                  aria-label="Choose Answer"
+                  name="answer"
+                  spacing="auto"
+                  value={answer}
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                    setAnswer(event.target.value);
+                  }}
+                >
+                  <FormControlLabel
+                    value={curQuestion.question.option1}
+                    control={<Radio />}
+                    label={`A. ${curQuestion.question.option1}`}
+                  />
+                  <FormControlLabel
+                    value={curQuestion.question.option2}
+                    control={<Radio />}
+                    label={`B. ${curQuestion.question.option2}`}
+                  />
+                  <FormControlLabel
+                    value={curQuestion.question.option3}
+                    control={<Radio />}
+                    label={`C. ${curQuestion.question.option3}`}
+                  />
+                  <FormControlLabel
+                    value={curQuestion.question.option4}
+                    control={<Radio />}
+                    label={`D. ${curQuestion.question.option4}`}
+                  />
+                </RadioGroup>
+                <br />
+              </CardContent>
+            </Card>
+          ))}
       </Box>
     </Box>
   );

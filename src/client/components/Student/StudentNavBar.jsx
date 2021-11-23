@@ -1,8 +1,7 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import Card from "@mui/material/Card";
 import CardList from "../Faculty/CardList";
-
 
 const useStyle = makeStyles((theme) => ({
   years: {
@@ -27,44 +26,20 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 const Navbar = () => {
-
   const classes = useStyle();
 
-  const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
-  const [openScheduleDialog, setOpenScheduleDialog] = useState(false);
-  
-  function handleQuestionButtonClick(){
-    setOpenQuestionDialog(true);
-  }
-  const handleAddQuestionClose = () => {
-    setOpenQuestionDialog(false);
-  };
-  function handleScheduleButtonClick(){
-    setOpenScheduleDialog(true);
-  }
-  const handleScheduleClose = () => {
-    setOpenScheduleDialog(false);
-  };
-
-  return(
-    <React.Fragment>
-     
-      
-    </React.Fragment>
-  )
-
-  
-}
+  return <React.Fragment></React.Fragment>;
+};
 function DashBoard() {
   const classes = useStyle();
 
   return (
     <React.Fragment>
       <Card className={classes.cardBody}>
-            <CardList />
-        </Card>
+        <CardList />
+      </Card>
     </React.Fragment>
   );
 }
 export default DashBoard;
-export {Navbar};
+export { Navbar };
