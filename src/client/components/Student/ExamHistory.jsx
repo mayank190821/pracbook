@@ -1,5 +1,5 @@
 import React from "react";
-import SectionMarksCard from "./StudentMarksCard";
+import StudentMarksCard from "./StudentMarksCard";
 import { makeStyles } from "@mui/styles";
 import image from "../../images/exam.png";
 import {
@@ -62,6 +62,8 @@ const History = () => {
   const classNames = useStyles();
   const dispatch = useDispatch();
   const exams = useSelector(getExams);
+  // let examsData = [];
+  const [examsData,setExamsData] = React.useState([]);
   const [data, setData] = React.useState([
     {
     //   name: "",
@@ -74,26 +76,32 @@ const History = () => {
     //   marks:0
     },
   ]);
-  const [value,setValue] = React.useState({});
+  const [value,setValue] = React.useState([]);
   React.useEffect(() => {
     fetchResultByStudentId("619407cc3adbf0d2b8a17882").then((res) => {
-      let examsData = [];
       let data = res.exams;
-      console.log(data);
+      // console.log(data);
       res.exams.map((exam, index) => {
+        console.log(exam);
         fetchExamById(exam.examId).then((examData) => {
-          console.log(examData); 
-          console.log(res.exams); 
-        setValue({
-            "examId" : examData.examId,
-            "marksObtained" : res.exams.marks,
-            "section" : exam.section,
-            "date" : exam.date,
+          // console.log(examData.date); 
+          // console.log(res.exams); 
+          // console.log(res.exams[0].result.marksObtained)
+          let values = examsData;
+          values.push({
+          "name": examData.name,
+          "subject" : examData.subject,
+            "marksObtained" : res.exams[index].result.marksObtained,
+            "section" : examData.section,
+            "date" : examData.date,
+            "time" : examData.time,
+            "duration" : examData.duration,
             "marks" : examData.marks,
         })        
+        setExamsData(values);
         // console.log(value);
          
-        //   setData(examsData);
+          // setData(examsData);
         //   console.log(data);
         });
       });
@@ -104,13 +112,15 @@ const History = () => {
   }, []);
 
 
-//   React.useEffect(() => {
-//       console.log(value);
-//   }, [value]);
-
+  React.useEffect(() => {
+      // console.log(value);
+    setExamsData(...examsData, value)
+    // console.log(examsData)
+  }, [value]);
+  console.log(examsData);
   return (
     <div className={classNames.cards}>
-      {!data || !data[0] || data.length === 0 ? (
+      {!examsData || !examsData[0] || examsData.length === 0 ? (
         <div className={classNames.empty}>
           <div className={classNames.imageContainer}>
             <img alt="No Class" src={image} className={classNames.image}></img>
@@ -118,12 +128,9 @@ const History = () => {
           </div>
         </div>
       ) : (
-        Array.from(data).map((dat, index) => {
-          {
-            /* return Array.from(dat).map((da, jndex) => { */
-          }
+        Array.from(examsData).map((dat, index) => {
           return (
-            <SectionMarksCard
+            <StudentMarksCard
               key={`${dat.section}-${index}`}
               props={{ data: dat, i: index }}
             />
