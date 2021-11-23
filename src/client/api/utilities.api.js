@@ -30,4 +30,15 @@ const fetchCpQuesDetails = async () => {
   });
   return await response.json();
 };
-export { fetchCardDetails, fetchQuesDetails , fetchCpQuesDetails};
+
+const fetchStudentDetails = async()=>{
+  let res = await fetch("/api/faculty/result/:facultyId",{
+  method:"GET",
+  headers: {
+    Accept:"application/json",
+    "Content-Type":"application/json"
+  }
+});
+return await res.json();
+}
+export { fetchCardDetails, fetchQuesDetails , fetchCpQuesDetails, fetchStudentDetails};
