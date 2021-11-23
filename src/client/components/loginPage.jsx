@@ -110,6 +110,10 @@ export default function ImgMediaCard({ location }) {
     remember: false,
   });
 
+  React.useEffect(() => {
+    dispatch(saveUser({}));
+  }, []);
+
   const handleChange = (props) => (event) => {
     setUser({ ...user, [props]: event.target.value });
   };
@@ -129,6 +133,8 @@ export default function ImgMediaCard({ location }) {
     signin(user, role).then((response) => {
       if (!response.error) {
         setExtras({ ...extras, redirect: true, error: "" });
+        response.user.role = role;
+        setUser(response.user);
         dispatch(saveUser(response.user));
         // if(extras.remember)
         // localStorage.setItem("PRID", encrypt(user.email, user.password));
@@ -140,7 +146,11 @@ export default function ImgMediaCard({ location }) {
   };
 
   if (extras.redirect) {
-    return <Redirect to="/faculty/dashboard" />;
+    if (user && user.role === "student") {
+      return <Redirect to="/student/dashboard" />;
+    } else if (user.role === "faculty") {
+      return <Redirect to="/faculty/dashboard" />;
+    }
   }
 
   return (

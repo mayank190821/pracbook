@@ -1,5 +1,6 @@
-const fetchCardDetails = async (id) => {
-  let response = await fetch(`/api/faculty/exams/${id}`, {
+const fetchCardDetails = async (id, role) => {
+  console.log(`/api/${role}/exams/${id}`);
+  let response = await fetch(`/api/${role}/exams/${id}`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -31,13 +32,13 @@ const fetchCpQuesDetails = async () => {
   return await response.json();
 };
 const fetchResultByStudentId = async (id) => {
-        console.log(id);
-  let response = await fetch(`/api/student/result/${id}`,{
-    method : "GET",
+  console.log(id);
+  let response = await fetch(`/api/student/result/${id}`, {
+    method: "GET",
     headers: {
-      Accept:"application/json",
-      "Content-Type":"application/json",
-    }
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
   });
   // console.log(response);
 

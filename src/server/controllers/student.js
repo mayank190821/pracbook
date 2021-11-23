@@ -70,8 +70,8 @@ const changeStudentPassword = async (req, res) => {
 };
 
 const studentById = async (req, res, next, id) => {
-  const student = await studentModel.findById(id);
   try {
+    const student = await studentModel.findById(id);
     if (!student) {
       return res.status(400).json({ message: "Student not found" });
     }
@@ -92,9 +92,7 @@ const getResultById = async (req, res) => {
       i < JSON.parse(JSON.stringify(req.student.exams)).length;
       i++
     ) {
-        return res
-          .status(200)
-          .json({ exams: req.student.exams});
+      return res.status(200).json({ exams: req.student.exams });
     }
   } catch (err) {
     return res.status(400).json({ error: err.message });

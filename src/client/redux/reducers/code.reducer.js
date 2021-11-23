@@ -18,6 +18,7 @@ export const ques = (state = initialQuestion, { question, type }) => {
 };
 
 export const exams = (state = examList, { exams, type }) => {
+  console.log("updated");
   if (type === "LOAD_EXAMS") {
     return exams;
   }
