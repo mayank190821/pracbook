@@ -20,9 +20,9 @@ export default function AppRouter() {
       <Route path="/exam/:examId" component={ExamPage} />
       <Route path="/login/:role" component={LoginPage} />
       <Route path="/signup/:role" component={SignupPage} />
-      <Route path="/faculty/dashboard" component={DashBoard} />
-      <Route path="/student/dashboard" component={StudentDashBoard} />
-      <Route exact path="/" component={AddQuestion} />
+      <Route path="/faculty/dashboard/:id" component={DashBoard} />
+      <Route path="/student/dashboard/:id" component={StudentDashBoard} />
+      <Route exact path="/" component={LandingPage} />
       {/* <Route exact path="/" component={SendingFile} />  */}
     </Switch>
   );
