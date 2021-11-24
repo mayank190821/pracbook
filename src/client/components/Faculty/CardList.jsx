@@ -62,6 +62,7 @@ const CardList = () => {
   const { id } = useParams();
 
   React.useEffect(() => {
+    console.log(id);
     if (id) {
       fetchCardDetails(id, user.role).then((res) => {
         dispatch(loadExams(res.exams));
@@ -106,7 +107,7 @@ const CardList = () => {
               return (
                 <Link
                   to={`/exam/instruction/${dat._id}`}
-                  style={{ textDecoration: "none" }}
+                  style={{ textDecoration: "none", height: "fit-content" }}
                 >
                   <SectionCard
                     key={`${dat.section}-${index}`}
