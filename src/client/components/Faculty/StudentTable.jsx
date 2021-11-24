@@ -10,7 +10,7 @@ import { Button } from '@mui/material';
 
 const StyleTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: "blue",
+        backgroundColor: "#1a76d2",
         color: "white",
         fontSize: "18px",
     }
@@ -30,34 +30,26 @@ const useStyle = makeStyles((Theme) => ({
     },
 }));
 
-function createData(stName, sec, courseBranch, year, rollNo, attendence, marks) {
+function createData(stName,rollNo, attendence, marks) {
     return {
         stName,
-        sec,
-        courseBranch,
-        year,
         rollNo,
         attendence,
         marks
     };
 }
 const rows = [
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
-    createData("Mayank Bhugra", 'K', 'B.tech/CS', '3rd', '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    createData("Mayank Bhugra", '191500447', 'P', '20'),
+    
 
 ];
 
@@ -79,25 +71,6 @@ const columns = [
         label: "Name",
         minWidth: 100,
         align: "center",
-    },
-    {
-        id: 'sec',
-        label: "Section",
-        minWidth: 70,
-        align: "center",
-    },
-    {
-        id: 'courseBranch',
-        label: "Course/Branch",
-        minWidth: 100,
-        align: 'center'
-    },
-    {
-        id: 'year',
-        label: "Year",
-        minWidth: 70,
-        align: 'center',
-        format: (value) => value.toLocaleString('en-US'),
     },
     {
         id: 'attendence',
@@ -157,7 +130,7 @@ export default function StudentTable() {
                                                     <TableCell key={column.id}
                                                         align={column.align} >
                                                         {indexC === 0 ? index + 1 + rowsPerPage * page : ""}
-                                                        {indexC === 6 ?
+                                                        {indexC === 3 ?
 
                                                             <Button variant="contained">
                                                             {column.format && typeof value === 'number' ? column.format(value) : value}
