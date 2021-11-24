@@ -4,7 +4,6 @@ import crypto from "crypto";
 const studentModel = new mongoose.Schema({
   name: String,
   email: String,
-  rollNumber:String,
   hashedPassword: String,
   salt: String,
   section: String,

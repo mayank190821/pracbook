@@ -114,33 +114,45 @@ const getExamsByFaculty = async (req, res) => {
   }
 };
 
+const fetchExamId = async(req, res, next) => {
+  let exam = await examsModel.findOne({
+    name: req.body.type,
+    subject: req.body.subject,
+    section: req.body.section
+  })
+  console.log(exam);
+  if(exam) req.examId = exam._id;
+  next();
+}
+
 const examResults = async (req, res) => {
   try {
     if (!req.faculty) {
       res.status(400).json({ message: "Faculty not found!" });
     }
-    let students = await studentModel.find({
-      section: req.body.section,
-      subjects: { $regex: `${req.body.subject}`, $options: "i" },
-    });
-
-    let results = [];
-    students.forEach((student) => {
-      student.exams.forEach((exam) => {
-        if (exam.examId === req.body.examId) {
-          results.push({
-            studentName: student.name,
-            section: student.section,
-            status: "P",
-            marks: exam.result.marksObtained,
-          });
-        }
+      let examId = req.examId;
+      let students = await studentModel.find({
+        section: req.body.section,
+        subjects: { $regex: `${req.body.subject}`, $options: "i" },
       });
-    });
-
-    res.status(200).json({
-      results: results,
-    });
+      let results = [];
+      console.log(examId.toString());
+      students.forEach((student) => {
+        student.exams.forEach((exam) => {
+          console.log(exam);
+          if (exam.examId === examId.toString()) {
+            results.push({
+              studentName: student.name,
+              section: student.section,
+              status: "P",
+              marks: exam.result.marksObtained,
+            });
+          }
+        });
+      });
+      res.status(200).json({
+        results: results,
+      });
   } catch (err) {
     res.status(400).json({
       error: err,
@@ -155,4 +167,5 @@ export {
   facultyById,
   getExamsByFaculty,
   changeFacultyPassword,
+  fetchExamId
 };

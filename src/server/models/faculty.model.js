@@ -10,7 +10,6 @@ const facultyModel = new mongoose.Schema({
     {
       sectionName: String,
       subjects: [String],
-      year:String
     },
   ],
 });
