@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import { makeStyles } from "@mui/styles";
 import Card from "@mui/material/Card";
 import Add from "@mui/icons-material/Add";
@@ -110,9 +108,8 @@ const Navbar = () => {
     </React.Fragment>
   );
 };
-function DashBoard() {
+function DashBoard(props) {
   const classes = useStyle();
-
   return (
     <React.Fragment>
       <Card className={classes.cardBody}>
