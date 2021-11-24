@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { makeStyles } from "@mui/styles";
 import StudentTable from './StudentTable';
-import {TextField} from "./@mui/styles";
+import TextField from "@mui/material/TextField";
+import { getUser } from "../../redux/selectors/code.selector";
+import { useSelector } from "react-redux";
 const useStyles = makeStyles((Theme) => ({
     table: {
         marginLeft: "20px",
@@ -9,24 +11,7 @@ const useStyles = makeStyles((Theme) => ({
     }
 }));
 
-const year = [
-    {
-        value:"1",
-        label:"1st"
-    },
-    {
-        value:"2",
-        label:"2nd"
-    },
-    {
-        value:"3",
-        label:"3rd"
-    },
-    {
-        value:"4",
-        label:"4th"
-    }
-]
+
 const sections = [
     {
         value:"K",
@@ -56,13 +41,31 @@ const examType=[
         label:"end-term"
     }
 ]
+const subjects = [
+    {
+        value:"DSA",
+        label:"DSA",
+    },
+    {
+        value:"Python",
+        label:"Python",
+    },
+    {
+        value:"cpp",
+        label:"cpp",
+    },
+]
 function StudentInfo() {
     const style = useStyles();
-    const [currency, setCurrency] = React.useState('EUR');
-
+    const [currency, setCurrency] = React.useState([]);
+    const [year,setYear] = React.useState([]);
     const handleChange = (event) => {
       setCurrency(event.target.value);
     };
+    const resultData = useSelector(getUser);
+    useEffect(()=>{
+        // resultData.sections
+    },[resultData])
     return (
         <>
             <div>
@@ -72,9 +75,9 @@ function StudentInfo() {
                         select
                         label="Section Year"
                         style={{
-                            "marginLeft":"2%",
-                            "marginRight":"2%"
+                            "margin":"1.5%",
                         }}
+                        size="small"
                         value={currency}
                         onChange={handleChange}
                         SelectProps={{
@@ -94,9 +97,9 @@ function StudentInfo() {
                         select
                         label="Section"
                         style={{
-                            "marginLeft":"2%",
-                            "marginRight":"2%"
+                            "margin":"1.5%",
                         }}
+                        size="small"
                         value={currency}
                         onChange={handleChange}
                         SelectProps={{
@@ -116,9 +119,9 @@ function StudentInfo() {
                         select
                         label="Exam"
                         style={{
-                            "marginLeft":"2%",
-                            "marginRight":"2%"
+                            "margin":"1.5%",
                         }}
+                        size="small"
                         value={currency}
                         onChange={handleChange}
                         SelectProps={{
@@ -127,6 +130,27 @@ function StudentInfo() {
                         helperText="Please select Exam type"
                     >
                         {examType.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </TextField>
+                    <TextField
+                        id="outlined-select-currency-native"
+                        select
+                        label="Exam"
+                        style={{
+                            "margin":"1.5%",
+                        }}
+                        size="small"
+                        value={currency}
+                        onChange={handleChange}
+                        SelectProps={{
+                            native: true,
+                        }}
+                        helperText="Please select Exam type"
+                    >
+                        {subjects.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>
