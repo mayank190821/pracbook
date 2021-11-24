@@ -32,13 +32,19 @@ const fetchCpQuesDetails = async () => {
   return await response.json();
 };
 
-const fetchStudentDetails = async()=>{
-  let res = await fetch("/api/faculty/result/:facultyId",{
-  method:"GET",
+const fetchStudentDetails = async(props)=>{
+  console.log(props.section, props.type);
+  let res = await fetch(`/api/faculty/result/61914f010d975acc5bace6a9`,{
+  method:"PUT",
   headers: {
     Accept:"application/json",
     "Content-Type":"application/json"
-  }
+  },
+  body: JSON.stringify({
+    subject: props.subject.toLowerCase(),
+    section: props.section,
+    type: "endterm"
+  })
 });
 return await res.json();
 }

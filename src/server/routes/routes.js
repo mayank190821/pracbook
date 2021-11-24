@@ -19,6 +19,7 @@ import {
   examResults,
   getExamsByFaculty,
   changeFacultyPassword,
+  fetchExamId,
 } from "../controllers/faculty.js";
 import {
   createStudent,
@@ -45,7 +46,7 @@ routes
   .route("/api/faculty/change-password/:facultyId") // req.body = {currentPassword, newPassword}, result = password changed.
   .put(changeFacultyPassword);
 routes.route("/api/faculty/exams/:facultyId").get(getExamsByFaculty); // empty request body, result = list of exams.
-routes.route("/api/faculty/result/:facultyId").get(examResults);
+routes.route("/api/faculty/result/:facultyId").put(fetchExamId, examResults);
 // req.body = {examId, section, subject}, result = [{"studentName": string, "section": string, "status": U/P/A, "marks": int }]
 
 //***************************************** Student API

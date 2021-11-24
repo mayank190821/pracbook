@@ -7,6 +7,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { Button } from '@mui/material';
+import { fetchStudentDetails } from '../../api/utilities.api';
 
 const StyleTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -30,7 +31,7 @@ const useStyle = makeStyles((Theme) => ({
     },
 }));
 
-function createData(stName,rollNo, attendence, marks) {
+function createData(stName, rollNo, attendence, marks) {
     return {
         stName,
         rollNo,
@@ -38,20 +39,7 @@ function createData(stName,rollNo, attendence, marks) {
         marks
     };
 }
-const rows = [
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    createData("Mayank Bhugra", '191500447', 'P', '20'),
-    
 
-];
 
 const columns = [
     {
@@ -87,11 +75,30 @@ const columns = [
     }
 ];
 
-export default function StudentTable() {
+export default function StudentTable({results}) {
     const style = useStyle();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-
+    // const rows = [
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
+    // ];
+    const [rows, setRows] = useState([]);
+    React.useEffect(() => {
+        let data = [];
+        results.forEach((student) => {
+            data.push(createData(student.studentName, "191500463(static)", student.status, student.marks));
+        })
+        setRows(data);
+    }, [results]);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -133,17 +140,17 @@ export default function StudentTable() {
                                                         {indexC === 3 ?
 
                                                             <Button variant="contained">
-                                                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                                {column.format && typeof value === 'number' ? column.format(value) : value}
 
                                                             </Button>
-                                                            :<>
-                                                            {
-                                                                column.format && typeof value === 'number' ? column.format(value) : value
-                                                            }
+                                                            : <>
+                                                                {
+                                                                    column.format && typeof value === 'number' ? column.format(value) : value
+                                                                }
                                                             </>
                                                         }
 
-                                                        
+
 
                                                     </TableCell>
                                                 );
