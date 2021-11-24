@@ -17,7 +17,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import FolderSpecialOutlinedIcon from "@mui/icons-material/FolderSpecialOutlined";
 import Dashboard from "./StudentNavBar";
 import { Navbar } from "./StudentNavBar";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -25,6 +24,8 @@ import QuestionCard from "../Faculty/QuestionCard";
 import StudentInfo from "../Faculty/StudentInfo";
 import ExamHistory from "./ExamHistory"
 import { Redirect } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { saveUser } from "./../../redux/actions/code.action";
 
 const drawerWidth = 240;
 
@@ -93,7 +94,8 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function Sidebar() {
+export default function Sidebar({ location }) {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [selectedTab, setSelectedTab] = React.useState("dashboard");
@@ -112,6 +114,12 @@ export default function Sidebar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    console.log(location);
+    dispatch(saveUser(location.state.user));
+  }, [location]);
+
   if (redirect) {
     return (
       <Redirect
@@ -157,12 +165,8 @@ export default function Sidebar() {
             <ListItemIcon>{<HomeOutlinedIcon />}</ListItemIcon>
             <ListItemText primary="DashBoard" />
           </ListItem>
-          <ListItem button onClick={handleChange("profile")}>
-            <ListItemIcon>{<PersonOutlineOutlinedIcon />}</ListItemIcon>
-            <ListItemText primary="Profile" />
-          </ListItem>
           <ListItem button onClick={handleChange("history")}>
-            <ListItemIcon>{<FolderSpecialOutlinedIcon />}</ListItemIcon>
+            <ListItemIcon>{<PersonOutlineOutlinedIcon />}</ListItemIcon>
             <ListItemText primary="Exam History" />
           </ListItem>
           <ListItem button onClick={handleLogOut}>
@@ -177,8 +181,8 @@ export default function Sidebar() {
         {(() => {
           if (selectedTab === "dashboard") {
             return <Dashboard />;
-          } else if (selectedTab === "profile") {
-            return <StudentInfo />;
+          } else if (selectedTab === "history") {
+            return <ExamHistory />;
           } else {
             return <ExamHistory />;
           }
