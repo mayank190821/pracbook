@@ -3,10 +3,10 @@ import SectionCard from "./SectionCard";
 import { makeStyles } from "@mui/styles";
 import image from "../../images/exam.png";
 import { fetchCardDetails } from "../../api/utilities.api";
-import {Link} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {loadExams} from "../../redux/actions/code.action";
-import { getExams } from "../../redux/selectors/code.selector";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { loadExams } from "../../redux/actions/code.action";
+import { getExams, getUser } from "../../redux/selectors/code.selector";
 const useStyles = makeStyles((theme) => ({
   empty: {
     width: "100%",
@@ -58,25 +58,26 @@ const CardList = () => {
   const classNames = useStyles();
   const dispatch = useDispatch();
   const exams = useSelector(getExams);
-  const [data, setData] = React.useState([{
-    name: "",
-    date: "",
-    duration: 0,
-    subject: "",
-    marks: 0,
-    section: "",
-    time: "",
-  }]);
-  React.useEffect(()=>{
-    fetchCardDetails("61914f010d975acc5bace6a9").then((res) => {
-      setData(res.exams);
-      dispatch(loadExams(res.exams));
-    });
-  },[]);
-
-  React.useEffect(()=>{
-  },[exams]);
-
+  const user = useSelector(getUser);
+  const [data, setData] = React.useState([
+    {
+      name: "",
+      date: "",
+      duration: 0,
+      subject: "",
+      marks: 0,
+      section: "",
+      time: "",
+    },
+  ]);
+  React.useEffect(() => {
+    if (user._id) {
+      fetchCardDetails(user._id, user.role).then((res) => {
+        setData(res.exams);
+        dispatch(loadExams(res.exams));
+      });
+    }
+  }, [user]);
 
   // data.sort((a, b) => {
   //   a = a.section.toLowerCase();
@@ -98,17 +99,38 @@ const CardList = () => {
           </div>
         </div>
       ) : (
-        Array.from(exams).map((dat, index) => {
-          return Array.from(dat).map((da, jndex) => {
-          return (
-            <Link to={`/exam/instruction/${da._id}`} style={{textDecoration: "none"}}>
-            <SectionCard
-              key={`${da.section}-${index}`}
-              props={{ data: da, i: index }}
-            /></Link>
-          );
-          });
-        })
+        <>
+          {user.role === "faculty" &&
+            Array.from(exams).map((dat, index) => {
+              return Array.from(dat).map((da, jndex) => {
+                return (
+                  <Link
+                    to={`/exam/instruction/${da._id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <SectionCard
+                      key={`${da.section}-${index}`}
+                      props={{ data: da, i: index }}
+                    />
+                  </Link>
+                );
+              });
+            })}
+          {user.role === "student" &&
+            Array.from(exams).map((dat, index) => {
+              return (
+                <Link
+                  to={`/exam/instruction/${dat._id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <SectionCard
+                    key={`${dat.section}-${index}`}
+                    props={{ data: dat, i: index }}
+                  />
+                </Link>
+              );
+            })}
+        </>
       )}
     </div>
   );

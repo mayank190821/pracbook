@@ -1,5 +1,6 @@
-const fetchCardDetails = async (id) => {
-  let response = await fetch(`/api/faculty/exams/${id}`, {
+const fetchCardDetails = async (id, role) => {
+  console.log(`/api/${role}/exams/${id}`);
+  let response = await fetch(`/api/${role}/exams/${id}`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -41,4 +42,36 @@ const fetchStudentDetails = async()=>{
 });
 return await res.json();
 }
-export { fetchCardDetails, fetchQuesDetails , fetchCpQuesDetails, fetchStudentDetails};
+
+const fetchResultByStudentId = async (id) => {
+  console.log(id);
+  let response = await fetch(`/api/student/result/${id}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  // console.log(response);
+
+  return await response.json();
+};
+const fetchExamById = async (id) => {
+  let response = await fetch(`/api/exam`, {
+    method: "GET",
+    headers: {
+      id: id,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+};
+export {
+  fetchCardDetails,
+  fetchQuesDetails,
+  fetchCpQuesDetails,
+  fetchResultByStudentId,
+  fetchExamById,
+  fetchStudentDetails
+};

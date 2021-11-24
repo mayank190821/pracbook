@@ -18,9 +18,10 @@ import { Link, Redirect, useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import image from "./../images/pracbook.png";
-import {signin} from "../api/auth.api";
+import { signin } from "../api/auth.api";
+import { useDispatch } from "react-redux";
 import Snackbars from "./ErrorMessages";
-
+import { saveUser } from "../redux/actions/code.action";
 const useStyles = makeStyles((theme) => ({
   test: {
     color: "green",
@@ -75,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: "underline",
     },
     [theme.breakpoints.down("sm")]: {
-      fontSize : "14px !important"
+      fontSize: "14px !important",
     },
   },
   logo: {
@@ -91,13 +92,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ImgMediaCard({location}) {
+export default function ImgMediaCard({ location }) {
   const classNames = useStyles();
-  const {role} = useParams();
-  
+  const { role } = useParams();
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
 
-    const [user, setUser] = useState({
+  const [user, setUser] = useState({
     email: "",
     password: "",
   });
@@ -107,6 +109,10 @@ export default function ImgMediaCard({location}) {
     redirect: false,
     remember: false,
   });
+
+  React.useEffect(() => {
+    dispatch(saveUser({}));
+  }, []);
 
   const handleChange = (props) => (event) => {
     setUser({ ...user, [props]: event.target.value });
@@ -122,24 +128,29 @@ export default function ImgMediaCard({location}) {
     event.preventDefault();
   };
 
-  
   const handleSubmit = (event) => {
     event.preventDefault();
     signin(user, role).then((response) => {
-      if(!response.error){
+      if (!response.error) {
         setExtras({ ...extras, redirect: true, error: "" });
+        response.user.role = role;
+        setUser(response.user);
+        dispatch(saveUser(response.user));
         // if(extras.remember)
-          // localStorage.setItem("PRID", encrypt(user.email, user.password));
-      }
-      else{
+        // localStorage.setItem("PRID", encrypt(user.email, user.password));
+      } else {
         setExtras({ ...extras, error: response.error });
         setOpen(true);
       }
-    })
+    });
   };
 
   if (extras.redirect) {
-    return <Redirect to="/faculty/dashboard" />;
+    if (user && user.role === "student") {
+      return <Redirect to="/student/dashboard" />;
+    } else if (user.role === "faculty") {
+      return <Redirect to="/faculty/dashboard" />;
+    }
   }
 
   return (
@@ -230,11 +241,18 @@ export default function ImgMediaCard({location}) {
         </div>
         <Box mt={4}>
           <Typography variant="body2" color="textSecondary" align="center">
-            {"Copyright "} &copy; <img alt="Pracbook" className={classNames.logo} src={image}/> {"2021."}
+            {"Copyright "} &copy;{" "}
+            <img alt="Pracbook" className={classNames.logo} src={image} />{" "}
+            {"2021."}
           </Typography>
         </Box>
       </Container>
-      <Snackbars open = {open} setOpen={setOpen} status = "error" message = {extras.error}/>
+      <Snackbars
+        open={open}
+        setOpen={setOpen}
+        status="error"
+        message={extras.error}
+      />
     </div>
   );
 }

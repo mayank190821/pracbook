@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -33,68 +33,93 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 const Navbar = () => {
-
   const classes = useStyle();
 
   const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
   const [openScheduleDialog, setOpenScheduleDialog] = useState(false);
-  
-  function handleQuestionButtonClick(){
+
+  function handleQuestionButtonClick() {
     setOpenQuestionDialog(true);
   }
   const handleAddQuestionClose = () => {
     setOpenQuestionDialog(false);
   };
-  function handleScheduleButtonClick(){
+  function handleScheduleButtonClick() {
     setOpenScheduleDialog(true);
   }
   const handleScheduleClose = () => {
     setOpenScheduleDialog(false);
   };
 
-  return(
+  return (
     <React.Fragment>
       <div>
-        {openQuestionDialog && <AddQuestion handleClose={handleAddQuestionClose}/>}
-        {openScheduleDialog && <ScheduleExam handleClose={handleScheduleClose}/>}      
+        {openQuestionDialog && (
+          <AddQuestion handleClose={handleAddQuestionClose} />
+        )}
+        {openScheduleDialog && (
+          <ScheduleExam handleClose={handleScheduleClose} />
+        )}
       </div>
       <div className={classes.header}>
-            <Stack className={classes.years} spacing={2} direction="row">
-              <Button variant="outlined" style={{color: "white", borderColor: "white"}}>1st Year</Button>
-              <Button variant="outlined" style={{color: "white", borderColor: "white"}}>2nd Year</Button>
-              <Button variant="outlined" style={{color: "white", borderColor: "white"}}>3rd Year</Button>
-              <Button variant="outlined" style={{color: "white", borderColor: "white"}}>4th Year</Button>
-            </Stack>
-            <Stack className={classes.profileSection} spacing={2} direction="row">
-              <Button variant="standard"
-              className={classes.button}
-            onClick={handleQuestionButtonClick}>
-                <Add />
-                &nbsp; New Question
-              </Button>
-              <Button variant="standard"
-              className={classes.button}
-              onClick={handleScheduleButtonClick}>
-                <Add />
-                &nbsp; Schedule Exam
-              </Button>
-            </Stack>
-          </div>    
+        <Stack className={classes.years} spacing={2} direction="row">
+          <Button
+            variant="outlined"
+            style={{ color: "white", borderColor: "white" }}
+          >
+            1st Year
+          </Button>
+          <Button
+            variant="outlined"
+            style={{ color: "white", borderColor: "white" }}
+          >
+            2nd Year
+          </Button>
+          <Button
+            variant="outlined"
+            style={{ color: "white", borderColor: "white" }}
+          >
+            3rd Year
+          </Button>
+          <Button
+            variant="outlined"
+            style={{ color: "white", borderColor: "white" }}
+          >
+            4th Year
+          </Button>
+        </Stack>
+        <Stack className={classes.profileSection} spacing={2} direction="row">
+          <Button
+            variant="standard"
+            className={classes.button}
+            onClick={handleQuestionButtonClick}
+          >
+            <Add />
+            &nbsp; New Question
+          </Button>
+          <Button
+            variant="standard"
+            className={classes.button}
+            onClick={handleScheduleButtonClick}
+          >
+            <Add />
+            &nbsp; Schedule Exam
+          </Button>
+        </Stack>
+      </div>
     </React.Fragment>
-  )
-
-  
-}
+  );
+};
 function DashBoard() {
   const classes = useStyle();
 
   return (
     <React.Fragment>
       <Card className={classes.cardBody}>
-            <CardList />
-        </Card>
+        <CardList />
+      </Card>
     </React.Fragment>
   );
 }
 export default DashBoard;
-export {Navbar};
+export { Navbar };
