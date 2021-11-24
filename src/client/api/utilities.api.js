@@ -31,6 +31,18 @@ const fetchCpQuesDetails = async () => {
   });
   return await response.json();
 };
+
+const fetchStudentDetails = async()=>{
+  let res = await fetch("/api/faculty/result/:facultyId",{
+  method:"GET",
+  headers: {
+    Accept:"application/json",
+    "Content-Type":"application/json"
+  }
+});
+return await res.json();
+}
+
 const fetchResultByStudentId = async (id) => {
   console.log(id);
   let response = await fetch(`/api/student/result/${id}`, {
@@ -61,4 +73,5 @@ export {
   fetchCpQuesDetails,
   fetchResultByStudentId,
   fetchExamById,
+  fetchStudentDetails
 };

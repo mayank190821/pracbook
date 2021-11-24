@@ -65,9 +65,11 @@ const CardList = () => {
     console.log(id);
     if (id) {
       fetchCardDetails(id, user.role).then((res) => {
+        console.log(res);
         dispatch(loadExams(res.exams));
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, id]);
 
   // data.sort((a, b) => {
