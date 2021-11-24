@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const codingProblem = new mongoose.Schema({
-  topicName:String,
   name: String,
   questionId: {
     type: String,
@@ -15,7 +14,7 @@ const codingProblem = new mongoose.Schema({
   outputFormat: String,
   sampleInput: [String],
   sampleOutput: [String],
-  explanation: [String],
+  explanation: String,
   inputTestCases: [String],
   outputTestCases: [String],
 });

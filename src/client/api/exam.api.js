@@ -53,6 +53,18 @@ const addVivaQuestion = async (data) => {
   return await response.json();
 }
 
+const addCodingQuestion = async (data) => {
+  let response = await fetch("/api/questions/coding/add", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+}
+
 const compile = async (data) => {
   var options = {
     method: "POST",
@@ -76,4 +88,4 @@ const compile = async (data) => {
     });
 };
 
-export { fetchExam, fetchExamQuestion, scheduleExam, addVivaQuestion, compile };
+export { fetchExam, fetchExamQuestion, scheduleExam, addVivaQuestion, addCodingQuestion, compile };

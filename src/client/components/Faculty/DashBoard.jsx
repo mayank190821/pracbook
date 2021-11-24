@@ -116,6 +116,7 @@ export default function Sidebar({ location }) {
   };
 
   useEffect(() => {
+    console.log(location);
     dispatch(saveUser(location.state.user));
   }, [location]);
 
