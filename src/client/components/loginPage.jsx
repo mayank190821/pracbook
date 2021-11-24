@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ImgMediaCard({ location }) {
+export default function ImgMediaCard(props) {
   const classNames = useStyles();
   const { role } = useParams();
   const dispatch = useDispatch();
@@ -132,10 +132,10 @@ export default function ImgMediaCard({ location }) {
     event.preventDefault();
     signin(user, role).then((response) => {
       if (!response.error) {
-        setExtras({ ...extras, redirect: true, error: "" });
         response.user.role = role;
         setUser(response.user);
         dispatch(saveUser(response.user));
+        setExtras({ ...extras, redirect: true, error: "" });
         // if(extras.remember)
         // localStorage.setItem("PRID", encrypt(user.email, user.password));
       } else {
@@ -146,10 +146,24 @@ export default function ImgMediaCard({ location }) {
   };
 
   if (extras.redirect) {
-    if (user && user.role === "student") {
-      return <Redirect to="/student/dashboard" />;
-    } else if (user.role === "faculty") {
-      return <Redirect to="/faculty/dashboard" />;
+    if (user && user._id && role && role === "student") {
+      return (
+        <Redirect
+          to={{
+            pathname: `/student/dashboard/${user._id}`,
+            state: { from: props.location, user: user },
+          }}
+        />
+      );
+    } else if (user && user._id && role && role === "faculty") {
+      return (
+        <Redirect
+          to={{
+            pathname: `/faculty/dashboard/${user._id}`,
+            state: { from: props.location, user: user },
+          }}
+        />
+      );
     }
   }
 

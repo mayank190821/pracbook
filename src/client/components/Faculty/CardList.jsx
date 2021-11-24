@@ -3,7 +3,7 @@ import SectionCard from "./SectionCard";
 import { makeStyles } from "@mui/styles";
 import image from "../../images/exam.png";
 import { fetchCardDetails } from "../../api/utilities.api";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
 import { getExams, getUser } from "../../redux/selectors/code.selector";
@@ -59,25 +59,15 @@ const CardList = () => {
   const dispatch = useDispatch();
   const exams = useSelector(getExams);
   const user = useSelector(getUser);
-  const [data, setData] = React.useState([
-    {
-      name: "",
-      date: "",
-      duration: 0,
-      subject: "",
-      marks: 0,
-      section: "",
-      time: "",
-    },
-  ]);
+  const { id } = useParams();
+
   React.useEffect(() => {
-    if (user._id) {
-      fetchCardDetails(user._id, user.role).then((res) => {
-        setData(res.exams);
+    if (id) {
+      fetchCardDetails(id, user.role).then((res) => {
         dispatch(loadExams(res.exams));
       });
     }
-  }, [user]);
+  }, [user, id]);
 
   // data.sort((a, b) => {
   //   a = a.section.toLowerCase();
@@ -104,15 +94,10 @@ const CardList = () => {
             Array.from(exams).map((dat, index) => {
               return Array.from(dat).map((da, jndex) => {
                 return (
-                  <Link
-                    to={`/exam/instruction/${da._id}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <SectionCard
-                      key={`${da.section}-${index}`}
-                      props={{ data: da, i: index }}
-                    />
-                  </Link>
+                  <SectionCard
+                    key={`${da.section}-${index}`}
+                    props={{ data: da, i: index }}
+                  />
                 );
               });
             })}
