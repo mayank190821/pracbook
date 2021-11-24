@@ -62,8 +62,10 @@ const CardList = () => {
   const { id } = useParams();
 
   React.useEffect(() => {
+    console.log(id);
     if (id) {
       fetchCardDetails(id, user.role).then((res) => {
+        console.log(res);
         dispatch(loadExams(res.exams));
       });
     }
