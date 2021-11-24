@@ -21,7 +21,8 @@ import Dashboard from "./StudentNavBar";
 import { Navbar } from "./StudentNavBar";
 import LogoutIcon from "@mui/icons-material/Logout";
 import QuestionCard from "../Faculty/QuestionCard";
-import ExamHistory from "../Student/ExamHistory";
+import StudentInfo from "../Faculty/StudentInfo";
+import ExamHistory from "./ExamHistory"
 import { Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { saveUser } from "./../../redux/actions/code.action";
@@ -183,7 +184,7 @@ export default function Sidebar({ location }) {
           } else if (selectedTab === "history") {
             return <ExamHistory />;
           } else {
-            return <QuestionCard />;
+            return <ExamHistory />;
           }
         })()}
       </Box>
