@@ -106,7 +106,10 @@ const CardList = () => {
               return (
                 <Link
                   to={`/exam/instruction/${dat._id}`}
-                  style={{ textDecoration: "none" }}
+                  style={{
+                    textDecoration: "none",
+                    height: "fit-content"
+                  }}
                 >
                   <SectionCard
                     key={`${dat.section}-${index}`}
