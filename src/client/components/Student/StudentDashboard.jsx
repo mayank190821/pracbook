@@ -23,6 +23,7 @@ import { Navbar } from "./StudentNavBar";
 import LogoutIcon from "@mui/icons-material/Logout";
 import QuestionCard from "../Faculty/QuestionCard";
 import StudentInfo from "../Faculty/StudentInfo";
+import ExamHistory from "./ExamHistory"
 import { Redirect } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -160,9 +161,9 @@ export default function Sidebar() {
             <ListItemIcon>{<PersonOutlineOutlinedIcon />}</ListItemIcon>
             <ListItemText primary="Profile" />
           </ListItem>
-          <ListItem button onClick={handleChange("bank")}>
+          <ListItem button onClick={handleChange("history")}>
             <ListItemIcon>{<FolderSpecialOutlinedIcon />}</ListItemIcon>
-            <ListItemText primary="Question Bank" />
+            <ListItemText primary="Exam History" />
           </ListItem>
           <ListItem button onClick={handleLogOut}>
             <ListItemIcon>{<LogoutIcon />}</ListItemIcon>
@@ -179,7 +180,7 @@ export default function Sidebar() {
           } else if (selectedTab === "profile") {
             return <StudentInfo />;
           } else {
-            return <QuestionCard />;
+            return <ExamHistory />;
           }
         })()}
       </Box>
