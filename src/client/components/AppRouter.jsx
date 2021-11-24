@@ -11,6 +11,7 @@ import SendingFile from "./Faculty/sendingFile";
 import QuestionCard from "./Faculty/QuestionCard";
 import StudentDashBoard from "./Student/StudentDashboard";
 import ExamHistory from "../components/Student/ExamHistory";
+import { Dashboard } from "@mui/icons-material";
 
 export default function AppRouter() {
   return (
@@ -21,7 +22,7 @@ export default function AppRouter() {
       <Route path="/signup/:role" component={SignupPage} />
       <Route path="/faculty/dashboard" component={DashBoard} />
       <Route path="/student/dashboard" component={StudentDashBoard} />
-      <Route exact path="/" component={LandingPage} />
+      <Route exact path="/" component={AddQuestion} />
       {/* <Route exact path="/" component={SendingFile} />  */}
     </Switch>
   );

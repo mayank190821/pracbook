@@ -16,7 +16,8 @@ import {
   StepLabel,
 } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
-import { addVivaQuestion } from "../../api/exam.api";
+import { addVivaQuestion, addCodingQuestion } from "../../api/exam.api";
+import { EventNote } from "@mui/icons-material";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -51,6 +52,7 @@ const steps = [
   "Problem",
   "Format",
   "Sample Cases",
+  "Test Cases"
 ];
 
 const InputBox = styled("div")(({ theme }) => ({
@@ -77,9 +79,9 @@ const useStyles = makeStyles((theme) => ({
     outline: "none",
     resize: "none",
     overflowWrap: "break-word !important",
-    height: `${theme.spacing(10)} !important`,
+    height: `${theme.spacing(7)} !important`,
   },
-  topicname:{
+  topicname: {
     width: "100%",
     margin: theme.spacing(0, 2),
     outline: "none",
@@ -105,9 +107,14 @@ export default function AddQuestion({ handleClose }) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-
+    
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
+    if(activeStep === steps.length -1){
+      
+      console.log(codeProbData);
+      addCodingQuestion(codeProbData);
+    }
   };
 
   const handleBack = () => {
@@ -123,7 +130,7 @@ export default function AddQuestion({ handleClose }) {
   const classNames = useStyles();
   const [QuestionType, setQuestionType] = useState("Objective");
   const [difficulty, setDifficultyLevel] = useState("easy");
-  
+
 
   function handleChange(event) {
     setQuestionType(event.target.value);
@@ -131,6 +138,8 @@ export default function AddQuestion({ handleClose }) {
 
   function handleDifficultyChange(event) {
     setDifficultyLevel(event.target.value);
+    setCodeProbData({ ...codeProbData, difficulty: event.target.value })
+    console.log(codeProbData)
   }
 
   const [vivaData, setVivaData] = useState({
@@ -142,6 +151,26 @@ export default function AddQuestion({ handleClose }) {
     option4: "",
     answer: "",
   })
+
+  const [codeProbData, setCodeProbData] = useState({
+    type: vivaData.topicName,
+    difficulty: "",
+    name: "",
+    problemStatement: "",
+    constraints: "",
+    inputFormat: "",
+    outputFormat: "",
+    sampleInput: [],
+    sampleOutput: [],
+    explanation: "",
+    inputTestCases: [],
+    outputTestCases: [],
+  })
+
+  const [sampInput, setSampInput] = useState("");
+  const [sampOutput, setSampOutput] = useState("");
+  const [sampInputTestCase, setSampInputTestCases] = useState("");
+  const [sampOutputTestCase, setSampOutputTestcase] = useState(""); 
 
   return (
     <div>
@@ -170,18 +199,18 @@ export default function AddQuestion({ handleClose }) {
           ))}
         </TextField>
         <InputBox>
-              <Typography
-                style={{
-                  width: "100px",
-                }}
-              >
-                Topic Name :
-              </Typography>
-              <textarea className={classNames.topicname} onChange={(e) => setVivaData({ ...setVivaData, topicName: e.target.value })} />
-            </InputBox>
+          <Typography
+            style={{
+              width: "100px",
+            }}
+          >
+            Topic Name :
+          </Typography>
+          <textarea className={classNames.topicname} onChange={(e) => {setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({...codeProbData, type: e.target.value})}} />
+        </InputBox>
         {QuestionType === "Objective" ? (
           <Box component="form" spacing={3} noValidate autoComplete="off">
-            
+
             <InputBox>
               <Typography
                 style={{
@@ -250,7 +279,7 @@ export default function AddQuestion({ handleClose }) {
             </InputBox>
             <DialogActions>
               <Button onClick={handleClose}>Disagree</Button>
-              <Button onClick={() => {addVivaQuestion(vivaData); handleClose();}}>Agree</Button>
+              <Button onClick={() => { addVivaQuestion(vivaData); handleClose(); }}>Agree</Button>
             </DialogActions>
           </Box>
         ) : (
@@ -278,7 +307,7 @@ export default function AddQuestion({ handleClose }) {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                  <Typography sx={{ mt: 2, mb: 1 }}>
+                <Typography sx={{ mt: 2, mb: 1 }}>
                   {(() => {
                     if (activeStep === 0) {
                       return (
@@ -301,8 +330,8 @@ export default function AddQuestion({ handleClose }) {
                               </MenuItem>
                             ))}
                           </TextField>
-                          <InputBox 
-                            sx={{padding:"10px !important"}}
+                          <InputBox
+                            sx={{ padding: "10px !important" }}
                           >
                             <Typography
                               style={{
@@ -312,7 +341,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Name:
                             </Typography>
-                            <textarea className={classNames.textArea} />
+                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, name: e.target.value })} />
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -323,7 +352,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Question:
                             </Typography>
-                            <textarea className={classNames.textArea} />
+                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, problemStatement: e.target.value })} />
                           </InputBox>
                         </React.Fragment>
                       );
@@ -339,7 +368,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Constraints:
                             </Typography>
-                            <textarea className={classNames.textArea} />
+                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, constraints: e.target.value })} />
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -350,7 +379,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Input Format:
                             </Typography>
-                            <textarea className={classNames.textArea} />
+                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, inputFormat: e.target.value })} />
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -361,12 +390,80 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Output Format:
                             </Typography>
-                            <textarea className={classNames.textArea} />
+                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, outputFormat: e.target.value })} />
                           </InputBox>
                         </React.Fragment>
                       );
-                    } else {
-                      return <div>catch all</div>;
+                    } else if(activeStep == 2) {
+                      return (
+                        <>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Sample Input:
+                            </Typography>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value = {sampInput} />
+                            <Button variant="contained" color="success" onClick={() => {setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] });setSampInput("")}}> + </Button>
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Sample Output:
+                            </Typography>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value = {sampOutput}/>
+                            <Button variant="contained" color="success" onClick={() => {setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] });setSampOutput("")}}> + </Button>
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Explanation:
+                            </Typography>
+                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, explanation: e.target.value })} />
+                          </InputBox>
+                        </>
+                      );
+                    } 
+                    else {
+                      return (
+                        <>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Input Test Cases:
+                            </Typography>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value = {sampInputTestCase}/>
+                            <Button variant="contained" color="success" onClick={(e) => {setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] });setSampInputTestCases("")}}> + </Button>
+                          </InputBox>
+                          <InputBox>
+                            <Typography
+                              style={{
+                                // lineHeight: "48px",
+                                width: "100px",
+                              }}
+                            >
+                              Output Test Cases:
+                            </Typography>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value = {sampOutputTestCase}/>
+                            <Button variant="contained" color="success" onClick={(e) => {setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] });setSampOutputTestcase("")}}> + </Button>
+                          </InputBox>
+                        </>
+                      );
                     }
                   })()}
                 </Typography>
@@ -379,7 +476,7 @@ export default function AddQuestion({ handleClose }) {
                   >
                     Back
                   </Button>
-                  <Button onClick={handleNext}>
+                  <Button onClick={handleNext} >
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </Box>
