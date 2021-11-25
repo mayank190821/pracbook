@@ -107,13 +107,25 @@ export default function AddQuestion({ handleClose }) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-    
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
-    if(activeStep === steps.length -1){
-      
-      console.log(codeProbData);
+    if (activeStep === steps.length - 1) {
       addCodingQuestion(codeProbData);
+      setCodeProbData({
+        type: vivaData.topicName,
+        difficulty: "easy",
+        name: "",
+        problemStatement: "",
+        constraints: "",
+        inputFormat: "",
+        outputFormat: "",
+        sampleInput: [],
+        sampleOutput: [],
+        explanation: "",
+        inputTestCases: [],
+        outputTestCases: [],
+      })
     }
   };
 
@@ -154,7 +166,7 @@ export default function AddQuestion({ handleClose }) {
 
   const [codeProbData, setCodeProbData] = useState({
     type: vivaData.topicName,
-    difficulty: "",
+    difficulty: "easy",
     name: "",
     problemStatement: "",
     constraints: "",
@@ -170,7 +182,7 @@ export default function AddQuestion({ handleClose }) {
   const [sampInput, setSampInput] = useState("");
   const [sampOutput, setSampOutput] = useState("");
   const [sampInputTestCase, setSampInputTestCases] = useState("");
-  const [sampOutputTestCase, setSampOutputTestcase] = useState(""); 
+  const [sampOutputTestCase, setSampOutputTestcase] = useState("");
 
   return (
     <div>
@@ -206,7 +218,7 @@ export default function AddQuestion({ handleClose }) {
           >
             Topic Name :
           </Typography>
-          <textarea className={classNames.topicname} onChange={(e) => {setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({...codeProbData, type: e.target.value})}} />
+          <textarea className={classNames.topicname} onChange={(e) => { setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({ ...codeProbData, type: e.target.value }) }} />
         </InputBox>
         {QuestionType === "Objective" ? (
           <Box component="form" spacing={3} noValidate autoComplete="off">
@@ -394,7 +406,7 @@ export default function AddQuestion({ handleClose }) {
                           </InputBox>
                         </React.Fragment>
                       );
-                    } else if(activeStep == 2) {
+                    } else if (activeStep == 2) {
                       return (
                         <>
                           <InputBox>
@@ -406,8 +418,8 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Sample Input:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value = {sampInput} />
-                            <Button variant="contained" color="success" onClick={() => {setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] });setSampInput("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value={sampInput} />
+                            <Button variant="contained" color="success" onClick={() => { setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] }); setSampInput("") }}> + </Button>
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -418,8 +430,8 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Sample Output:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value = {sampOutput}/>
-                            <Button variant="contained" color="success" onClick={() => {setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] });setSampOutput("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value={sampOutput} />
+                            <Button variant="contained" color="success" onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button>
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -434,7 +446,7 @@ export default function AddQuestion({ handleClose }) {
                           </InputBox>
                         </>
                       );
-                    } 
+                    }
                     else {
                       return (
                         <>
@@ -447,8 +459,8 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Input Test Cases:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value = {sampInputTestCase}/>
-                            <Button variant="contained" color="success" onClick={(e) => {setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] });setSampInputTestCases("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value={sampInputTestCase} />
+                            <Button variant="contained" color="success" onClick={(e) => { setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] }); setSampInputTestCases("") }}> + </Button>
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -459,8 +471,8 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Output Test Cases:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value = {sampOutputTestCase}/>
-                            <Button variant="contained" color="success" onClick={(e) => {setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] });setSampOutputTestcase("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value={sampOutputTestCase} />
+                            <Button variant="contained" color="success" onClick={(e) => { setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] }); setSampOutputTestcase("") }}> + </Button>
                           </InputBox>
                         </>
                       );
