@@ -7,6 +7,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
+import { getUser, getExams} from "../../redux/selectors/code.selector";
+import {useSelector } from "react-redux";
+import examsModel from "../../../server/models/exams.model";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -16,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "250px",
     margin: "25px",
     position: "relative",
-    cursor: "pointer",
+    // cursor: "pointer",
   },
   text:{
     marginTop:"5px !important",
@@ -26,22 +29,27 @@ const useStyles = makeStyles((theme) => ({
     right: "0px",
     marginTop: "12px !important",
     marginRight: "6px !important",
-    color: "white"
+    color: "white",
+    cursor: "pointer"
   },
   mediaHead: {
     position: "absolute",
     color: "white",
     padding: "15px",
     fontSize: "18px",
+    width: "200px !important"
   },
 }));
 
 const SectionCard = ({ props }) => {
+  const user = useSelector(getUser);
   const classNames = useStyles();
+  const exams = useSelector(getExams);
   // console.log(props);
   return (
     <Card className={classNames.card}>
-        <CloseIcon className={classNames.icon} />
+      {(user.role === "faculty")&&(
+      <CloseIcon className={classNames.icon} onClick={(e)=> {console.log(examsModel.find({ id: props.data._id }))}}/>)}
       <Typography className={classNames.mediaHead}>
         {`Section ${props.data.section}`}
         <br />
