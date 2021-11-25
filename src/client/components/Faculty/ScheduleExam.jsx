@@ -47,11 +47,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
   const facultyData = useSelector(getUser);
-  const [year,setYear] = React.useState(facultyData.year);
-  React.useEffect(()=>{
+  const [year, setYear] = React.useState(facultyData.year);
+  React.useEffect(() => {
     setYear(facultyData.year);
     console.log(facultyData.year);
-},[facultyData])
+  }, [facultyData])
   const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
   const [time, setTime] = React.useState(null);
@@ -129,7 +129,7 @@ export default function ScheduleExam({ handleClose }) {
               ))}
             </TextField>
             <TextField
-              style={{ "width": "47%","marginLeft":"25px"}}
+              style={{ "width": "47%", "marginLeft": "25px" }}
               id="outlined-select-exam-type"
               select
               label="Year"
@@ -138,8 +138,8 @@ export default function ScheduleExam({ handleClose }) {
             >
               {year.map((option) => (
                 <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
+                  {option}
+                </MenuItem>
               ))}
             </TextField>
           </Box>
@@ -231,7 +231,12 @@ export default function ScheduleExam({ handleClose }) {
               onChange={handleChange("codingCount")}
             />
           </Box>
-          <Button variant="contained" onClick={handleScheduleExam}>
+          <Button variant="contained" onClick={() => {
+            handleScheduleExam(); fetchCardDetails(facultyData._id, facultyData.role).then((res) => {
+              console.log(res);
+              dispatch(loadExams(res.exams));
+            });
+          }}>
             Add Exam
           </Button>
         </Stack>
