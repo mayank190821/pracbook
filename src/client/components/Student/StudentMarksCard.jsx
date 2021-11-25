@@ -34,10 +34,6 @@ const useStyles = makeStyles((theme) => ({
 const SectionCard = ({ props }) => {
   const classNames = useStyles();
 
-  React.useEffect(()=>{
-    console.log(props);
-  }, []);
-  // console.log(props);
   return (
     <Card className={classNames.card}>
       <CloseIcon className={classNames.icon} />
