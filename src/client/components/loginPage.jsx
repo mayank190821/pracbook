@@ -112,6 +112,7 @@ export default function ImgMediaCard(props) {
 
   React.useEffect(() => {
     dispatch(saveUser({}));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (props) => (event) => {
@@ -222,12 +223,6 @@ export default function ImgMediaCard(props) {
               />
             </FormControl>
             <br />
-            {/* {extras.error && (
-              <Typography component="p" color="error" style={{display: "flex", alignItems: "center", lineHeight: "10px"}}>
-              <ErrorIcon sx={{ fontSize: 25 }}/>
-                {extras.error}
-              </Typography>
-            )} */}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

@@ -16,7 +16,7 @@ import React, { useState } from "react";
 import { Link, Redirect, useParams } from "react-router-dom";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
-import {signup } from "../api/auth.api";
+import { signup } from "../api/auth.api";
 import image from "./../images/pracbook.png";
 import Snackbars from "./ErrorMessages";
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(4),
     margin: "auto",
     width: "50vw",
-    padding: "4%",
+    padding: "2%",
     height: "fit-content",
     [theme.breakpoints.down("sm")]: {
       width: "90vw !important",
@@ -75,19 +75,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   submit: {
-    margin: theme.spacing(3, 0, 1),
+    margin: theme.spacing(2, 0, 0),
   },
 }));
 
 export default function Signup(props) {
   const classNames = useStyles();
-  const {role} = useParams();
+  const { role } = useParams();
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
     password: "",
     section: "",
     confirmPassword: "",
+    rollNumber: "",
+    year: "",
     email: "",
   });
   const [extras, setExtras] = useState({
@@ -97,7 +99,7 @@ export default function Signup(props) {
     error: "",
     message: "",
   });
-  const [openSnackBar, setOpenSnackBar] =  useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const handleChange = (name) => (event) => {
     setUser({ ...user, [name]: event.target.value });
@@ -133,26 +135,31 @@ export default function Signup(props) {
       setOpenSnackBar(true);
       return;
     } else {
-      const user_data = {
+      const faculty = {
+        name: user.firstName + " " + user.lastName,
+        email: user.email,
+        password: user.password,
+      };
+      const student = {
         name: user.firstName + " " + user.lastName,
         email: user.email,
         section: user.section,
         password: user.password,
+        year: user.year,
+        rollNumber: user.rollNumber,
       };
-      if(/([a-zA-Z0-9])+@([a-zA-Z0-9])+.([a-zA-Z])+/.test(user_data.email)){
-        signup(user_data, role).then((res) =>{
-            if(!res.error){
-                setExtras({...extras,open:true});
-            }
-            else{
-                setExtras({error : "Check your internet connection"})
-                setOpenSnackBar(true)
-            }
+      if (/([a-zA-Z0-9])+@([a-zA-Z0-9])+.([a-zA-Z])+/.test(user.email)) {
+        signup(role === "faculty" ? faculty : student, role).then((res) => {
+          if (!res.error) {
+            setExtras({ ...extras, open: true });
+          } else {
+            setExtras({ error: "Check your internet connection" });
+            setOpenSnackBar(true);
+          }
         });
-        setExtras({...extras, error: ""})
-      }
-      else{
-        setExtras({...extras, error: "Enter a valid Email address!"})
+        setExtras({ ...extras, error: "" });
+      } else {
+        setExtras({ ...extras, error: "Enter a valid Email address!" });
         setOpenSnackBar(true);
       }
     }
@@ -188,7 +195,7 @@ export default function Signup(props) {
             Sign Up
           </Typography>
           <form className={classNames.form} noValidate>
-            <Grid container spacing={1}>
+            <Grid container spacing={(0, 2)}>
               <Grid item xs={6}>
                 <TextField
                   variant="outlined"
@@ -216,47 +223,76 @@ export default function Signup(props) {
                   autoComplete="text"
                 />
               </Grid>
-              {(role === "student")?
-              (<React.Fragment>
-                <Grid item xs={6}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Id"
-                  name="email"
-                  onChange={handleChange("email")}
-                  value={user.email}
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="section"
-                  label="Section"
-                  name="section"
-                  onChange={handleChange("section")}
-                  value={user.section}
-                  autoComplete="text"
-                />
-              </Grid></React.Fragment>):
-              <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Id"
-                name="email"
-                onChange={handleChange("email")}
-                value={user.email}
-                autoComplete="email"
-              />
-            </Grid>}
+              {role === "student" ? (
+                <React.Fragment>
+                  <Grid item xs={6}>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email Id"
+                      name="email"
+                      onChange={handleChange("email")}
+                      value={user.email}
+                      autoComplete="email"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="section"
+                      label="Section"
+                      name="section"
+                      onChange={handleChange("section")}
+                      value={user.section}
+                      autoComplete="text"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      variant="outlined"
+                      required
+                      id="roll-no"
+                      label="Roll Number"
+                      name="roll-no"
+                      onChange={handleChange("rollNumber")}
+                      value={user.rollNumber}
+                      autoComplete="text"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="year"
+                      label="Year"
+                      name="year"
+                      onChange={handleChange("year")}
+                      value={user.year}
+                      autoComplete="text"
+                    />
+                  </Grid>
+                </React.Fragment>
+              ) : (
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Id"
+                    name="email"
+                    onChange={handleChange("email")}
+                    value={user.email}
+                    autoComplete="email"
+                  />
+                </Grid>
+              )}
               <Grid item xs={12}>
                 <FormControl variant="outlined" required fullWidth>
                   <InputLabel htmlFor="password">Password</InputLabel>
@@ -345,11 +381,18 @@ export default function Signup(props) {
         </div>
         <Box mt={2}>
           <Typography variant="body2" color="textSecondary" align="center">
-            {"Copyright "} &copy; <img alt="Pracbook" className={classNames.logo} src={image}/> {"2021."}
+            {"Copyright "} &copy;{" "}
+            <img alt="Pracbook" className={classNames.logo} src={image} />{" "}
+            {"2021."}
           </Typography>
         </Box>
       </Container>
-      <Snackbars open = {openSnackBar} setOpen={setOpenSnackBar} status = "error" message = {extras.error}/>
+      <Snackbars
+        open={openSnackBar}
+        setOpen={setOpenSnackBar}
+        status="error"
+        message={extras.error}
+      />
     </div>
   );
 }
