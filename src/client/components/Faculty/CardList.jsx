@@ -112,7 +112,7 @@ const CardList = () => {
                   style={{ textDecoration: "none", height: "fit-content" }}
                 >
                   <SectionCard
-                    key={`${dat.section}-${index}`}
+                    key={`${dat.section}-${dat.year}-${index}`}
                     props={{ data: dat, i: index }}
                   />
                 </Link>
