@@ -26,21 +26,23 @@ const useStyles = makeStyles((theme) => ({
   },
   imageContainer: {
     position: "absolute",
-    margin: "auto",
+    margin: "0px auto",
     top: "0px",
     bottom: "0px",
     right: "0px",
     left: "0px",
     width: "50%",
-    height: "60%",
+    height: "80%",
   },
   image: {
     position: "absolute",
     margin: "auto",
+    // marginBottom:"3px !important",
     top: "0px",
     bottom: "0px",
     width: "100%",
-    minHeight: "80%",
+    height:"80%",
+    // minHeight: "80%",
     right: "0px",
     left: "0px",
     transform: "scaleY(0.5) scaleX(0.7)",
@@ -87,7 +89,7 @@ const CardList = () => {
           <div className={classNames.imageContainer}>
             <img alt="No Class" src={image} className={classNames.image}></img>
             <h2 className={classNames.emptyHeading}>
-              No Classes Found, Create One
+              No Exams Found
             </h2>
           </div>
         </div>

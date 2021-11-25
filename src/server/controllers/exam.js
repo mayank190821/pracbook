@@ -24,4 +24,15 @@ const getExamById = async (req, res) => {
     })
   }
 }
-export { addExam, getExamById };
+const deleteOneByID = async (req, res) => {
+  try {
+    const exam = await examsModel.findByIdAndDelete(req.body.id);
+    res.status(200).json(exam);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+export { addExam, getExamById, deleteOneByID };

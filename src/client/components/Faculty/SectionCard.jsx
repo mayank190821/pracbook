@@ -9,7 +9,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
 import { getUser, getExams} from "../../redux/selectors/code.selector";
 import {useSelector } from "react-redux";
-import examsModel from "../../../server/models/exams.model";
+import {useDispatch} from "react-redux";
+import { loadExams } from "../../redux/actions/code.action";
+import { deleteOneByID } from "../../api/exam.api";
+import {fetchCardDetails} from "../../api/utilities.api";
+// import examsModel from "../../../server/models/exams.model.js";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -44,12 +48,20 @@ const useStyles = makeStyles((theme) => ({
 const SectionCard = ({ props }) => {
   const user = useSelector(getUser);
   const classNames = useStyles();
+  const dispatch = useDispatch();
   const exams = useSelector(getExams);
   // console.log(props);
   return (
     <Card className={classNames.card}>
       {(user.role === "faculty")&&(
-      <CloseIcon className={classNames.icon} onClick={(e)=> {console.log(examsModel.find({ id: props.data._id }))}}/>)}
+      <CloseIcon className={classNames.icon} onClick={() => {var r = window.confirm("Do you want to delete?");if(r == true){deleteOneByID(props.data._id);fetchCardDetails(user._id, user.role).then((res) => {
+        console.log(res);
+        dispatch(loadExams(res.exams));
+      });}
+      else{
+
+      }}}/>
+   )}
       <Typography className={classNames.mediaHead}>
         {`Section ${props.data.section}`}
         <br />

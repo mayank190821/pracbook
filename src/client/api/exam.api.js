@@ -87,5 +87,17 @@ const compile = async (data) => {
       return error;
     });
 };
-
-export { fetchExam, fetchExamQuestion, scheduleExam, addVivaQuestion, addCodingQuestion, compile };
+const deleteOneByID = async (id) => {
+  let response = await fetch(`/api/exam`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body:JSON.stringify({
+      id: id
+    })
+  });
+  return await response.json();
+};
+export { fetchExam, fetchExamQuestion, scheduleExam, addVivaQuestion, addCodingQuestion, compile , deleteOneByID};
