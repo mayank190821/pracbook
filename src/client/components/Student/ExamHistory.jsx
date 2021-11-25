@@ -2,15 +2,10 @@ import React from "react";
 import StudentMarksCard from "./StudentMarksCard";
 import { makeStyles } from "@mui/styles";
 import image from "../../images/exam.png";
-import {
-  fetchCardDetails,
-  fetchExamById,
-  fetchResultByStudentId,
-} from "../../api/utilities.api";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loadExams } from "../../redux/actions/code.action";
-import { getExams } from "../../redux/selectors/code.selector";
+import { fetchExamById } from "../../api/utilities.api";
+import { useSelector } from "react-redux";
+import { getUser } from "../../redux/selectors/code.selector";
+
 const useStyles = makeStyles((theme) => ({
   empty: {
     width: "100%",
@@ -58,69 +53,46 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "monospace",
   },
 }));
+
 const History = () => {
   const classNames = useStyles();
-  const dispatch = useDispatch();
-  const exams = useSelector(getExams);
-  // let examsData = [];
-  const [examsData,setExamsData] = React.useState([]);
+  const user = useSelector(getUser);
   const [data, setData] = React.useState([
     {
-    //   name: "",
-    //   date: "",
-    //   duration: 0,
-    //   subject: "",
-    //   marksObtained: 0,
-    //   section: "",
-    //   time: "",
-    //   marks:0
+      name: "",
+      date: "",
+      duration: 0,
+      subject: "",
+      marksObtained: 0,
+      section: "",
+      time: "",
+      marks: 0,
     },
   ]);
-  const [value,setValue] = React.useState([]);
-  React.useEffect(() => {
-    fetchResultByStudentId("619407cc3adbf0d2b8a17882").then((res) => {
-      let data = res.exams;
-      // console.log(data);
-      res.exams.map((exam, index) => {
-        console.log(exam);
-        fetchExamById(exam.examId).then((examData) => {
-          // console.log(examData.date); 
-          // console.log(res.exams); 
-          // console.log(res.exams[0].result.marksObtained)
-          let values = examsData;
-          values.push({
-          "name": examData.name,
-          "subject" : examData.subject,
-            "marksObtained" : res.exams[index].result.marksObtained,
-            "section" : examData.section,
-            "date" : examData.date,
-            "time" : examData.time,
-            "duration" : examData.duration,
-            "marks" : examData.marks,
-        })        
-        setExamsData(values);
-        // console.log(value);
-         
-          // setData(examsData);
-        //   console.log(data);
-        });
-      });
 
-      //   console.log(res);
-      //   dispatch(loadExams(res.exams));
+  React.useEffect(() => {
+    let values = [];
+    user.exams.forEach((exam, index) => {
+      fetchExamById(exam.examId).then((examData) => {
+        values.unshift({
+          name: examData.name,
+          subject: examData.subject,
+          marksObtained: exam.result.marksObtained,
+          section: examData.section,
+          date: examData.date,
+          time: examData.time,
+          duration: examData.duration,
+          marks: examData.marks,
+        });
+        setData([...values]);
+      });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-  React.useEffect(() => {
-      // console.log(value);
-    setExamsData(...examsData, value)
-    // console.log(examsData)
-  }, [value]);
-  console.log(examsData);
   return (
     <div className={classNames.cards}>
-      {!examsData || !examsData[0] || examsData.length === 0 ? (
+      {!data || !data[0] || data.length === 0 ? (
         <div className={classNames.empty}>
           <div className={classNames.imageContainer}>
             <img alt="No Class" src={image} className={classNames.image}></img>
@@ -128,17 +100,12 @@ const History = () => {
           </div>
         </div>
       ) : (
-        Array.from(examsData).map((dat, index) => {
-          return (
-            <StudentMarksCard
-              key={`${dat.section}-${index}`}
-              props={{ data: dat, i: index }}
-            />
-          );
-          {
-            /* }); */
-          }
-        })
+        <>
+          {data.map((data, index) => {
+            let key = Math.round(Math.random() * 200);
+            return <StudentMarksCard key={`${key}`} props={{ data: data }} />;
+          })}
+        </>
       )}
     </div>
   );
