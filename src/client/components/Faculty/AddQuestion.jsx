@@ -14,10 +14,12 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Link,
 } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
 import { addVivaQuestion, addCodingQuestion } from "../../api/exam.api";
 import { EventNote } from "@mui/icons-material";
+import QuestionCard from "./QuestionCard";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -88,7 +90,13 @@ const useStyles = makeStyles((theme) => ({
     resize: "none",
     overflowWrap: "break-word !important",
     height: "50px !important"
-  }
+  },
+  button: {
+    borderRadius: "50% !important",
+    width: "20px !important",
+    height: "50px !important",
+    fontSize: "50px !important"
+  },
 }));
 
 export default function AddQuestion({ handleClose }) {
@@ -107,13 +115,26 @@ export default function AddQuestion({ handleClose }) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-    
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
-    if(activeStep === steps.length -1){
-      
-      console.log(codeProbData);
+    if (activeStep === steps.length - 1) {
       addCodingQuestion(codeProbData);
+      setCodeProbData({
+        type: vivaData.topicName,
+        difficulty: "easy",
+        name: "",
+        problemStatement: "",
+        constraints: "",
+        inputFormat: "",
+        outputFormat: "",
+        sampleInput: [],
+        sampleOutput: [],
+        explanation: "",
+        inputTestCases: [],
+        outputTestCases: [],
+      });
+      <Link to={{pathname: "/login/QuestionCard" }}/>
     }
   };
 
@@ -140,6 +161,7 @@ export default function AddQuestion({ handleClose }) {
     setDifficultyLevel(event.target.value);
     setCodeProbData({ ...codeProbData, difficulty: event.target.value })
     console.log(codeProbData)
+    handleClose();
   }
 
   const [vivaData, setVivaData] = useState({
@@ -154,7 +176,7 @@ export default function AddQuestion({ handleClose }) {
 
   const [codeProbData, setCodeProbData] = useState({
     type: vivaData.topicName,
-    difficulty: "",
+    difficulty: "easy",
     name: "",
     problemStatement: "",
     constraints: "",
@@ -170,7 +192,7 @@ export default function AddQuestion({ handleClose }) {
   const [sampInput, setSampInput] = useState("");
   const [sampOutput, setSampOutput] = useState("");
   const [sampInputTestCase, setSampInputTestCases] = useState("");
-  const [sampOutputTestCase, setSampOutputTestcase] = useState(""); 
+  const [sampOutputTestCase, setSampOutputTestcase] = useState("");
 
   return (
     <div>
@@ -206,7 +228,7 @@ export default function AddQuestion({ handleClose }) {
           >
             Topic Name :
           </Typography>
-          <textarea className={classNames.topicname} onChange={(e) => {setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({...codeProbData, type: e.target.value})}} />
+          <textarea className={classNames.topicname} onChange={(e) => { setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({ ...codeProbData, type: e.target.value }) }} />
         </InputBox>
         {QuestionType === "Objective" ? (
           <Box component="form" spacing={3} noValidate autoComplete="off">
@@ -283,7 +305,7 @@ export default function AddQuestion({ handleClose }) {
             </DialogActions>
           </Box>
         ) : (
-          <Box sx={{ width: '100%', padding: "10" }}>
+          <Box sx={{ width: '100%', padding: "10" }} style={{ marginTop: "20px" }}>
             <Stepper activeStep={activeStep} sx={{ margin: "10" }}>
               {steps.map((label, index) => {
                 const stepProps = {};
@@ -295,17 +317,6 @@ export default function AddQuestion({ handleClose }) {
                 );
               })}
             </Stepper>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1 }}>
-                  All steps completed - you&apos;re finished
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                  <Box sx={{ flex: '1 1 auto' }} />
-                  <Button onClick={handleReset}>Reset</Button>
-                </Box>
-              </React.Fragment>
-            ) : (
               <React.Fragment>
                 <Typography sx={{ mt: 2, mb: 1 }}>
                   {(() => {
@@ -336,7 +347,7 @@ export default function AddQuestion({ handleClose }) {
                             <Typography
                               style={{
                                 lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Name:
@@ -347,7 +358,7 @@ export default function AddQuestion({ handleClose }) {
                             <Typography
                               style={{
                                 // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Question:
@@ -363,7 +374,7 @@ export default function AddQuestion({ handleClose }) {
                             <Typography
                               style={{
                                 // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Constraints:
@@ -374,7 +385,7 @@ export default function AddQuestion({ handleClose }) {
                             <Typography
                               style={{
                                 // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Input Format:
@@ -385,7 +396,7 @@ export default function AddQuestion({ handleClose }) {
                             <Typography
                               style={{
                                 // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Output Format:
@@ -394,38 +405,39 @@ export default function AddQuestion({ handleClose }) {
                           </InputBox>
                         </React.Fragment>
                       );
-                    } else if(activeStep == 2) {
+                    } else if (activeStep == 2) {
                       return (
                         <>
                           <InputBox>
                             <Typography
                               style={{
                                 // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Sample Input:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value = {sampInput} />
-                            <Button variant="contained" color="success" onClick={() => {setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] });setSampInput("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value={sampInput} />
+                            <Button className={classNames.button} variant="outlined" onClick={() => { setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] }); setSampInput("") }}> + </Button>
                           </InputBox>
                           <InputBox>
                             <Typography
                               style={{
                                 // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Sample Output:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value = {sampOutput}/>
-                            <Button variant="contained" color="success" onClick={() => {setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] });setSampOutput("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value={sampOutput} />
+                            {/* <Button className = {classNames.button} variant="contained" color="success" onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button> */}
+                            <Button variant="outlined" className={classNames.button} onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button>
                           </InputBox>
                           <InputBox>
                             <Typography
                               style={{
                                 // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px",
                               }}
                             >
                               Explanation:
@@ -434,7 +446,7 @@ export default function AddQuestion({ handleClose }) {
                           </InputBox>
                         </>
                       );
-                    } 
+                    }
                     else {
                       return (
                         <>
@@ -447,8 +459,8 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Input Test Cases:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value = {sampInputTestCase}/>
-                            <Button variant="contained" color="success" onClick={(e) => {setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] });setSampInputTestCases("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value={sampInputTestCase} />
+                            <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] }); setSampInputTestCases("") }}> + </Button>
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -459,8 +471,8 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Output Test Cases:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value = {sampOutputTestCase}/>
-                            <Button variant="contained" color="success" onClick={(e) => {setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] });setSampOutputTestcase("")}}> + </Button>
+                            <textarea className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value={sampOutputTestCase} />
+                            <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] }); setSampOutputTestcase("") }}> + </Button>
                           </InputBox>
                         </>
                       );
@@ -481,7 +493,6 @@ export default function AddQuestion({ handleClose }) {
                   </Button>
                 </Box>
               </React.Fragment>
-            )}
           </Box>
         )}
       </Dialog>
