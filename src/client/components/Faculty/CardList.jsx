@@ -69,6 +69,7 @@ const CardList = () => {
         dispatch(loadExams(res.exams));
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, id]);
 
   // data.sort((a, b) => {
@@ -108,10 +109,7 @@ const CardList = () => {
               return (
                 <Link
                   to={`/exam/instruction/${dat._id}`}
-                  style={{
-                    textDecoration: "none",
-                    height: "fit-content"
-                  }}
+                  style={{ textDecoration: "none", height: "fit-content" }}
                 >
                   <SectionCard
                     key={`${dat.section}-${index}`}
