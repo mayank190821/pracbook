@@ -5,6 +5,7 @@ const exams = new mongoose.Schema({
   subject: String,
   duration: Number,
   marks: Number,
+  year:String,
   section: String,
   time: String, 
   date: String,
