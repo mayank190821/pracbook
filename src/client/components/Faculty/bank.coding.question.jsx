@@ -33,10 +33,10 @@ export default function ControlledAccordions() {
     }, [])
     function changeColor(difficultyData){
         var color;
-        if(difficultyData === "easy"){
+        if(difficultyData.toLowerCase() === "easy"){
             color = "green";
         }
-        else if(difficultyData === "medium"){
+        else if(difficultyData.toLowerCase() === "medium"){
             color="orange";
         }
         else{
