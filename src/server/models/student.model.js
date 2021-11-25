@@ -5,6 +5,8 @@ const studentModel = new mongoose.Schema({
   name: String,
   email: String,
   hashedPassword: String,
+  year:String,
+  rollNumber:String,
   salt: String,
   section: String,
   subjects: [String],
