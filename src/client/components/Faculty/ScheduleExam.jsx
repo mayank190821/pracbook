@@ -11,10 +11,13 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Stack from "@mui/material/Stack";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import TimePicker from "@mui/lab/TimePicker";
-import {scheduleExam} from "../../api/exam.api";
+import { scheduleExam } from "../../api/exam.api";
 import { fetchCardDetails } from "../../api/utilities.api";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
+import { getUser } from "../../redux/selectors/code.selector";
+import { useSelector } from "react-redux";
+import { setYear } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   dialog: {
@@ -37,13 +40,18 @@ const exams = [
     label: "End Term",
   },
 ];
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
+  const facultyData = useSelector(getUser);
+  const [year,setYear] = React.useState(facultyData.year);
+  React.useEffect(()=>{
+    setYear(facultyData.year);
+    console.log(facultyData.year);
+},[facultyData])
   const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
   const [time, setTime] = React.useState(null);
@@ -51,7 +59,8 @@ export default function ScheduleExam({ handleClose }) {
     name: "",
     date: "",
     duration: "",
-    subject:"",
+    year: "",
+    subject: "",
     marks: "",
     section: "",
     time: "",
@@ -59,27 +68,26 @@ export default function ScheduleExam({ handleClose }) {
     codingCount: "",
     completed: false,
   });
-
-  const handleScheduleExam = () => { 
-     scheduleExam(data).then(() => {
-       fetchCardDetails("61914f010d975acc5bace6a9").then((res) => {
+  const handleScheduleExam = () => {
+    scheduleExam(data).then(() => {
+      fetchCardDetails("61914f010d975acc5bace6a9").then((res) => {
         dispatch(loadExams(res.exams));
       });
-     })
-     handleClose();
+    })
+    handleClose();
   };
   const handleChange = (props) => (event) => {
-    if(props === "time"){
+    if (props === "time") {
       let time = event.toLocaleString().split(", ")[1];
-      time = time.slice(0, time.length - 6) + time.slice(time.length-3);
-     setData({
-      ...data,
-      time:
-        time,
-     });
-     setTime(event);
+      time = time.slice(0, time.length - 6) + time.slice(time.length - 3);
+      setData({
+        ...data,
+        time:
+          time,
+      });
+      setTime(event);
     }
-    else if(props === "date") {
+    else if (props === "date") {
       setData({
         ...data,
         date: event.toLocaleString().split(",")[0],
@@ -89,7 +97,6 @@ export default function ScheduleExam({ handleClose }) {
     else
       setData({ ...data, [props]: event.target.value });
   };
-
   return (
     <div>
       <Dialog
@@ -101,19 +108,41 @@ export default function ScheduleExam({ handleClose }) {
         aria-describedby="alert-dialog-slide-description"
       >
         <Stack spacing={3}>
-          <TextField
-            id="outlined-select-exam-type"
-            select
-            label="Exam Type"
-            value={data.name}
-            onChange={handleChange("name")}
+          <Box spacing={1}
+            component="form"
+            sx={12}
+            noValidate
+            autoComplete="off"
           >
-            {exams.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            <TextField
+              style={{ "width": "47%" }}
+              id="outlined-select-exam-type"
+              select
+              label="Exam Type"
+              value={data.name}
+              onChange={handleChange("name")}
+            >
+              {exams.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              style={{ "width": "47%","marginLeft":"25px"}}
+              id="outlined-select-exam-type"
+              select
+              label="Year"
+              value={data.year}
+              onChange={handleChange("year")}
+            >
+              {year.map((option) => (
+                <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
-            ))}
-          </TextField>
+              ))}
+            </TextField>
+          </Box>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
               label="Date desktop"
@@ -139,14 +168,14 @@ export default function ScheduleExam({ handleClose }) {
             noValidate
             autoComplete="off"
           >
-          <TextField
-            required
-            id="outlined-required"
-            label="Subject"
-            value={data.subject}
-            onChange={handleChange("subject")}
-          />
-          
+            <TextField
+              required
+              id="outlined-required"
+              label="Subject"
+              value={data.subject}
+              onChange={handleChange("subject")}
+            />
+
             <TextField
               required
               id="outlined-required"
@@ -155,8 +184,8 @@ export default function ScheduleExam({ handleClose }) {
               value={data.section}
               onChange={handleChange("section")}
             />
-            </Box>
-            <Box
+          </Box>
+          <Box
             component="form"
             sx={12}
             spacing={1}
@@ -170,14 +199,14 @@ export default function ScheduleExam({ handleClose }) {
               value={data.duration}
               onChange={handleChange("duration")}
             />
-          <TextField
-            required
-            id="outlined-required"
-            label="Maximum Marks"
-            className={classes.elements}
-            value={data.marks}
-            onChange={handleChange("marks")}
-          />
+            <TextField
+              required
+              id="outlined-required"
+              label="Maximum Marks"
+              className={classes.elements}
+              value={data.marks}
+              onChange={handleChange("marks")}
+            />
           </Box>
           <Box
             component="form"
@@ -193,14 +222,14 @@ export default function ScheduleExam({ handleClose }) {
               value={data.objectCount}
               onChange={handleChange("objectCount")}
             />
-          <TextField
-            required
-            id="outlined-required"
-            label="Coding Count"
-            className={classes.elements}
-            value={data.codingCount}
-            onChange={handleChange("codingCount")}
-          />
+            <TextField
+              required
+              id="outlined-required"
+              label="Coding Count"
+              className={classes.elements}
+              value={data.codingCount}
+              onChange={handleChange("codingCount")}
+            />
           </Box>
           <Button variant="contained" onClick={handleScheduleExam}>
             Add Exam
