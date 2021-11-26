@@ -2,7 +2,6 @@
   "name": "pracbook",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "main": "./src/server/server.js",
   "dependencies": {
     "@emotion/react": "^11.4.1",
@@ -35,7 +34,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\"",
+    "start": "nodemon ./src/server/server.js --exec babel-node -e js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -58,5 +57,14 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:2000"
+  "proxy": "http://localhost:2000",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.1.0",
+    "babel-node": "^0.0.1-security",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
 }
