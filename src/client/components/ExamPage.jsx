@@ -191,7 +191,7 @@ export default function ExamPage() {
     setOutput("");
     setStatus("");
     let result = "";
-    // console.log(curQuestion.question.length);
+    console.log(curQuestion.question.length);
     for (let i = 0; i < (testCases.input ? testCases.input.length : 0); i++) {
       data = {
         language_id: language.code,
