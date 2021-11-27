@@ -7,6 +7,13 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
+import { getUser, getExams} from "../../redux/selectors/code.selector";
+import {useSelector } from "react-redux";
+import {useDispatch} from "react-redux";
+import { loadExams } from "../../redux/actions/code.action";
+import { deleteOneByID } from "../../api/exam.api";
+import {fetchCardDetails} from "../../api/utilities.api";
+// import examsModel from "../../../server/models/exams.model.js";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -16,32 +23,47 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "250px",
     margin: "25px",
     position: "relative",
-    cursor: "pointer",
+    boxShadow: "0px 0px 7px 0px rgba(0,0,0,0.2)",
+    // cursor: "pointer",
   },
-  text:{
-    marginTop:"5px !important",
+  text: {
+    marginTop: "5px !important",
   },
   icon: {
     position: "absolute",
     right: "0px",
     marginTop: "12px !important",
     marginRight: "6px !important",
-    color: "white"
+    color: "white",
+    cursor: "pointer",
   },
   mediaHead: {
     position: "absolute",
     color: "white",
     padding: "15px",
     fontSize: "18px",
+    width: "200px !important",
+    textTransform: "capitalize",
   },
 }));
 
 const SectionCard = ({ props }) => {
+  const user = useSelector(getUser);
   const classNames = useStyles();
+  const dispatch = useDispatch();
+  const exams = useSelector(getExams);
   // console.log(props);
   return (
     <Card className={classNames.card}>
-        <CloseIcon className={classNames.icon} />
+      {(user.role === "faculty")&&(
+      <CloseIcon className={classNames.icon} onClick={() => {var r = window.confirm("Do you want to delete?");if(r == true){deleteOneByID(props.data._id);fetchCardDetails(user._id, user.role).then((res) => {
+        console.log(res);
+        dispatch(loadExams(res.exams));
+      });}
+      else{
+
+      }}}/>
+   )}
       <Typography className={classNames.mediaHead}>
         {`Section ${props.data.section}`}
         <br />

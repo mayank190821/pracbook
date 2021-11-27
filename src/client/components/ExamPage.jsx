@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { getCode, getQuestion } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { useParams } from "react-router-dom";
+import Countdown, { zeroPad } from "react-countdown";
 
 const languages = [
   {
@@ -142,7 +143,7 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: "border-box",
 }));
 
-export default function ExamPage() {
+export default function ExamPage({location}) {
   const classes = useStyles();
   const [language, setLanguage] = React.useState({
     value: "java",
@@ -199,7 +200,7 @@ export default function ExamPage() {
         stdin: testCases.input[i],
         expected_output: testCases.output[i],
       };
-      await compile(data)
+       compile(data)
         .then((response) => {
           if (response.stderr) {
             setOutput(response.status.description + "\n\n" + response.stderr);
@@ -225,6 +226,19 @@ export default function ExamPage() {
         });
     }
   };
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    // if (completed) {
+    //   // Render a complete state
+    //   return <Completionist />;
+    // } else {
+    //   // Render a countdown
+      return (
+        <span>
+          {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
+        </span>
+      );
+    // }
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -232,6 +246,37 @@ export default function ExamPage() {
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
             PracBook Assessment
+          </Typography>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{
+              position: "absolute",
+              right: "0 !important",
+              // color: "red",
+              // fontSize: "30px",
+              marginRight: "12%",
+            }}
+          >
+            Time Remaining :
+          </Typography>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{
+              position: "absolute",
+              right: "0 !important",
+              // color: "red",
+              fontSize: "30px",
+              marginRight: "3%",
+            }}
+          >
+            <Countdown
+              date={Date.now() + location.state.duration * 60000}
+              renderer={renderer}
+            />
           </Typography>
         </Toolbar>
       </AppBar>
@@ -340,10 +385,13 @@ export default function ExamPage() {
                     variant="outlined"
                     className={classes.runCode}
                     onClick={() =>
+                      {
                       handleSubmit({
                         input: curQuestion.question.sampleInput,
                         output: curQuestion.question.sampleOutput,
                       })
+                      console.log("clicked")
+                    }
                     }
                     style={{ margin: "10px", marginBottom: "5px" }}
                   >

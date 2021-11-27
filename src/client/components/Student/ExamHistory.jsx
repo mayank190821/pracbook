@@ -1,22 +1,13 @@
 import React from "react";
 import StudentMarksCard from "./StudentMarksCard";
 import { makeStyles } from "@mui/styles";
+import {Typography} from "@mui/material";
 import image from "../../images/exam.png";
-import {
-  fetchCardDetails,
-  fetchExamById,
-  fetchResultByStudentId,
-} from "../../api/utilities.api";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loadExams } from "../../redux/actions/code.action";
-import { getExams } from "../../redux/selectors/code.selector";
+import { fetchExamById } from "../../api/utilities.api";
+import { useSelector } from "react-redux";
+import { getUser } from "../../redux/selectors/code.selector";
+
 const useStyles = makeStyles((theme) => ({
-  empty: {
-    width: "100%",
-    height: "100vh",
-    backgroundColor: "#f1f2f6",
-  },
   cards: {
     display: "flex",
     flexWrap: "wrap",
@@ -24,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
     "&::-webkit-scrollbar": {
       display: "none",
     },
-    paddingBottom: "10vh",
+    paddingBottom: "20px",
     zIndex: "3",
-    height: "100vh",
+    height: "100%",
   },
   imageContainer: {
     position: "absolute",
@@ -49,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
     left: "0px",
     transform: "scaleY(0.5) scaleX(0.7)",
   },
+  head: {
+    height:"20px !important",
+    width: "100%",
+    marginLeft: "20px",
+    marginBottom: "20px",
+  },
   emptyHeading: {
     textAlign: "center",
     position: "absolute",
@@ -58,89 +55,61 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "monospace",
   },
 }));
+
 const History = () => {
   const classNames = useStyles();
-  const dispatch = useDispatch();
-  const exams = useSelector(getExams);
-  // let examsData = [];
-  const [examsData,setExamsData] = React.useState([]);
-  const [data, setData] = React.useState([
-    {
-    //   name: "",
-    //   date: "",
-    //   duration: 0,
-    //   subject: "",
-    //   marksObtained: 0,
-    //   section: "",
-    //   time: "",
-    //   marks:0
-    },
-  ]);
-  const [value,setValue] = React.useState([]);
-  React.useEffect(() => {
-    fetchResultByStudentId("619407cc3adbf0d2b8a17882").then((res) => {
-      let data = res.exams;
-      // console.log(data);
-      res.exams.map((exam, index) => {
-        console.log(exam);
-        fetchExamById(exam.examId).then((examData) => {
-          // console.log(examData.date); 
-          // console.log(res.exams); 
-          // console.log(res.exams[0].result.marksObtained)
-          let values = examsData;
-          values.push({
-          "name": examData.name,
-          "subject" : examData.subject,
-            "marksObtained" : res.exams[index].result.marksObtained,
-            "section" : examData.section,
-            "date" : examData.date,
-            "time" : examData.time,
-            "duration" : examData.duration,
-            "marks" : examData.marks,
-        })        
-        setExamsData(values);
-        // console.log(value);
-         
-          // setData(examsData);
-        //   console.log(data);
-        });
-      });
+  const user = useSelector(getUser);
+  const [data, setData] = React.useState([]);
 
-      //   console.log(res);
-      //   dispatch(loadExams(res.exams));
+  React.useEffect(() => {
+    let values = [];
+    user.exams.forEach((exam, index) => {
+      fetchExamById(exam.examId).then((examData) => {
+        if(examData !== null && examData !== undefined){
+          values.unshift({
+            name: examData.name,
+            subject: examData.subject,
+            marksObtained: exam.result.marksObtained,
+            section: examData.section,
+            date: examData.date,
+            time: examData.time,
+            duration: examData.duration,
+            marks: examData.marks,
+          });
+          setData([...values]);
+        }
+      });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-  React.useEffect(() => {
-      // console.log(value);
-    setExamsData(...examsData, value)
-    // console.log(examsData)
-  }, [value]);
-  console.log(examsData);
   return (
-    <div className={classNames.cards}>
-      {!examsData || !examsData[0] || examsData.length === 0 ? (
-        <div className={classNames.empty}>
-          <div className={classNames.imageContainer}>
-            <img alt="No Class" src={image} className={classNames.image}></img>
-            <h2 className={classNames.emptyHeading}>No Exam History</h2>
+    <>
+        {!data || !data[0] || data.length === 0 ? (
+          <div className={classNames.empty}>
+            <div className={classNames.imageContainer}>
+              <img
+                alt="No Class"
+                src={image}
+                className={classNames.image}
+              ></img>
+              <h2 className={classNames.emptyHeading}>No Exam History</h2>
+            </div>
           </div>
-        </div>
-      ) : (
-        Array.from(examsData).map((dat, index) => {
-          return (
-            <StudentMarksCard
-              key={`${dat.section}-${index}`}
-              props={{ data: dat, i: index }}
-            />
-          );
-          {
-            /* }); */
-          }
-        })
-      )}
-    </div>
+        ) : (
+          <>
+            <Typography variant="h5" className={classNames.head}>
+              <b>Completed Exams</b>
+            </Typography>
+          <div className={classNames.cards}>
+            {data.map((data, index) => {
+              let key = Math.round(Math.random() * 200);
+              return <StudentMarksCard key={`${key}`} props={{ data: data }} />;
+            })}
+            </div>
+          </>
+        )}
+    </>
   );
 };
 

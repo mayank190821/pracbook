@@ -22,7 +22,7 @@ mongoose.connection.on("error", (err) => {
 
 app.listen(config.port, () => {
   console.log("listening..");
-  //   app.get("*", (req, res) => {
-  //     res.sendFile(path.resolve(__dirname, "./../../build", "index.html"));
-  //   });
+  // app.get("*", (req, res) => {
+  // res.sendFile(path.resolve(__dirname, "./../../build", "index.html"));
+  // });
 });

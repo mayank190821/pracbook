@@ -31,7 +31,7 @@ import {
   getExamsByStudentId,
   signOut,
 } from "../controllers/student.js";
-import { addExam, getExamById } from "../controllers/exam.js";
+import { addExam, getExamById,deleteOneByID } from "../controllers/exam.js";
 
 const routes = express();
 
@@ -67,7 +67,7 @@ routes.route("/api/student/exams/:studentId").get(getExamsByStudentId); // empty
 
 //***************************************** Exam API
 
-routes.route("/api/exam").post(addExam).get(getExamById); // req.body = complete exams model, result = exam added.
+routes.route("/api/exam").post(addExam).get(getExamById).delete(deleteOneByID); // req.body = complete exams model, result = exam added.
 
 //***************************************** Objective Problem API
 
