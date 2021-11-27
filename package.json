@@ -2,6 +2,7 @@
   "name": "pracbook",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "main": "./src/server/server.js",
   "dependencies": {
     "@emotion/react": "^11.4.1",
@@ -34,7 +35,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "nodemon ./src/server/server.js --exec babel-node -e js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
