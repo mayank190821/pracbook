@@ -228,7 +228,7 @@ export default function AddQuestion({ handleClose }) {
           >
             Topic Name :
           </Typography>
-          <textarea className={classNames.topicname} onChange={(e) => { setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({ ...codeProbData, type: e.target.value }) }} />
+          <textarea required className={classNames.topicname} onChange={(e) => { setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({ ...codeProbData, type: e.target.value }) }} />
         </InputBox>
         {QuestionType === "Objective" ? (
           <Box component="form" spacing={3} noValidate autoComplete="off">
@@ -242,7 +242,7 @@ export default function AddQuestion({ handleClose }) {
               >
                 Question :
               </Typography>
-              <textarea className={classNames.textArea} onChange={(e) => setVivaData({ ...setVivaData, question: e.target.value })} />
+              <textarea required className={classNames.textArea} onChange={(e) => setVivaData({ ...setVivaData, question: e.target.value })} />
             </InputBox>
             <InputBox>
               <Typography>Options :</Typography>
@@ -254,6 +254,7 @@ export default function AddQuestion({ handleClose }) {
                   size="small"
                   onChange={(e) => setVivaData({ ...vivaData, option1: e.target.value })}
                   variant="filled"
+                  required
                 />
                 <TextField
                   className={classNames.input}
@@ -262,6 +263,7 @@ export default function AddQuestion({ handleClose }) {
                   size="small"
                   onChange={(e) => setVivaData({ ...vivaData, option2: e.target.value })}
                   variant="filled"
+                  required
                 />
                 <br />
                 <TextField
@@ -271,6 +273,7 @@ export default function AddQuestion({ handleClose }) {
                   size="small"
                   onChange={(e) => setVivaData({ ...vivaData, option3: e.target.value })}
                   variant="filled"
+                  required
                 />
                 <TextField
                   className={classNames.input}
@@ -279,6 +282,7 @@ export default function AddQuestion({ handleClose }) {
                   size="small"
                   onChange={(e) => setVivaData({ ...vivaData, option4: e.target.value })}
                   variant="filled"
+                  required
                 />
               </Box>
             </InputBox>
@@ -290,6 +294,7 @@ export default function AddQuestion({ handleClose }) {
                 name="answer"
                 spacing="auto"
                 value={vivaData.answer}
+                required
                 onChange={(event) => setVivaData({ ...vivaData, answer: event.target.value })}
               >
                 <FormControlLabel value="A" control={<Radio />} label="A" />
@@ -334,6 +339,7 @@ export default function AddQuestion({ handleClose }) {
                             // helperText="Please select your language"
                             // className={classes.inputArea}
                             style={{ width: "100%", marginTop: "23px" }}
+                            required
                           >
                             {difficulties.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
@@ -352,7 +358,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Name:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, name: e.target.value })} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, name: e.target.value })} />
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -363,7 +369,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Question:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, problemStatement: e.target.value })} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, problemStatement: e.target.value })} />
                           </InputBox>
                         </React.Fragment>
                       );
@@ -379,7 +385,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Constraints:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, constraints: e.target.value })} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, constraints: e.target.value })} />
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -390,7 +396,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Input Format:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, inputFormat: e.target.value })} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, inputFormat: e.target.value })} />
                           </InputBox>
                           <InputBox>
                             <Typography
@@ -401,7 +407,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Output Format:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, outputFormat: e.target.value })} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, outputFormat: e.target.value })} />
                           </InputBox>
                         </React.Fragment>
                       );
@@ -417,7 +423,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Sample Input:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value={sampInput} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value={sampInput} />
                             <Button className={classNames.button} variant="outlined" onClick={() => { setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] }); setSampInput("") }}> + </Button>
                           </InputBox>
                           <InputBox>
@@ -429,7 +435,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Sample Output:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value={sampOutput} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value={sampOutput} />
                             {/* <Button className = {classNames.button} variant="contained" color="success" onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button> */}
                             <Button variant="outlined" className={classNames.button} onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button>
                           </InputBox>
@@ -442,7 +448,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Explanation:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, explanation: e.target.value })} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, explanation: e.target.value })} />
                           </InputBox>
                         </>
                       );
@@ -459,7 +465,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Input Test Cases:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value={sampInputTestCase} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value={sampInputTestCase} />
                             <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] }); setSampInputTestCases("") }}> + </Button>
                           </InputBox>
                           <InputBox>
@@ -471,7 +477,7 @@ export default function AddQuestion({ handleClose }) {
                             >
                               Output Test Cases:
                             </Typography>
-                            <textarea className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value={sampOutputTestCase} />
+                            <textarea required className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value={sampOutputTestCase} />
                             <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] }); setSampOutputTestcase("") }}> + </Button>
                           </InputBox>
                         </>
