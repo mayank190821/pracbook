@@ -134,7 +134,7 @@ export default function AddQuestion({ handleClose }) {
         inputTestCases: [],
         outputTestCases: [],
       });
-      handleClose();
+      <Link to={{pathname: "/login/QuestionCard" }}/>
     }
   };
 
@@ -161,6 +161,7 @@ export default function AddQuestion({ handleClose }) {
     setDifficultyLevel(event.target.value);
     setCodeProbData({ ...codeProbData, difficulty: event.target.value })
     console.log(codeProbData)
+    handleClose();
   }
 
   const [vivaData, setVivaData] = useState({

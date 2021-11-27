@@ -23,10 +23,11 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "250px",
     margin: "25px",
     position: "relative",
+    boxShadow: "0px 0px 7px 0px rgba(0,0,0,0.2)",
     // cursor: "pointer",
   },
-  text:{
-    marginTop:"5px !important",
+  text: {
+    marginTop: "5px !important",
   },
   icon: {
     position: "absolute",
@@ -34,14 +35,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "12px !important",
     marginRight: "6px !important",
     color: "white",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   mediaHead: {
     position: "absolute",
     color: "white",
     padding: "15px",
     fontSize: "18px",
-    width: "200px !important"
+    width: "200px !important",
+    textTransform: "capitalize",
   },
 }));
 

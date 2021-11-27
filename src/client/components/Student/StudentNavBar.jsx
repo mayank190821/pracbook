@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import Card from "@mui/material/Card";
 import CardList from "../Faculty/CardList";
+import {Typography} from "@mui/material";
 
 const useStyle = makeStyles((theme) => ({
   years: {
@@ -22,6 +23,12 @@ const useStyle = makeStyles((theme) => ({
     position: "relative",
     width: "100%",
     // zIndex: "4 !important",
+  },
+  head: {
+    height: "20px !important",
+    width: "100%",
+    marginLeft: "20px",
+    marginBottom: "20px",
   },
 }));
 
