@@ -204,6 +204,7 @@ export default function AddQuestion({ handleClose }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
+        <form id="add_ques_form">
         <TextField
           id="filled-select-currency"
           select
@@ -211,6 +212,7 @@ export default function AddQuestion({ handleClose }) {
           label="Question Type "
           value={QuestionType}
           size="small"
+          required
           onChange={handleChange}
           variant="filled"
         >
@@ -220,7 +222,6 @@ export default function AddQuestion({ handleClose }) {
             </MenuItem>
           ))}
         </TextField>
-        <InputBox>
           <Typography
             style={{
               width: "100px",
@@ -229,11 +230,9 @@ export default function AddQuestion({ handleClose }) {
             Topic Name :
           </Typography>
           <textarea required className={classNames.topicname} onChange={(e) => { setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({ ...codeProbData, type: e.target.value }) }} />
-        </InputBox>
         {QuestionType === "Objective" ? (
-          <Box component="form" spacing={3} noValidate autoComplete="off">
+          <Box component="div" spacing={3} autoComplete="off">
 
-            <InputBox>
               <Typography
                 style={{
                   lineHeight: "48px",
@@ -243,8 +242,6 @@ export default function AddQuestion({ handleClose }) {
                 Question :
               </Typography>
               <textarea required className={classNames.textArea} onChange={(e) => setVivaData({ ...setVivaData, question: e.target.value })} />
-            </InputBox>
-            <InputBox>
               <Typography>Options :</Typography>
               <Box style={{ marginLeft: "20px" }}>
                 <TextField
@@ -285,8 +282,6 @@ export default function AddQuestion({ handleClose }) {
                   required
                 />
               </Box>
-            </InputBox>
-            <InputBox>
               <Typography style={{ lineHeight: "42px" }}>Answer :</Typography>
               <RadioGroup
                 row
@@ -297,16 +292,15 @@ export default function AddQuestion({ handleClose }) {
                 required
                 onChange={(event) => setVivaData({ ...vivaData, answer: event.target.value })}
               >
-                <FormControlLabel value="A" control={<Radio />} label="A" />
-                <FormControlLabel value="B" control={<Radio />} label="B" />
-                <FormControlLabel value="C" control={<Radio />} label="C" />
-                <FormControlLabel value="D" control={<Radio />} label="D" />
+                <FormControlLabel value="A" control={<Radio required={true}/>} label="A" />
+                <FormControlLabel value="B" control={<Radio required={true}/>} label="B" />
+                <FormControlLabel value="C" control={<Radio required={true}/>} label="C" />
+                <FormControlLabel value="D" control={<Radio required={true}/>} label="D" />
               </RadioGroup>
               {vivaData.answer}
-            </InputBox>
             <DialogActions>
               <Button onClick={handleClose}>Disagree</Button>
-              <Button onClick={() => { addVivaQuestion(vivaData); handleClose(); }}>Agree</Button>
+              <Button type="submit" onClick={(event) => { event.preventDefault(); const formId=document.getElementById("add_ques_form"); formId.checkValidity(); if(formId.reportValidity()){addVivaQuestion(vivaData); handleClose();} }}>Agree</Button>
             </DialogActions>
           </Box>
         ) : (
@@ -501,6 +495,7 @@ export default function AddQuestion({ handleClose }) {
               </React.Fragment>
           </Box>
         )}
+        </form>
       </Dialog>
     </div>
   );
