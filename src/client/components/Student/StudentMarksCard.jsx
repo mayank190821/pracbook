@@ -11,7 +11,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "250px",
     margin: "25px",
     position: "relative",
-    cursor: "pointer",
+    // cursor: "pointer",
+    boxShadow: "0px 0px 7px 0px rgba(0,0,0,0.2)"
   },
   text: {
     marginTop: "5px !important",
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     padding: "15px",
     fontSize: "18px",
+    textTransform: "capitalize",
   },
 }));
 
@@ -36,7 +38,6 @@ const SectionCard = ({ props }) => {
 
   return (
     <Card className={classNames.card}>
-      <CloseIcon className={classNames.icon} />
       <Typography className={classNames.mediaHead}>
         {`Section ${props.data.section}`}
         <br />
