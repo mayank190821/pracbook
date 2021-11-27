@@ -7,11 +7,12 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
 import { getExams, getUser } from "../../redux/selectors/code.selector";
+import {Typography} from "@mui/material";
+
 const useStyles = makeStyles((theme) => ({
   empty: {
     width: "100%",
     height: "100vh",
-    backgroundColor: "#f1f2f6",
   },
   cards: {
     display: "flex",
@@ -26,23 +27,21 @@ const useStyles = makeStyles((theme) => ({
   },
   imageContainer: {
     position: "absolute",
-    margin: "0px auto",
+    margin: "auto",
     top: "0px",
     bottom: "0px",
     right: "0px",
     left: "0px",
     width: "50%",
-    height: "80%",
+    height: "60%",
   },
   image: {
     position: "absolute",
     margin: "auto",
-    // marginBottom:"3px !important",
     top: "0px",
     bottom: "0px",
     width: "100%",
-    height:"80%",
-    // minHeight: "80%",
+    minHeight: "80%",
     right: "0px",
     left: "0px",
     transform: "scaleY(0.5) scaleX(0.7)",
@@ -54,6 +53,12 @@ const useStyles = makeStyles((theme) => ({
     bottom: "10%",
     zIndex: "+3",
     fontFamily: "monospace",
+  },
+  head: {
+    height: "20px !important",
+    width: "100%",
+    marginLeft: "20px",
+    marginBottom: "20px",
   },
 }));
 const CardList = () => {
@@ -83,18 +88,24 @@ const CardList = () => {
   // });
 
   return (
-    <div className={classNames.cards}>
+    <>
       {!exams || !exams[0] || exams.length === 0 ? (
         <div className={classNames.empty}>
-          <div className={classNames.imageContainer}>
-            <img alt="No Class" src={image} className={classNames.image}></img>
-            <h2 className={classNames.emptyHeading}>
-              No Exams Found
-            </h2>
+            <div className={classNames.imageContainer}>
+              <img
+                alt="No Class"
+                src={image}
+                className={classNames.image}
+              ></img>
+              <h2 className={classNames.emptyHeading}>No Exam Found</h2>
+            </div>
           </div>
-        </div>
       ) : (
         <>
+          <Typography variant="h5" className={classNames.head}>
+            <b>Upcoming Exams</b>
+          </Typography>
+    <div className={classNames.cards}>
           {user.role === "faculty" &&
             Array.from(exams).map((dat, index) => {
               return Array.from(dat).map((da, jndex) => {
@@ -120,9 +131,10 @@ const CardList = () => {
                 </Link>
               );
             })}
+    </div>
         </>
       )}
-    </div>
+  </>
   );
 };
 
