@@ -199,7 +199,7 @@ export default function ExamPage() {
         stdin: testCases.input[i],
         expected_output: testCases.output[i],
       };
-      await compile(data)
+       compile(data)
         .then((response) => {
           if (response.stderr) {
             setOutput(response.status.description + "\n\n" + response.stderr);
@@ -340,10 +340,13 @@ export default function ExamPage() {
                     variant="outlined"
                     className={classes.runCode}
                     onClick={() =>
+                      {
                       handleSubmit({
                         input: curQuestion.question.sampleInput,
                         output: curQuestion.question.sampleOutput,
                       })
+                      console.log("clicked")
+                    }
                     }
                     style={{ margin: "10px", marginBottom: "5px" }}
                   >
