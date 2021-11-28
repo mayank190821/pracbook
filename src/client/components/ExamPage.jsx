@@ -24,15 +24,13 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { getCode, getQuestion } from "../redux/selectors/code.selector";
+import { getCode } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
 import { saveQuestion } from "../redux/actions/code.action";
 import { useParams } from "react-router-dom";
-import Countdown, { zeroPad } from "react-countdown";
+import { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
-import { setObjectiveAnswer } from "../redux/actions/code.action";
-import { getObjAns } from "../redux/selectors/code.selector";
 
 const languages = [
   {
@@ -156,6 +154,7 @@ const Drawer = styled(MuiDrawer, {
   whiteSpace: "nowrap",
   boxSizing: "border-box",
 }));
+
 function renderTime(seconds) {
   let hours = Math.floor(seconds / 3600);
   seconds %= 3600;
@@ -172,6 +171,7 @@ export default function ExamPage({ location }) {
   });
   const [output, setOutput] = React.useState("");
   const [status, setStatus] = React.useState("");
+  const [results, setResults] = React.useState([]);
   const [ques, setQues] = React.useState([]);
   const [sec, setSec] = React.useState();
   const [timer, setTimer] = React.useState(localStorage.getItem("time"));
@@ -268,41 +268,69 @@ export default function ExamPage({ location }) {
     let err = false;
     setOutput("");
     setStatus("");
+    let currStatus = [];
+    setResults([]);
     let result = "";
-    console.log(curQuestion.question.length);
-    for (let i = 0; i < (testCases.input ? testCases.input.length : 0); i++) {
-      data = {
-        language_id: language.code,
-        source_code: sourceCode,
-        stdin: testCases.input[i],
-        expected_output: testCases.output[i],
+    for (let i = 0; i < (testCases.output ? testCases.output.length : 0); i++) {
+      if (testCases.input.length === 0) {
+        data = {
+          language_id: language.code,
+          source_code: sourceCode,
+          stdin: "",
+          expected_output: testCases.output[i],
+        }
+      } else {
+        data = {
+          language_id: language.code,
+          source_code: sourceCode,
+          stdin: testCases.input[i],
+          expected_output: testCases.output[i],
+        }
       };
       compile(data)
         .then((response) => {
+          console.log(response);
           if (response.stderr) {
-            setOutput(response.status.description + "\n\n" + response.stderr);
+            result += response.stderr;
             err = true;
-          } else if (response.stdout) {
+          } else if(response.compile_output !== null){
+            result = response.compile_output;
+            err = true;
+          }else if (response.stdout) {
             if (!err) {
               result += "TestCase " + i + ": " + response.stdout + "\n";
             }
-            console.log(response.status, response, output);
           } else {
-            setOutput("");
+            result += "TestCase " + i + ": \n";
           }
+          currStatus.push(response.status.description);
         })
         .then(async () => {
           await setOutput(result);
+        }).then(()=>{
+          setResults([...currStatus]);
         })
-        .then(() => {
-          if (err) {
-            setStatus("Error");
-          } else {
-            setStatus("Accepted");
-          }
-        });
     }
   };
+
+  React.useEffect(() => {
+    let flag = -1;
+    console.log(results);
+    for(let i=0; i<results.length;i++){
+      if(results[i] == "Accepted"){
+        setStatus(results[i]);
+        if(i === 0) {
+          flag = 1;
+        }
+        else flag++;
+      }
+      else{
+        setStatus(results[i]);
+        break;
+      }
+    }
+    if(flag === results.length){ setStatus("Accepted"); }
+  }, [results])
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -463,6 +491,7 @@ export default function ExamPage({ location }) {
                     variant="outlined"
                     className={classes.runCode}
                     onClick={() => {
+                      setResults([]);
                       handleSubmit({
                         input: curQuestion.question.sampleInput,
                         output: curQuestion.question.sampleOutput,
@@ -474,11 +503,13 @@ export default function ExamPage({ location }) {
                     Run Code
                   </Button>
                   <Button
-                    onClick={() =>
+                    onClick={() => {
+                      setResults([]);
                       handleSubmit({
                         input: curQuestion.question.inputTestCases,
                         output: curQuestion.question.outputTestCases,
                       })
+                    }
                     }
                     variant="contained"
                     className={classes.submitCode}
