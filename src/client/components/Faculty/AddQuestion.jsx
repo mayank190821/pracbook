@@ -66,17 +66,17 @@ const InputBox = styled("div")(({ theme }) => ({
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    "& .css-1t1j96h-MuiPaper-root-MuiDialog-paper": {
-      padding: "10px",
+    "& .css-fzk8t3-MuiPaper-root-MuiDialog-paper": {
+      padding: "10px !important",
+      overflow: "hidden"
     },
   },
   input: {
     padding: "0px !important",
-    maxWidth: "300px",
     margin: `${theme.spacing(1)} !important`,
   },
   textArea: {
-    width: "100%",
+    width: "95%",
     margin: theme.spacing(0, 2),
     outline: "none",
     resize: "none",
@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     height: `${theme.spacing(7)} !important`,
   },
   topicname: {
-    width: "100%",
+    width: "95%",
     margin: theme.spacing(0, 2),
     outline: "none",
     resize: "none",
@@ -109,32 +109,38 @@ export default function AddQuestion({ handleClose }) {
     return skipped.has(step);
   };
 
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
+  const handleNext = (event) => {
+    event.preventDefault();
+    const formId = document.getElementById("add_ques_form");
+    formId.checkValidity();
+    if (formId.reportValidity()) {
+      let newSkipped = skipped;
+      if (isStepSkipped(activeStep)) {
+        newSkipped = new Set(newSkipped.values());
+        newSkipped.delete(activeStep);
+      }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-    if (activeStep === steps.length - 1) {
-      addCodingQuestion(codeProbData);
-      setCodeProbData({
-        type: vivaData.topicName,
-        difficulty: "easy",
-        name: "",
-        problemStatement: "",
-        constraints: "",
-        inputFormat: "",
-        outputFormat: "",
-        sampleInput: [],
-        sampleOutput: [],
-        explanation: "",
-        inputTestCases: [],
-        outputTestCases: [],
-      });
-      <Link to={{pathname: "/login/QuestionCard" }}/>
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setSkipped(newSkipped);
+      if (activeStep === steps.length - 1) {
+        addCodingQuestion(codeProbData);
+        setCodeProbData({
+          type: vivaData.topicName,
+          difficulty: "easy",
+          name: "",
+          problemStatement: "",
+          constraints: "",
+          inputFormat: "",
+          outputFormat: "",
+          sampleInput: [],
+          sampleOutput: [],
+          explanation: "",
+          inputTestCases: [],
+          outputTestCases: [],
+        });
+        handleClose();
+        <Link to={{ pathname: "/login/QuestionCard" }} />
+      }
     }
   };
 
@@ -204,23 +210,24 @@ export default function AddQuestion({ handleClose }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <TextField
-          id="filled-select-currency"
-          select
-          className={classNames.input}
-          label="Question Type "
-          value={QuestionType}
-          size="small"
-          onChange={handleChange}
-          variant="filled"
-        >
-          {types.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <InputBox>
+        <form id="add_ques_form">
+          <TextField
+            id="filled-select-currency"
+            select
+            className={classNames.input}
+            label="Question Type "
+            value={QuestionType}
+            size="small"
+            required
+            onChange={handleChange}
+            variant="filled"
+          >
+            {types.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
           <Typography
             style={{
               width: "100px",
@@ -229,11 +236,9 @@ export default function AddQuestion({ handleClose }) {
             Topic Name :
           </Typography>
           <textarea required className={classNames.topicname} onChange={(e) => { setVivaData({ ...vivaData, topicName: e.target.value }); setCodeProbData({ ...codeProbData, type: e.target.value }) }} />
-        </InputBox>
-        {QuestionType === "Objective" ? (
-          <Box component="form" spacing={3} noValidate autoComplete="off">
+          {QuestionType === "Objective" ? (
+            <Box component="div" spacing={3} autoComplete="off">
 
-            <InputBox>
               <Typography
                 style={{
                   lineHeight: "48px",
@@ -243,8 +248,6 @@ export default function AddQuestion({ handleClose }) {
                 Question :
               </Typography>
               <textarea required className={classNames.textArea} onChange={(e) => setVivaData({ ...setVivaData, question: e.target.value })} />
-            </InputBox>
-            <InputBox>
               <Typography>Options :</Typography>
               <Box style={{ marginLeft: "20px" }}>
                 <TextField
@@ -285,8 +288,6 @@ export default function AddQuestion({ handleClose }) {
                   required
                 />
               </Box>
-            </InputBox>
-            <InputBox>
               <Typography style={{ lineHeight: "42px" }}>Answer :</Typography>
               <RadioGroup
                 row
@@ -297,31 +298,30 @@ export default function AddQuestion({ handleClose }) {
                 required
                 onChange={(event) => setVivaData({ ...vivaData, answer: event.target.value })}
               >
-                <FormControlLabel value="A" control={<Radio />} label="A" />
-                <FormControlLabel value="B" control={<Radio />} label="B" />
-                <FormControlLabel value="C" control={<Radio />} label="C" />
-                <FormControlLabel value="D" control={<Radio />} label="D" />
+                <FormControlLabel value="A" control={<Radio required={true} />} label="A" />
+                <FormControlLabel value="B" control={<Radio required={true} />} label="B" />
+                <FormControlLabel value="C" control={<Radio required={true} />} label="C" />
+                <FormControlLabel value="D" control={<Radio required={true} />} label="D" />
               </RadioGroup>
               {vivaData.answer}
-            </InputBox>
-            <DialogActions>
-              <Button onClick={handleClose}>Disagree</Button>
-              <Button onClick={() => { addVivaQuestion(vivaData); handleClose(); }}>Agree</Button>
-            </DialogActions>
-          </Box>
-        ) : (
-          <Box sx={{ width: '100%', padding: "10" }} style={{ marginTop: "20px" }}>
-            <Stepper activeStep={activeStep} sx={{ margin: "10" }}>
-              {steps.map((label, index) => {
-                const stepProps = {};
-                const labelProps = {};
-                return (
-                  <Step key={label} {...stepProps}>
-                    <StepLabel {...labelProps}>{label}</StepLabel>
-                  </Step>
-                );
-              })}
-            </Stepper>
+              <DialogActions>
+                <Button onClick={handleClose}>Disagree</Button>
+                <Button type="submit" onClick={(event) => { event.preventDefault(); const formId = document.getElementById("add_ques_form"); formId.checkValidity(); if (formId.reportValidity()) { addVivaQuestion(vivaData); handleClose(); } }}>Agree</Button>
+              </DialogActions>
+            </Box>
+          ) : (
+            <Box sx={{ width: '100%', padding: "10" }} style={{ marginTop: "20px" }}>
+              <Stepper activeStep={activeStep} sx={{ margin: "10" }}>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
               <React.Fragment>
                 <Typography sx={{ mt: 2, mb: 1 }}>
                   {(() => {
@@ -347,138 +347,125 @@ export default function AddQuestion({ handleClose }) {
                               </MenuItem>
                             ))}
                           </TextField>
-                          <InputBox
-                            sx={{ padding: "10px !important" }}
+                          <Typography
+                            style={{
+                              lineHeight: "48px",
+                              width: "120px",
+                            }}
                           >
-                            <Typography
-                              style={{
-                                lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Name:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, name: e.target.value })} />
-                          </InputBox>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Question:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, problemStatement: e.target.value })} />
-                          </InputBox>
+                            Name:
+                          </Typography>
+                          <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, name: e.target.value })} />
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "120px",
+                            }}
+                          >
+                            Question:
+                          </Typography>
+                          <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, problemStatement: e.target.value })} />
                         </React.Fragment>
                       );
                     } else if (activeStep === 1) {
                       return (
                         <React.Fragment>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Constraints:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, constraints: e.target.value })} />
-                          </InputBox>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Input Format:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, inputFormat: e.target.value })} />
-                          </InputBox>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Output Format:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, outputFormat: e.target.value })} />
-                          </InputBox>
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "120px",
+                            }}
+                          >
+                            Constraints:
+                          </Typography>
+                          <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, constraints: e.target.value })} />
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "120px",
+                            }}
+                          >
+                            Input Format:
+                          </Typography>
+                          <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, inputFormat: e.target.value })} />
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "120px",
+                            }}
+                          >
+                            Output Format:
+                          </Typography>
+                          <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, outputFormat: e.target.value })} />
                         </React.Fragment>
                       );
                     } else if (activeStep == 2) {
                       return (
                         <>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Sample Input:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value={sampInput} />
-                            <Button className={classNames.button} variant="outlined" onClick={() => { setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] }); setSampInput("") }}> + </Button>
+                        <InputBox>
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "120px",
+                            }}
+                          >
+                            Sample Input:
+                          </Typography>
+                          <textarea className={classNames.textArea} onChange={(e) => setSampInput(e.target.value)} value={sampInput} />
+                          <Button className={classNames.button} variant="outlined" onClick={() => { setCodeProbData({ ...codeProbData, sampleInput: [...(codeProbData.sampleInput), sampInput] }); setSampInput("") }}> + </Button>
                           </InputBox>
                           <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Sample Output:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value={sampOutput} />
-                            {/* <Button className = {classNames.button} variant="contained" color="success" onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button> */}
-                            <Button variant="outlined" className={classNames.button} onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button>
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "120px",
+                            }}
+                          >
+                            Sample Output:
+                          </Typography>
+                          <textarea className={classNames.textArea} onChange={(e) => setSampOutput(e.target.value)} value={sampOutput} />
+                          {/* <Button className = {classNames.button} variant="contained" color="success" onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button> */}
+                          <Button variant="outlined" className={classNames.button} onClick={() => { setCodeProbData({ ...codeProbData, sampleOutput: [...(codeProbData.sampleOutput), sampOutput] }); setSampOutput("") }}> + </Button>
                           </InputBox>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "120px",
-                              }}
-                            >
-                              Explanation:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, explanation: e.target.value })} />
-                          </InputBox>
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              float: "left",
+                              width: "120px",
+                            }}
+                          >
+                            Explanation:
+                          </Typography>
+                          <textarea required style = {{"display" : "flex"}}className={classNames.textArea} onChange={(e) => setCodeProbData({ ...codeProbData, explanation: e.target.value })} />
                         </>
                       );
                     }
                     else {
                       return (
                         <>
-                          <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "100px",
-                              }}
-                            >
-                              Input Test Cases:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value={sampInputTestCase} />
-                            <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] }); setSampInputTestCases("") }}> + </Button>
+                        <InputBox>
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "100px",
+                            }}
+                          >
+                            Input Test Cases:
+                          </Typography>
+                          <textarea className={classNames.textArea} onChange={(e) => setSampInputTestCases(e.target.value)} value={sampInputTestCase} />
+                          <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, inputTestCases: [...(codeProbData.inputTestCases), sampInputTestCase] }); setSampInputTestCases("") }}> + </Button>
                           </InputBox>
                           <InputBox>
-                            <Typography
-                              style={{
-                                // lineHeight: "48px",
-                                width: "100px",
-                              }}
-                            >
-                              Output Test Cases:
-                            </Typography>
-                            <textarea required className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value={sampOutputTestCase} />
-                            <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] }); setSampOutputTestcase("") }}> + </Button>
+                          <Typography
+                            style={{
+                              // lineHeight: "48px",
+                              width: "100px",
+                            }}
+                          >
+                            Output Test Cases:
+                          </Typography>
+                          <textarea className={classNames.textArea} onChange={(e) => setSampOutputTestcase(e.target.value)} value={sampOutputTestCase} />
+                          <Button variant="outlined" className={classNames.button} onClick={(e) => { setCodeProbData({ ...codeProbData, outputTestCases: [...(codeProbData.outputTestCases), sampOutputTestCase] }); setSampOutputTestcase("") }}> + </Button>
                           </InputBox>
                         </>
                       );
@@ -494,13 +481,14 @@ export default function AddQuestion({ handleClose }) {
                   >
                     Back
                   </Button>
-                  <Button onClick={handleNext} >
+                  <Button onClick={handleNext} type="submit">
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </Box>
               </React.Fragment>
-          </Box>
-        )}
+            </Box>
+          )}
+        </form>
       </Dialog>
     </div>
   );
