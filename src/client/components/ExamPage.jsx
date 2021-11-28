@@ -163,6 +163,7 @@ export default function ExamPage({location}) {
   const [status, setStatus] = React.useState("");
   const [ques, setQues] = React.useState([]);
   const [header, setHeader] = React.useState("");
+  const [time, setTime] = React.useState("");
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
 
@@ -172,7 +173,6 @@ export default function ExamPage({location}) {
     index: 0,
   });
 
-  const objAns = useSelector(getObjAns); 
   const handleLanguageChange = (event) => {
     let code;
     switch (event.target.value) {
@@ -189,6 +189,7 @@ export default function ExamPage({location}) {
   };
 
   React.useEffect(() => {
+
     fetchExamById(examId).then((exam) => {
       setHeader(`${exam.subject} - ${exam.name}`);
     });
@@ -212,6 +213,11 @@ export default function ExamPage({location}) {
 
   const [editorTheme, setEditorTheme] = React.useState("github");
   const [answer, setAnswer] = React.useState("");
+React.useEffect(() => {
+  if (!localStorage.getItem("time")) {
+    localStorage.setItem("time", location.state.duration);
+  }
+}, []);
 
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
@@ -221,14 +227,31 @@ export default function ExamPage({location}) {
       question: ques[index],
       index: index,
     });
-    let flag = 0;
-    for (var i = 0; i < objAns.length; i++) {
-      if (objAns[i].id === curQuestion.question.index) {
-        setAnswer(objAns[i].examAns);
-        flag = 1;
-        break;
-      }
-    }
+    // let answers = localStorage.getItem("ESAN");
+    // console.log(answers, `oba-${index+1}:`);
+    //   if (answers && answers.includes(`oba-${index+1}:`)) {
+    //     let start =
+    //       answers.indexOf(`oba-${index+1}:`) +
+    //       `oba-${index+1}:`.length;
+    //     let end = answers.indexOf("PR#BK", start);
+    //     if (end === -1) end = answers.length;
+    //     else end = end - 6;
+    //     console.log(
+    //       answers,
+    //       answers.substr(start, end),
+    //       start,
+    //       end
+    //     );
+    //     setAnswer(answers.substr(start, end));
+    //   }
+    // let flag = 0;
+    // for (var i = 0; i < objAns.length; i++) {
+    //   if (objAns[i].id === curQuestion.question.index) {
+    //     setAnswer(objAns[i].examAns);
+    //     flag = 1;
+    //     break;
+    //   }
+    // }
   };
   const handleSubmit = async (testCases) => {
     let data;
@@ -270,17 +293,16 @@ export default function ExamPage({location}) {
         });
     }
   };
-  const renderer = ({ hours, minutes, seconds, completed }) => {
+  const renderer = (hours, minutes, seconds) => {
     // if (completed) {
     //   // Render a complete state
+    console.log(hours, minutes, seconds);
     //   return <Completionist />;
     // } else {
     //   // Render a countdown
-    return (
-      <span>
-        {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
-      </span>
-    );
+    let changedTime = hours * 60 + (seconds-1) / 60 + minutes;
+    localStorage.setItem("time", changedTime);
+    return `${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`
     // }
   };
 
@@ -322,10 +344,7 @@ export default function ExamPage({location}) {
               marginRight: "3%",
             }}
           >
-            <Countdown
-              date={Date.now() + location.state.duration * 60000}
-              renderer={renderer}
-            />
+            {time}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -493,14 +512,40 @@ export default function ExamPage({location}) {
                   spacing="auto"
                   value={answer}
                   onChange={(event) => {
-                    console.log(event.target.value);
-                    dispatch(
-                      setObjectiveAnswer(
-                        event.target.value,
-                        curQuestion.index + 1
-                      )
-                    );
-                    setAnswer(event.target.value);
+                    // console.log(event.target.value);
+                    // dispatch(
+                    //   setObjectiveAnswer(
+                    //     event.target.value,
+                    //     curQuestion.index + 1
+                    //   )
+                    // );
+                    // let answers = localStorage.getItem("ESAN");
+                    // console.log(answers);
+                    // if (answers) {
+                      // answers = new Array(answers.split("#"));
+                      // console.log(answers);
+                      // if (answers.includes(`oba-${curQuestion.index + 1}:`)) {
+                      //   let start =
+                      //     answers.indexOf(`oba-${curQuestion.index + 1}:`) +
+                      //     (`oba-${curQuestion.index + 1}:`).length;
+                      //   let end = answers.indexOf("PR#BK", start);
+                      //   // console.log(start);
+                      //   answers =
+                      //     answers.substr(0, start) +
+                      //     event.target.value +
+                      //     answers.substr(end === -1? answers.length: end);
+                      // } else {
+                      //   answers += "PR#BK" + `oba-${curQuestion.index + 1}:${event.target.value}`;
+                      // }  
+                      // console.log(answers);
+                      // localStorage.setItem("ESAN", answers);
+                     //}localStorage.setItem("qid", curQuestion.index + 1);
+                  //   else
+                  //     localStorage.setItem(
+                  //       "ESAN",
+                  //       `oba-${curQuestion.index + 1}:${event.target.value}`
+                  //     );
+                  //   setAnswer(event.target.value);
                   }}
                 >
                   <FormControlLabel
