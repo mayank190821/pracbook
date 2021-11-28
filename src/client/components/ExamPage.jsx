@@ -75,6 +75,11 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     borderBottom: "1px solid #e2e2e2 !important",
   },
+  listItemSubmit: {
+    backgroundColor: theme.palette.success.main,
+    color: "white",
+    borderBottom: "1px solid #e2e2e2 !important",
+  },
   listItemText: {
     textAlign: "center",
   },
@@ -181,7 +186,6 @@ export default function ExamPage({ location }) {
     index: 0,
   });
 
-  const objAns = useSelector(getObjAns);
   const handleLanguageChange = (event) => {
     let code;
     switch (event.target.value) {
@@ -244,19 +248,21 @@ export default function ExamPage({ location }) {
     setEditorTheme(event.target.value);
   };
   const questionChange = (index) => {
-    setCurQuestion({
-      question: ques[index],
-      index: index,
-    });
-    let flag = 0;
-    for (var i = 0; i < objAns.length; i++) {
-      if (objAns[i].id === curQuestion.question.index) {
-        setAnswer(objAns[i].examAns);
-        flag = 1;
-        break;
+    if (index === "submit") {
+      var r = window.confirm("This will end your exam, Do you agree?");
+      if (r === true) {
+        setTimer(0);
+        console.log("exam ended");
+        // calcResult();
       }
+    } else {
+      setCurQuestion({
+        question: ques[index],
+        index: index,
+      });
     }
   };
+
   const handleSubmit = async (testCases) => {
     let data;
     let err = false;
@@ -296,19 +302,6 @@ export default function ExamPage({ location }) {
           }
         });
     }
-  };
-  const renderer = ({ hours, minutes, seconds, completed }) => {
-    // if (completed) {
-    //   // Render a complete state
-    //   return <Completionist />;
-    // } else {
-    //   // Render a countdown
-    return (
-      <span>
-        {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
-      </span>
-    );
-    // }
   };
 
   return (
@@ -370,6 +363,14 @@ export default function ExamPage({ location }) {
                 />
               </ListItem>
             ))}
+          <ListItem
+            button
+            key={"submit-test"}
+            className={classes.listItemSubmit}
+            onClick={() => questionChange("submit")}
+          >
+            <ListItemText primary="S" className={classes.listItemText} />
+          </ListItem>
         </List>
       </Drawer>
       <Box
@@ -516,16 +517,7 @@ export default function ExamPage({ location }) {
                   // name="answer",
                   spacing="auto"
                   value={answer}
-                  onChange={(event) => {
-                    console.log(event.target.value);
-                    dispatch(
-                      setObjectiveAnswer(
-                        event.target.value,
-                        curQuestion.index + 1
-                      )
-                    );
-                    setAnswer(event.target.value);
-                  }}
+                  onChange={(event) => {}}
                 >
                   <FormControlLabel
                     value={curQuestion.question.option1}

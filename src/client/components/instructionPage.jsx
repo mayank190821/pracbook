@@ -95,6 +95,7 @@ export default function InstructionPage() {
       fetchQuesDetails()
         .then((res) => {
           // console.log(res.questions, res.questions.length);
+          console.log(res);
           let number = Math.floor(Math.random() * res.questions.length);
           let count = 0;
           let visited = new Array(res.questions.length).fill(false);
@@ -114,32 +115,33 @@ export default function InstructionPage() {
           }
           return questionIds;
         })
-        .then(() => {});
-      fetchCpQuesDetails().then((res) => {
-        // console.log(res.questions, res.questions.length);
-        let number = Math.floor(Math.random() * res.questions.length);
-        let count = 0;
-        let visited = new Array(res.questions.length).fill(false);
-        console.log(visited + " " + number + "/ " + curExam.codingCount);
-        for (
-          let i = number;
-          count < curExam.codingCount;
-          i = (i + number) % res.questions.length
-        ) {
-          if (!visited[i]) {
-            visited[i] = true;
-            questionIds.push(res.questions[i].questionId);
-            count++;
-          } else {
-            i++;
-          }
-        }
-        curExam.questionIds = questionIds;
-        sessionStorage.setItem("TQID", questionIds.toString());
-        localStorage.setItem("time", curExam.duration * 60);
-        setFetched(true);
-        setExam(curExam);
-      });
+        .then(() => {
+          fetchCpQuesDetails().then((res) => {
+            // console.log(res.questions, res.questions.length);
+            let number = Math.floor(Math.random() * res.questions.length);
+            let count = 0;
+            let visited = new Array(res.questions.length).fill(false);
+            console.log(visited + " " + number + "/ " + curExam.codingCount);
+            for (
+              let i = number;
+              count < curExam.codingCount;
+              i = (i + number) % res.questions.length
+            ) {
+              if (!visited[i]) {
+                visited[i] = true;
+                questionIds.push(res.questions[i].questionId);
+                count++;
+              } else {
+                i++;
+              }
+            }
+            curExam.questionIds = questionIds;
+            sessionStorage.setItem("TQID", questionIds.toString());
+            localStorage.setItem("time", curExam.duration * 60);
+            setFetched(true);
+            setExam(curExam);
+          });
+        });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
