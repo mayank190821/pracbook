@@ -88,31 +88,33 @@ export default function InstructionPage() {
     objectCount: 0,
     codingCount: 0,
   });
-  const [questions, setQuestions] = React.useState([]);
 
   useEffect(() => {
     fetchExam(examId).then((curExam) => {
       let questionIds = [];
-      fetchQuesDetails().then((res) => {
-        // console.log(res.questions, res.questions.length);
-        let number = Math.floor(Math.random() * res.questions.length);
-        let count = 0;
-        let visited = new Array(res.questions.length).fill(false);
-        // console.log(visited + " " + number + "/ " + curExam.objectCount);
-        for (
-          let i = number;
-          count < curExam.objectCount;
-          i = (i + number) % res.questions.length
-        ) {
-          if (!visited[i]) {
-            visited[i] = true;
-            questionIds.push(res.questions[i].questionId);
-            count++;
-          } else {
-            i++;
+      fetchQuesDetails()
+        .then((res) => {
+          // console.log(res.questions, res.questions.length);
+          let number = Math.floor(Math.random() * res.questions.length);
+          let count = 0;
+          let visited = new Array(res.questions.length).fill(false);
+          // console.log(visited + " " + number + "/ " + curExam.objectCount);
+          for (
+            let i = number;
+            count < curExam.objectCount;
+            i = (i + number) % res.questions.length
+          ) {
+            if (!visited[i]) {
+              visited[i] = true;
+              questionIds.push(res.questions[i].questionId);
+              count++;
+            } else {
+              i++;
+            }
           }
-        }
-      });
+          return questionIds;
+        })
+        .then(() => {});
       fetchCpQuesDetails().then((res) => {
         // console.log(res.questions, res.questions.length);
         let number = Math.floor(Math.random() * res.questions.length);
@@ -140,20 +142,6 @@ export default function InstructionPage() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    // console.log(exam);
-    if (questions.length === 0 && exam.questionIds.length !== 0) {
-      for (let i = 0; i < exam.questionIds.length; i++) {
-        fetchExamQuestion(exam.questionIds[i]).then(async (response) => {
-          let currentQues = questions;
-          currentQues.push(response.question);
-          setQuestions(currentQues);
-          dispatch(saveQuestion(currentQues));
-        });
-      }
-    }
-  }, [exam]);
 
   if (redirect) {
     return (

@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
 import { getExams, getUser } from "../../redux/selectors/code.selector";
-import {Typography} from "@mui/material";
+import { Typography } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   empty: {
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "20px",
   },
 }));
-const CardList = () => {
+const CardList = ({ location }) => {
   const classNames = useStyles();
   const dispatch = useDispatch();
   const exams = useSelector(getExams);
@@ -91,50 +91,46 @@ const CardList = () => {
     <>
       {!exams || !exams[0] || exams.length === 0 ? (
         <div className={classNames.empty}>
-            <div className={classNames.imageContainer}>
-              <img
-                alt="No Class"
-                src={image}
-                className={classNames.image}
-              ></img>
-              <h2 className={classNames.emptyHeading}>No Exam Found</h2>
-            </div>
+          <div className={classNames.imageContainer}>
+            <img alt="No Class" src={image} className={classNames.image}></img>
+            <h2 className={classNames.emptyHeading}>No Exam Found</h2>
           </div>
+        </div>
       ) : (
         <>
           <Typography variant="h5" className={classNames.head}>
             <b>Upcoming Exams</b>
           </Typography>
-    <div className={classNames.cards}>
-          {user.role === "faculty" &&
-            Array.from(exams).map((dat, index) => {
-              return Array.from(dat).map((da, jndex) => {
+          <div className={classNames.cards}>
+            {user.role === "faculty" &&
+              Array.from(exams).map((dat, index) => {
+                return Array.from(dat).map((da, jndex) => {
+                  return (
+                    <SectionCard
+                      key={`${da.section}-${index}`}
+                      props={{ data: da, i: index }}
+                    />
+                  );
+                });
+              })}
+            {user.role === "student" &&
+              Array.from(exams).map((dat, index) => {
                 return (
-                  <SectionCard
-                    key={`${da.section}-${index}`}
-                    props={{ data: da, i: index }}
-                  />
+                  <Link
+                    to={`/exam/instruction/${dat._id}`}
+                    style={{ textDecoration: "none", height: "fit-content" }}
+                  >
+                    <SectionCard
+                      key={`${dat.section}-${dat.year}-${index}`}
+                      props={{ data: dat, i: index }}
+                    />
+                  </Link>
                 );
-              });
-            })}
-          {user.role === "student" &&
-            Array.from(exams).map((dat, index) => {
-              return (
-                <Link
-                  to={`/exam/instruction/${dat._id}`}
-                  style={{ textDecoration: "none", height: "fit-content" }}
-                >
-                  <SectionCard
-                    key={`${dat.section}-${dat.year}-${index}`}
-                    props={{ data: dat, i: index }}
-                  />
-                </Link>
-              );
-            })}
-    </div>
+              })}
+          </div>
         </>
       )}
-  </>
+    </>
   );
 };
 
