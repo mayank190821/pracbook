@@ -124,6 +124,7 @@ export default function AddQuestion({ handleClose }) {
       setSkipped(newSkipped);
       if (activeStep === steps.length - 1) {
         addCodingQuestion(codeProbData);
+        console.log("hello");
         setCodeProbData({
           type: vivaData.topicName,
           difficulty: "easy",
@@ -138,6 +139,7 @@ export default function AddQuestion({ handleClose }) {
           inputTestCases: [],
           outputTestCases: [],
         });
+        handleClose();
         <Link to={{ pathname: "/login/QuestionCard" }} />
       }
     }
