@@ -23,11 +23,13 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getCode, getQuestion } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { useParams } from "react-router-dom";
 import Countdown, { zeroPad } from "react-countdown";
+import {setObjectiveAnswer} from "../redux/actions/code.action"
+import { getObjAns } from "../redux/selectors/code.selector";
 
 const languages = [
   {
@@ -144,6 +146,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function ExamPage({location}) {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [language, setLanguage] = React.useState({
     value: "java",
@@ -154,7 +157,7 @@ export default function ExamPage({location}) {
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
   const { ques } = useSelector(getQuestion);
-
+  const objAns = useSelector(getObjAns); 
   const handleLanguageChange = (event) => {
     let code;
     switch (event.target.value) {
@@ -185,6 +188,14 @@ export default function ExamPage({location}) {
       question: ques[index],
       index: index,
     });
+    let flag = 0;
+    for (var i = 0; i < objAns.length; i++) {
+      if (objAns[i].id === curQuestion.question.index) {
+        setAnswer(objAns[i].examAns);
+        flag = 1;
+        break;
+      }
+    }
   };
   const handleSubmit = async (testCases) => {
     let data;
@@ -429,11 +440,18 @@ export default function ExamPage({location}) {
                 <RadioGroup
                   column
                   aria-label="Choose Answer"
-                  name="answer"
+                  name={`answer-${curQuestion.question.index}`}
+                  // name="answer",
                   spacing="auto"
                   value={answer}
                   onChange={(event) => {
                     console.log(event.target.value);
+                    dispatch(
+                      setObjectiveAnswer(
+                        event.target.value,
+                        curQuestion.index + 1
+                      )
+                    );
                     setAnswer(event.target.value);
                   }}
                 >
@@ -449,7 +467,7 @@ export default function ExamPage({location}) {
                   />
                   <FormControlLabel
                     value={curQuestion.question.option3}
-                    control={<Radio />}
+                    control={<Radio/>}
                     label={`C. ${curQuestion.question.option3}`}
                   />
                   <FormControlLabel

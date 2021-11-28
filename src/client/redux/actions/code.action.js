@@ -22,3 +22,10 @@ export const saveUser = (user) => {
     user: user,
   };
 };
+export const setObjectiveAnswer = (examAns,id) => {
+  return {
+    type:"SAVE_OBJ_ANS",
+    examAns: examAns,
+    id : id
+  }
+}
