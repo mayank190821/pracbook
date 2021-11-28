@@ -138,6 +138,7 @@ export default function AddQuestion({ handleClose }) {
           inputTestCases: [],
           outputTestCases: [],
         });
+        handleClose();
         <Link to={{ pathname: "/login/QuestionCard" }} />
       }
     }
