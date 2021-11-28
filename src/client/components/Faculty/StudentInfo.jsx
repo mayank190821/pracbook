@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import { fetchStudentDetails } from "../../api/utilities.api";
 import { CSVLink } from "react-csv";
-
+import { Snackbar } from "@material-ui/core";
 const useStyles = makeStyles((Theme) => ({
     table: {
         marginLeft: "20px",
@@ -19,7 +19,7 @@ const examType = [
     {
         value: "",
         label: ""
-    },{
+    }, {
         value: "midterm",
         label: "mid-term"
     },
@@ -40,7 +40,7 @@ const columns = [
 ]
 function StudentInfo() {
     const style = useStyles();
-    const [curYear, setCurYear] = React.useState("");
+    const [curYear, setCurYear] = useState("");
     const [section, setSection] = useState([]);
     const handleYearChange = (event) => {
         setCurYear(event.target.value);
@@ -68,9 +68,6 @@ function StudentInfo() {
             }
         })
     };
-    const handlePrint = () => {
-
-    }
     const handleSearch = () => {
         fetchStudentDetails({ subject: curSubject, section: curSection, type: type, year: curYear, id: resultData._id }).then((res) => {
             setResults(res.results);
@@ -94,9 +91,8 @@ function StudentInfo() {
         setyear([...yearArray]);
         setSubjectList(subjectArray);
     }, [resultData])
-
     const csvReport = {
-        filename: `${(curYear!== "")?curYear[0]:"Year"}_${curSection}_Result.csv`,
+        filename: `${(curYear !== "") ? curYear[0] : "Year"}_${curSection}_Result.csv`,
         headers: columns,
         data: results
     };
@@ -191,20 +187,34 @@ function StudentInfo() {
                             </option>
                         ))}
                     </TextField>
-                    <Button style={{
-                        "margin": "1.5%",
-                    }}
-                        variant="contained" onClick={handleSearch}>GO</Button>
+                    {(!(curSection === undefined || curSection === "" || curYear === "" || curSubject === undefined || type === "" || type === undefined)) ?
+                        <Button style={{
+                            "margin": "1.5%",
+                        }}
+                            variant="contained" onClick={handleSearch}>
+                            GO
+                        </Button>
+                        :
+                        <Button style={{
+                            "margin": "1.5%",
+                        }}
+                            disabled
+                            variant="contained" >
+                            GO
+                        </Button>
+                    }
                     {(results.length !== 0) && <CSVLink {...csvReport}>
-                    <Button style={{
-                        "right": "0",
-                        "margin": "1.5%",
-                        "float": "right",
-                        "color": "red",
-                        "border": "1px solid red"
-                    }}
-                        onClick={handlePrint}>Print</Button>
-                        </CSVLink>}
+                        <Button style={{
+                            "right": "0",
+                            "margin": "1.5%",
+                            "float": "right",
+                            "color": "red",
+                            "border": "1px solid red"
+                        }}
+                        >
+                            Print
+                        </Button>
+                    </CSVLink>}
                 </div>
             </div>
             <div className={style.table}>
