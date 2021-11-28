@@ -31,7 +31,7 @@ import { saveQuestion } from "../redux/actions/code.action";
 import { useParams } from "react-router-dom";
 import Countdown, { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
-import {setObjectiveAnswer} from "../redux/actions/code.action"
+import { setObjectiveAnswer } from "../redux/actions/code.action";
 import { getObjAns } from "../redux/selectors/code.selector";
 
 const languages = [
@@ -73,6 +73,11 @@ const useStyles = makeStyles((theme) => ({
     width: "80px",
   },
   listItem: {
+    borderBottom: "1px solid #e2e2e2 !important",
+  },
+  listItemSubmit: {
+    backgroundColor: theme.palette.success.main,
+    color: "white",
     borderBottom: "1px solid #e2e2e2 !important",
   },
   listItemText: {
@@ -151,8 +156,14 @@ const Drawer = styled(MuiDrawer, {
   whiteSpace: "nowrap",
   boxSizing: "border-box",
 }));
-
-export default function ExamPage({location}) {
+function renderTime(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  return { hours, minutes, seconds };
+}
+export default function ExamPage({ location }) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [language, setLanguage] = React.useState({
@@ -162,8 +173,10 @@ export default function ExamPage({location}) {
   const [output, setOutput] = React.useState("");
   const [status, setStatus] = React.useState("");
   const [ques, setQues] = React.useState([]);
+  const [sec, setSec] = React.useState();
+  const [timer, setTimer] = React.useState(localStorage.getItem("time"));
+  const [time, setTime] = React.useState("00:00:00");
   const [header, setHeader] = React.useState("");
-  const [time, setTime] = React.useState("");
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
 
@@ -189,7 +202,6 @@ export default function ExamPage({location}) {
   };
 
   React.useEffect(() => {
-
     fetchExamById(examId).then((exam) => {
       setHeader(`${exam.subject} - ${exam.name}`);
     });
@@ -209,50 +221,48 @@ export default function ExamPage({location}) {
         });
       }
     }
+    let interval = setInterval(() => {
+      let curTime = localStorage.getItem("time");
+      if (curTime > 0) {
+        const { hours, minutes, seconds } = renderTime(parseInt(curTime) - 1);
+        setTime(`${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`);
+        localStorage.setItem("time", parseInt(curTime) - 1);
+        setTimer(parseInt(curTime) - 1);
+      }
+    }, 1000);
+
+    setSec(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  React.useEffect(() => {
+    if (timer <= 0) clearInterval(sec);
+  }, [timer]);
 
   const [editorTheme, setEditorTheme] = React.useState("github");
   const [answer, setAnswer] = React.useState("");
-React.useEffect(() => {
-  if (!localStorage.getItem("time")) {
-    localStorage.setItem("time", location.state.duration);
-  }
-}, []);
 
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
   };
   const questionChange = (index) => {
-    setCurQuestion({
-      question: ques[index],
-      index: index,
-    });
-    // let answers = localStorage.getItem("ESAN");
-    // console.log(answers, `oba-${index+1}:`);
-    //   if (answers && answers.includes(`oba-${index+1}:`)) {
-    //     let start =
-    //       answers.indexOf(`oba-${index+1}:`) +
-    //       `oba-${index+1}:`.length;
-    //     let end = answers.indexOf("PR#BK", start);
-    //     if (end === -1) end = answers.length;
-    //     else end = end - 6;
-    //     console.log(
-    //       answers,
-    //       answers.substr(start, end),
-    //       start,
-    //       end
-    //     );
-    //     setAnswer(answers.substr(start, end));
-    //   }
-    // let flag = 0;
-    // for (var i = 0; i < objAns.length; i++) {
-    //   if (objAns[i].id === curQuestion.question.index) {
-    //     setAnswer(objAns[i].examAns);
-    //     flag = 1;
-    //     break;
-    //   }
-    // }
+    if (index === "submit") {
+      var r = window.confirm("This will end your exam, Do you agree?");
+      if (r === true) {
+        setTimer(0);
+        console.log("exam ended");
+        // calcResult();
+      }
+    } else {
+      setCurQuestion({
+        question: ques[index],
+        index: index,
+      });
+    }
   };
+
   const handleSubmit = async (testCases) => {
     let data;
     let err = false;
@@ -292,18 +302,6 @@ React.useEffect(() => {
           }
         });
     }
-  };
-  const renderer = (hours, minutes, seconds) => {
-    // if (completed) {
-    //   // Render a complete state
-    console.log(hours, minutes, seconds);
-    //   return <Completionist />;
-    // } else {
-    //   // Render a countdown
-    let changedTime = hours * 60 + (seconds-1) / 60 + minutes;
-    localStorage.setItem("time", changedTime);
-    return `${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`
-    // }
   };
 
   return (
@@ -365,6 +363,14 @@ React.useEffect(() => {
                 />
               </ListItem>
             ))}
+          <ListItem
+            button
+            key={"submit-test"}
+            className={classes.listItemSubmit}
+            onClick={() => questionChange("submit")}
+          >
+            <ListItemText primary="S" className={classes.listItemText} />
+          </ListItem>
         </List>
       </Drawer>
       <Box
@@ -511,42 +517,7 @@ React.useEffect(() => {
                   // name="answer",
                   spacing="auto"
                   value={answer}
-                  onChange={(event) => {
-                    // console.log(event.target.value);
-                    // dispatch(
-                    //   setObjectiveAnswer(
-                    //     event.target.value,
-                    //     curQuestion.index + 1
-                    //   )
-                    // );
-                    // let answers = localStorage.getItem("ESAN");
-                    // console.log(answers);
-                    // if (answers) {
-                      // answers = new Array(answers.split("#"));
-                      // console.log(answers);
-                      // if (answers.includes(`oba-${curQuestion.index + 1}:`)) {
-                      //   let start =
-                      //     answers.indexOf(`oba-${curQuestion.index + 1}:`) +
-                      //     (`oba-${curQuestion.index + 1}:`).length;
-                      //   let end = answers.indexOf("PR#BK", start);
-                      //   // console.log(start);
-                      //   answers =
-                      //     answers.substr(0, start) +
-                      //     event.target.value +
-                      //     answers.substr(end === -1? answers.length: end);
-                      // } else {
-                      //   answers += "PR#BK" + `oba-${curQuestion.index + 1}:${event.target.value}`;
-                      // }  
-                      // console.log(answers);
-                      // localStorage.setItem("ESAN", answers);
-                     //}localStorage.setItem("qid", curQuestion.index + 1);
-                  //   else
-                  //     localStorage.setItem(
-                  //       "ESAN",
-                  //       `oba-${curQuestion.index + 1}:${event.target.value}`
-                  //     );
-                  //   setAnswer(event.target.value);
-                  }}
+                  onChange={(event) => {}}
                 >
                   <FormControlLabel
                     value={curQuestion.question.option1}
