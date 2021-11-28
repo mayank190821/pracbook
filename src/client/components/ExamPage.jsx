@@ -24,15 +24,13 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { getCode, getQuestion } from "../redux/selectors/code.selector";
+import { getCode } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
 import { saveQuestion } from "../redux/actions/code.action";
 import { useParams } from "react-router-dom";
-import Countdown, { zeroPad } from "react-countdown";
+import { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
-import { setObjectiveAnswer } from "../redux/actions/code.action"
-import { getObjAns } from "../redux/selectors/code.selector";
 
 const languages = [
   {
@@ -73,6 +71,11 @@ const useStyles = makeStyles((theme) => ({
     width: "80px",
   },
   listItem: {
+    borderBottom: "1px solid #e2e2e2 !important",
+  },
+  listItemSubmit: {
+    backgroundColor: theme.palette.success.main,
+    color: "white",
     borderBottom: "1px solid #e2e2e2 !important",
   },
   listItemText: {
@@ -152,6 +155,13 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: "border-box",
 }));
 
+function renderTime(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  return { hours, minutes, seconds };
+}
 export default function ExamPage({ location }) {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -163,6 +173,9 @@ export default function ExamPage({ location }) {
   const [status, setStatus] = React.useState("");
   const [results, setResults] = React.useState([]);
   const [ques, setQues] = React.useState([]);
+  const [sec, setSec] = React.useState();
+  const [timer, setTimer] = React.useState(localStorage.getItem("time"));
+  const [time, setTime] = React.useState("00:00:00");
   const [header, setHeader] = React.useState("");
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
@@ -173,7 +186,6 @@ export default function ExamPage({ location }) {
     index: 0,
   });
 
-  const objAns = useSelector(getObjAns);
   const handleLanguageChange = (event) => {
     let code;
     switch (event.target.value) {
@@ -209,7 +221,25 @@ export default function ExamPage({ location }) {
         });
       }
     }
+    let interval = setInterval(() => {
+      let curTime = localStorage.getItem("time");
+      if (curTime > 0) {
+        const { hours, minutes, seconds } = renderTime(parseInt(curTime) - 1);
+        setTime(`${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`);
+        localStorage.setItem("time", parseInt(curTime) - 1);
+        setTimer(parseInt(curTime) - 1);
+      }
+    }, 1000);
+
+    setSec(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  React.useEffect(() => {
+    if (timer <= 0) clearInterval(sec);
+  }, [timer]);
 
   const [editorTheme, setEditorTheme] = React.useState("github");
   const [answer, setAnswer] = React.useState("");
@@ -218,19 +248,21 @@ export default function ExamPage({ location }) {
     setEditorTheme(event.target.value);
   };
   const questionChange = (index) => {
-    setCurQuestion({
-      question: ques[index],
-      index: index,
-    });
-    let flag = 0;
-    for (var i = 0; i < objAns.length; i++) {
-      if (objAns[i].id === curQuestion.question.index) {
-        setAnswer(objAns[i].examAns);
-        flag = 1;
-        break;
+    if (index === "submit") {
+      var r = window.confirm("This will end your exam, Do you agree?");
+      if (r === true) {
+        setTimer(0);
+        console.log("exam ended");
+        // calcResult();
       }
+    } else {
+      setCurQuestion({
+        question: ques[index],
+        index: index,
+      });
     }
   };
+
   const handleSubmit = async (testCases) => {
     let data;
     let err = false;
@@ -240,7 +272,6 @@ export default function ExamPage({ location }) {
     setResults([]);
     let result = "";
     for (let i = 0; i < (testCases.output ? testCases.output.length : 0); i++) {
-      let outputStatus = "";
       if (testCases.input.length === 0) {
         data = {
           language_id: language.code,
@@ -301,21 +332,6 @@ export default function ExamPage({ location }) {
     if(flag === results.length){ setStatus("Accepted"); }
   }, [results])
 
-
-  const renderer = ({ hours, minutes, seconds, completed }) => {
-    // if (completed) {
-    //   // Render a complete state
-    //   return <Completionist />;
-    // } else {
-    //   // Render a countdown
-    return (
-      <span>
-        {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
-      </span>
-    );
-    // }
-  };
-
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
@@ -354,10 +370,7 @@ export default function ExamPage({ location }) {
               marginRight: "3%",
             }}
           >
-            <Countdown
-              date={Date.now() + location.state.duration * 60000}
-              renderer={renderer}
-            />
+            {time}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -378,6 +391,14 @@ export default function ExamPage({ location }) {
                 />
               </ListItem>
             ))}
+          <ListItem
+            button
+            key={"submit-test"}
+            className={classes.listItemSubmit}
+            onClick={() => questionChange("submit")}
+          >
+            <ListItemText primary="S" className={classes.listItemText} />
+          </ListItem>
         </List>
       </Drawer>
       <Box
@@ -527,16 +548,7 @@ export default function ExamPage({ location }) {
                   // name="answer",
                   spacing="auto"
                   value={answer}
-                  onChange={(event) => {
-                    console.log(event.target.value);
-                    dispatch(
-                      setObjectiveAnswer(
-                        event.target.value,
-                        curQuestion.index + 1
-                      )
-                    );
-                    setAnswer(event.target.value);
-                  }}
+                  onChange={(event) => {}}
                 >
                   <FormControlLabel
                     value={curQuestion.question.option1}

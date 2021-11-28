@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import { fetchStudentDetails } from "../../api/utilities.api";
 import { CSVLink } from "react-csv";
-import { Snackbar } from "@material-ui/core";
+import Snackbars from "../ErrorMessages";
 const useStyles = makeStyles((Theme) => ({
     table: {
         marginLeft: "20px",
@@ -41,12 +41,12 @@ const columns = [
 function StudentInfo() {
     const style = useStyles();
     const [curYear, setCurYear] = useState("");
-    const [section, setSection] = useState([]);
     const handleYearChange = (event) => {
         setCurYear(event.target.value);
     };
     const resultData = useSelector(getUser);
     const [results, setResults] = useState([]);
+    const [section, setSection] = useState([]);
     const [subjectList, setSubjectList] = useState([]);
     const [subjects, setSubjects] = useState([]);
     const [curSubject, setCurSubject] = useState();
@@ -68,9 +68,17 @@ function StudentInfo() {
             }
         })
     };
-    const handleSearch = () => {
+    const [open, setOpen] = useState(false);
+
+    const handleSearch = (event) => {
+        event.preventDefault();
         fetchStudentDetails({ subject: curSubject, section: curSection, type: type, year: curYear, id: resultData._id }).then((res) => {
-            setResults(res.results);
+                setResults(res.results);
+                if(!res.results){
+                    console.log(res);
+                    setResults([]);
+                    setOpen(true);
+                }
         })
     }
     const [year, setyear] = useState([]);
@@ -203,7 +211,8 @@ function StudentInfo() {
                             GO
                         </Button>
                     }
-                    {(results.length !== 0) && <CSVLink {...csvReport}>
+
+                    {(results && results.length !== 0) && <CSVLink {...csvReport}>
                         <Button style={{
                             "right": "0",
                             "margin": "1.5%",
@@ -215,12 +224,21 @@ function StudentInfo() {
                             Print
                         </Button>
                     </CSVLink>}
+
+
+
                 </div>
             </div>
             <div className={style.table}>
                 <StudentTable results={results} />
 
             </div>
+            {(results && results.length === 0) && <Snackbars
+                                open={open}
+                                setOpen={setOpen}
+                                status="error"
+                                message="No result found"
+                            />}
         </>
     );
 }
