@@ -7,7 +7,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { Button } from '@mui/material';
-import { fetchStudentDetails } from '../../api/utilities.api';
+import {CSVLink} from 'react-csv';
 
 const StyleTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -31,10 +31,12 @@ const useStyle = makeStyles((Theme) => ({
     },
 }));
 
-function createData(stName, rollNo, attendence, marks) {
+function createData(stName, rollNo, section, year, attendence, marks) {
     return {
         stName,
         rollNo,
+        year,
+        section,
         attendence,
         marks
     };
@@ -51,13 +53,25 @@ const columns = [
     {
         id: 'rollNo',
         label: "Roll No.",
-        minWidth: "100px",
+        Width: "50px",
         format: (value) => value.toLocaleString('en-US'),
     },
     {
         id: 'stName',
         label: "Name",
         minWidth: 100,
+        align: "center",
+    },
+    {
+        id: 'year',
+        label: "Year",
+        minWidth: 70,
+        align: "center",
+    },
+    {
+        id: 'section',
+        label: "Section",
+        minWidth: 70,
         align: "center",
     },
     {
@@ -74,35 +88,26 @@ const columns = [
         format: (value) => value.toFixed(2),
     }
 ];
-
-export default function StudentTable({results}) {
+  
+export default function StudentTable({ results }) {
     const style = useStyle();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    // const rows = [
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    //     createData("Mayank Bhugra", '191500447', 'P', '20'),
-    // ];
     const [rows, setRows] = useState([]);
     React.useEffect(() => {
-        let data = [];
-        results.forEach((student) => {
-            data.push(createData(student.studentName, "191500463(static)", student.status, student.marks));
-        })
-        setRows(data);
+        if (results) {
+            let data = [];
+            results.forEach((student) => {
+                data.push(createData(student.name, student.rollNumber, student.section, student.year, student.status, student.marks));
+            })
+            console.log(results);
+            setRows(data);
+        }
     }, [results]);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-
+ 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(event.target.value);
         setPage(0);
@@ -137,9 +142,8 @@ export default function StudentTable({results}) {
                                                     <TableCell key={column.id}
                                                         align={column.align} >
                                                         {indexC === 0 ? index + 1 + rowsPerPage * page : ""}
-                                                        {indexC === 3 ?
-
-                                                            <Button variant="contained">
+                                                        {indexC === 5 ?
+                                                            <Button style={{ "backgroundColor": (value !== "P" || value !== "p") ? "#4caf50" : "red", "color": "white", "fontWeight": "600" }}>
                                                                 {column.format && typeof value === 'number' ? column.format(value) : value}
 
                                                             </Button>
@@ -149,9 +153,6 @@ export default function StudentTable({results}) {
                                                                 }
                                                             </>
                                                         }
-
-
-
                                                     </TableCell>
                                                 );
                                             })}
@@ -173,6 +174,7 @@ export default function StudentTable({results}) {
                 >
                 </TablePagination>
             </Paper>
+            
         </>
     );
 };

@@ -4,11 +4,11 @@ import crypto from "crypto";
 const facultyModel = new mongoose.Schema({
   name: String,
   email: String,
-  year:[String],
   hashedPassword: String,
   salt: String,
   sections: [
     {
+      year:String,
       sectionName: String,
       subjects: [String],
     },

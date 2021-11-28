@@ -47,10 +47,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
   const facultyData = useSelector(getUser);
-  const [year, setYear] = React.useState(facultyData.year);
+  const [year, setYear] = React.useState([facultyData.sections[0].year]);
   React.useEffect(() => {
-    setYear(facultyData.year);
-    console.log(facultyData.year);
+    setYear([facultyData.sections[0].year]);
+    console.log(facultyData.sections[0].year);
   }, [facultyData])
   const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
@@ -107,11 +107,11 @@ export default function ScheduleExam({ handleClose }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
+        <form id = "add_exam_form">
         <Stack spacing={3}>
           <Box spacing={1}
-            component="form"
+            component="div"
             sx={12}
-            noValidate
             autoComplete="off"
           >
             <TextField
@@ -121,6 +121,7 @@ export default function ScheduleExam({ handleClose }) {
               label="Exam Type"
               value={data.name}
               onChange={handleChange("name")}
+              required
             >
               {exams.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -135,6 +136,7 @@ export default function ScheduleExam({ handleClose }) {
               label="Year"
               value={data.year}
               onChange={handleChange("year")}
+              required
             >
               {year.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -151,10 +153,12 @@ export default function ScheduleExam({ handleClose }) {
               disablePast
               onChange={handleChange("date")}
               renderInput={(params) => <TextField {...params} />}
+              required
             />
           </LocalizationProvider>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} required>
             <TimePicker
+            required
               label="Time"
               value={time}
               onChange={handleChange("time")}
@@ -162,10 +166,9 @@ export default function ScheduleExam({ handleClose }) {
             />
           </LocalizationProvider>
           <Box
-            component="form"
+            component="div"
             sx={12}
             spacing={1}
-            noValidate
             autoComplete="off"
           >
             <TextField
@@ -174,8 +177,8 @@ export default function ScheduleExam({ handleClose }) {
               label="Subject"
               value={data.subject}
               onChange={handleChange("subject")}
+              required
             />
-
             <TextField
               required
               id="outlined-required"
@@ -183,13 +186,13 @@ export default function ScheduleExam({ handleClose }) {
               label="Section"
               value={data.section}
               onChange={handleChange("section")}
+              required
             />
           </Box>
           <Box
-            component="form"
+            component="div"
             sx={12}
             spacing={1}
-            noValidate
             autoComplete="off"
           >
             <TextField
@@ -198,6 +201,7 @@ export default function ScheduleExam({ handleClose }) {
               label="Time Duration"
               value={data.duration}
               onChange={handleChange("duration")}
+              required
             />
             <TextField
               required
@@ -206,13 +210,13 @@ export default function ScheduleExam({ handleClose }) {
               className={classes.elements}
               value={data.marks}
               onChange={handleChange("marks")}
+              required
             />
           </Box>
           <Box
-            component="form"
+            component="div"
             sx={12}
             spacing={1}
-            noValidate
             autoComplete="off"
           >
             <TextField
@@ -221,6 +225,7 @@ export default function ScheduleExam({ handleClose }) {
               label="Objective Count"
               value={data.objectCount}
               onChange={handleChange("objectCount")}
+              required
             />
             <TextField
               required
@@ -229,17 +234,24 @@ export default function ScheduleExam({ handleClose }) {
               className={classes.elements}
               value={data.codingCount}
               onChange={handleChange("codingCount")}
+              required
             />
           </Box>
-          <Button variant="contained" onClick={() => {
+          <Button type = "submit" variant="contained" onClick={(e) => {
+            e.preventDefault();
+            const formId = document.getElementById("add_exam_form");
+            formId.checkValidity();
+            if(formId.reportValidity()){
             handleScheduleExam(); fetchCardDetails(facultyData._id, facultyData.role).then((res) => {
               console.log(res);
               dispatch(loadExams(res.exams));
             });
+          }
           }}>
             Add Exam
           </Button>
         </Stack>
+        </form>
       </Dialog>
     </div>
   );
