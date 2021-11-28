@@ -136,6 +136,7 @@ export default function InstructionPage() {
         }
         curExam.questionIds = questionIds;
         sessionStorage.setItem("TQID", questionIds.toString());
+        localStorage.setItem("time", curExam.duration * 60);
         setFetched(true);
         setExam(curExam);
       });

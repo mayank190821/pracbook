@@ -25,14 +25,13 @@ import {
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { getCode, getQuestion } from "../redux/selectors/code.selector";
-import { useDispatch } from "react-redux";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
 import { saveQuestion } from "../redux/actions/code.action";
 import { useParams } from "react-router-dom";
 import Countdown, { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
-import {setObjectiveAnswer} from "../redux/actions/code.action"
+import { setObjectiveAnswer } from "../redux/actions/code.action";
 import { getObjAns } from "../redux/selectors/code.selector";
 
 const languages = [
@@ -152,11 +151,16 @@ const Drawer = styled(MuiDrawer, {
   whiteSpace: "nowrap",
   boxSizing: "border-box",
 }));
-
-export default function ExamPage({location}) {
+function renderTime(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  return { hours, minutes, seconds };
+}
+export default function ExamPage({ location }) {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const dispatch = useDispatch();
   const [language, setLanguage] = React.useState({
     value: "java",
     code: 62,
@@ -164,6 +168,9 @@ export default function ExamPage({location}) {
   const [output, setOutput] = React.useState("");
   const [status, setStatus] = React.useState("");
   const [ques, setQues] = React.useState([]);
+  const [sec, setSec] = React.useState();
+  const [timer, setTimer] = React.useState(localStorage.getItem("time"));
+  const [time, setTime] = React.useState("00:00:00");
   const [header, setHeader] = React.useState("");
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
@@ -174,7 +181,7 @@ export default function ExamPage({location}) {
     index: 0,
   });
 
-  const objAns = useSelector(getObjAns); 
+  const objAns = useSelector(getObjAns);
   const handleLanguageChange = (event) => {
     let code;
     switch (event.target.value) {
@@ -210,7 +217,25 @@ export default function ExamPage({location}) {
         });
       }
     }
+    let interval = setInterval(() => {
+      let curTime = localStorage.getItem("time");
+      if (curTime > 0) {
+        const { hours, minutes, seconds } = renderTime(parseInt(curTime) - 1);
+        setTime(`${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`);
+        localStorage.setItem("time", parseInt(curTime) - 1);
+        setTimer(parseInt(curTime) - 1);
+      }
+    }, 1000);
+
+    setSec(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  React.useEffect(() => {
+    if (timer <= 0) clearInterval(sec);
+  }, [timer]);
 
   const [editorTheme, setEditorTheme] = React.useState("github");
   const [answer, setAnswer] = React.useState("");
@@ -324,10 +349,7 @@ export default function ExamPage({location}) {
               marginRight: "3%",
             }}
           >
-            <Countdown
-              date={Date.now() + location.state.duration * 60000}
-              renderer={renderer}
-            />
+            {time}
           </Typography>
         </Toolbar>
       </AppBar>
