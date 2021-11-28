@@ -7,7 +7,6 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { Button } from '@mui/material';
-import {CSVLink} from 'react-csv';
 
 const StyleTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -76,7 +75,7 @@ const columns = [
     },
     {
         id: 'attendence',
-        label: "Status",
+        label: "Attendence",
         minWidth: 70,
         align: "center",
     },

@@ -17,6 +17,9 @@ const useStyles = makeStyles((Theme) => ({
 
 const examType = [
     {
+        value: "",
+        label: ""
+    },{
         value: "midterm",
         label: "mid-term"
     },
@@ -37,16 +40,15 @@ const columns = [
 ]
 function StudentInfo() {
     const style = useStyles();
-    const [curYear, setCurYear] = React.useState();
+    const [curYear, setCurYear] = React.useState("");
     const [section, setSection] = useState([]);
     const handleYearChange = (event) => {
         setCurYear(event.target.value);
-        console.log(event.target.value);
     };
     const resultData = useSelector(getUser);
     const [results, setResults] = useState([]);
     const [subjectList, setSubjectList] = useState([]);
-    const [subjects, setSubjects] = useState(resultData.sections[0].subjects);
+    const [subjects, setSubjects] = useState([]);
     const [curSubject, setCurSubject] = useState();
     const [curSection, setCurSection] = useState();
     const [type, setType] = useState();
@@ -94,7 +96,7 @@ function StudentInfo() {
     }, [resultData])
 
     const csvReport = {
-        filename: "Report.csv",
+        filename: `${(curYear!== "")?curYear[0]:"Year"}_${curSection}_Result.csv`,
         headers: columns,
         data: results
     };
@@ -105,7 +107,7 @@ function StudentInfo() {
                     <TextField
                         id="outlined-select-currency-native"
                         select
-                        label="Section Year"
+                        label="Year"
                         style={{
                             "margin": "1.5%",
                         }}
@@ -170,7 +172,7 @@ function StudentInfo() {
                     <TextField
                         id="outlined-select-currency-native"
                         select
-                        label="Subject"
+                        // label="Subject"
                         style={{
                             "margin": "1.5%",
                         }}
@@ -180,6 +182,7 @@ function StudentInfo() {
                         SelectProps={{
                             native: true,
                         }}
+                        displayEmpty
                         helperText="Please select Subject"
                     >
                         {subjects.map((option) => (
