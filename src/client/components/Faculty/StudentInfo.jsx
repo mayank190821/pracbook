@@ -40,11 +40,10 @@ const columns = [
 ]
 function StudentInfo() {
     const style = useStyles();
-    const [curYear, setCurYear] = React.useState();
+    const [curYear, setCurYear] = React.useState("");
     const [section, setSection] = useState([]);
     const handleYearChange = (event) => {
         setCurYear(event.target.value);
-        console.log(event.target.value);
     };
     const resultData = useSelector(getUser);
     const [results, setResults] = useState([]);
@@ -97,7 +96,7 @@ function StudentInfo() {
     }, [resultData])
 
     const csvReport = {
-        filename: `${curYear[0]}_${curSection}_Result.csv`,
+        filename: `${(curYear!== "")?curYear[0]:"Year"}_${curSection}_Result.csv`,
         headers: columns,
         data: results
     };
