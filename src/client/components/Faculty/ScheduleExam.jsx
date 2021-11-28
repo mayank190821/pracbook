@@ -139,7 +139,7 @@ export default function ScheduleExam({ handleClose }) {
               required
             >
               {year.map((option) => (
-                <MenuItem key={option} value={option}>
+                <MenuItem key={option.value} value={option.value}>
                   {option}
                 </MenuItem>
               ))}
