@@ -32,23 +32,23 @@ const fetchCpQuesDetails = async () => {
   return await response.json();
 };
 
-const fetchStudentDetails = async(props)=>{
+const fetchStudentDetails = async (props) => {
   console.log(props.section, props.type, props.id);
-  let res = await fetch(`/api/faculty/result/${props.id}`,{
-  method:"PUT",
-  headers: {
-    Accept:"application/json",
-    "Content-Type":"application/json"
-  },
-  body: JSON.stringify({
-    subject: props.subject,
-    section: props.section,
-    type: props.type,
-    year:props.year
-  })
-});
-return await res.json();
-}
+  let res = await fetch(`/api/faculty/result/${props.id}`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      subject: props.subject,
+      section: props.section,
+      type: props.type,
+      year: props.year,
+    }),
+  });
+  return await res.json();
+};
 
 const fetchResultByStudentId = async (id) => {
   console.log(id);
@@ -80,5 +80,5 @@ export {
   fetchCpQuesDetails,
   fetchResultByStudentId,
   fetchExamById,
-  fetchStudentDetails
+  fetchStudentDetails,
 };

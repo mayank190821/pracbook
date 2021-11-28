@@ -15,7 +15,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Button from "@mui/material/Button";
-import { compile } from "./../api/exam.api";
+import { compile, fetchExam } from "./../api/exam.api";
 import {
   Card,
   CardContent,
@@ -25,9 +25,13 @@ import {
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { getCode, getQuestion } from "../redux/selectors/code.selector";
+import { useDispatch } from "react-redux";
 import CodingQuestion from "../components/coding.question";
+import { fetchExamQuestion } from "../api/exam.api";
+import { saveQuestion } from "../redux/actions/code.action";
 import { useParams } from "react-router-dom";
 import Countdown, { zeroPad } from "react-countdown";
+import { fetchExamById } from "../api/utilities.api";
 import {setObjectiveAnswer} from "../redux/actions/code.action"
 import { getObjAns } from "../redux/selectors/code.selector";
 
@@ -112,6 +116,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10px",
     height: "100vh",
   },
+  label: {
+    fontFamily: "Times New Roman !important",
+    fontSize: "18px",
+  },
   problem: {
     width: "100vw",
     height: "calc(100vh - 80px)",
@@ -148,15 +156,24 @@ const Drawer = styled(MuiDrawer, {
 export default function ExamPage({location}) {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [language, setLanguage] = React.useState({
     value: "java",
     code: 62,
   });
   const [output, setOutput] = React.useState("");
   const [status, setStatus] = React.useState("");
+  const [ques, setQues] = React.useState([]);
+  const [header, setHeader] = React.useState("");
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
-  const { ques } = useSelector(getQuestion);
+
+  const quesIds = sessionStorage.getItem("TQID").split(",");
+  const [curQuestion, setCurQuestion] = React.useState({
+    question: ques[0],
+    index: 0,
+  });
+
   const objAns = useSelector(getObjAns); 
   const handleLanguageChange = (event) => {
     let code;
@@ -172,12 +189,30 @@ export default function ExamPage({location}) {
     }
     setLanguage({ ...language, value: event.target.value, code: code });
   };
-  React.useEffect(() => {}, [examId]);
+
+  React.useEffect(() => {
+    fetchExamById(examId).then((exam) => {
+      setHeader(`${exam.subject} - ${exam.name}`);
+    });
+    if (ques.length === 0 && quesIds.length !== 0) {
+      let currentQues = [];
+      for (let i = 0; i < quesIds.length; i++) {
+        fetchExamQuestion(quesIds[i]).then(async (response) => {
+          currentQues.push(response.question);
+          setQues([...currentQues]);
+          dispatch(saveQuestion(currentQues));
+          if (i === 0) {
+            setCurQuestion({
+              question: currentQues[0],
+              index: 0,
+            });
+          }
+        });
+      }
+    }
+  }, []);
+
   const [editorTheme, setEditorTheme] = React.useState("github");
-  const [curQuestion, setCurQuestion] = React.useState({
-    question: ques[0],
-    index: 0,
-  });
   const [answer, setAnswer] = React.useState("");
 
   const handleThemeChange = (event) => {
@@ -203,7 +238,7 @@ export default function ExamPage({location}) {
     setOutput("");
     setStatus("");
     let result = "";
-    // console.log(curQuestion.question.length);
+    console.log(curQuestion.question.length);
     for (let i = 0; i < (testCases.input ? testCases.input.length : 0); i++) {
       data = {
         language_id: language.code,
@@ -211,7 +246,7 @@ export default function ExamPage({location}) {
         stdin: testCases.input[i],
         expected_output: testCases.output[i],
       };
-       compile(data)
+      compile(data)
         .then((response) => {
           if (response.stderr) {
             setOutput(response.status.description + "\n\n" + response.stderr);
@@ -243,11 +278,11 @@ export default function ExamPage({location}) {
     //   return <Completionist />;
     // } else {
     //   // Render a countdown
-      return (
-        <span>
-          {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
-        </span>
-      );
+    return (
+      <span>
+        {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
+      </span>
+    );
     // }
   };
 
@@ -255,8 +290,13 @@ export default function ExamPage({location}) {
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            PracBook Assessment
+          <Typography
+            variant="h6"
+            noWrap
+            style={{ textTransform: "capitalize" }}
+            component="div"
+          >
+            {header}
           </Typography>
           <Typography
             variant="h6"
@@ -294,19 +334,20 @@ export default function ExamPage({location}) {
       <Drawer variant="permanent">
         <DrawerHeader></DrawerHeader>
         <List className={classes.list}>
-          {new Array(ques.length).fill().map((text, index) => (
-            <ListItem
-              button
-              key={index}
-              className={classes.listItem}
-              onClick={() => questionChange(index)}
-            >
-              <ListItemText
-                primary={index + 1}
-                className={classes.listItemText}
-              />
-            </ListItem>
-          ))}
+          {ques.length === quesIds.length &&
+            new Array(ques.length).fill().map((text, index) => (
+              <ListItem
+                button
+                key={index}
+                className={classes.listItem}
+                onClick={() => questionChange(index)}
+              >
+                <ListItemText
+                  primary={index + 1}
+                  className={classes.listItemText}
+                />
+              </ListItem>
+            ))}
         </List>
       </Drawer>
       <Box
@@ -319,7 +360,10 @@ export default function ExamPage({location}) {
           (curQuestion.question.questionId.slice(0, 2) === "cp" ? (
             <>
               <div className={classes.problem}>
-                <CodingQuestion ques={curQuestion.question} />
+                <CodingQuestion
+                  ques={curQuestion.question}
+                  id={curQuestion.index}
+                />
               </div>
               <div className={classes.editor}>
                 <TextField
@@ -395,15 +439,13 @@ export default function ExamPage({location}) {
                   <Button
                     variant="outlined"
                     className={classes.runCode}
-                    onClick={() =>
-                      {
+                    onClick={() => {
                       handleSubmit({
                         input: curQuestion.question.sampleInput,
                         output: curQuestion.question.sampleOutput,
-                      })
-                      console.log("clicked")
-                    }
-                    }
+                      });
+                      console.log("clicked");
+                    }}
                     style={{ margin: "10px", marginBottom: "5px" }}
                   >
                     Run Code
@@ -428,12 +470,17 @@ export default function ExamPage({location}) {
             <Card
               sx={{ minWidth: 275 }}
               elevation={0}
-              style={{ marginBottom: "15px" }}
+              style={{
+                marginBottom: "15px",
+              }}
             >
               <CardContent>
                 <Typography
-                  sx={{ fontSize: 22 }}
-                  color="text.secondary"
+                  variant="h5"
+                  style={{
+                    fontWeight: "600",
+                    fontFamily: "Times New Roman",
+                  }}
                   gutterBottom
                 >
                   {curQuestion.index + 1}
@@ -461,21 +508,33 @@ export default function ExamPage({location}) {
                   <FormControlLabel
                     value={curQuestion.question.option1}
                     control={<Radio />}
+                    classes={{
+                      label: classes.label,
+                    }}
                     label={`A. ${curQuestion.question.option1}`}
                   />
                   <FormControlLabel
                     value={curQuestion.question.option2}
                     control={<Radio />}
+                    classes={{
+                      label: classes.label,
+                    }}
                     label={`B. ${curQuestion.question.option2}`}
                   />
                   <FormControlLabel
                     value={curQuestion.question.option3}
-                    control={<Radio/>}
+                    control={<Radio />}
+                    classes={{
+                      label: classes.label,
+                    }}
                     label={`C. ${curQuestion.question.option3}`}
                   />
                   <FormControlLabel
                     value={curQuestion.question.option4}
                     control={<Radio />}
+                    classes={{
+                      label: classes.label,
+                    }}
                     label={`D. ${curQuestion.question.option4}`}
                   />
                 </RadioGroup>

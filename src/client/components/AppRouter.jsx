@@ -6,10 +6,7 @@ import DashBoard from "./Faculty/DashBoard";
 import { Switch, Route } from "react-router";
 import ExamPage from "./ExamPage";
 import InstructionPage from "./instructionPage";
-import AddQuestion from "./Faculty/AddQuestion";
-import QuestionCard from "./Faculty/QuestionCard";
 import StudentDashBoard from "./Student/StudentDashboard";
-import ExamHistory from "../components/Student/ExamHistory";
 
 export default function AppRouter() {
   return (
