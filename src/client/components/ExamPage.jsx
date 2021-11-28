@@ -25,7 +25,6 @@ import {
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { getCode, getQuestion } from "../redux/selectors/code.selector";
-import { useDispatch } from "react-redux";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
 import { saveQuestion } from "../redux/actions/code.action";
@@ -156,7 +155,6 @@ const Drawer = styled(MuiDrawer, {
 export default function ExamPage({location}) {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const dispatch = useDispatch();
   const [language, setLanguage] = React.useState({
     value: "java",
     code: 62,
