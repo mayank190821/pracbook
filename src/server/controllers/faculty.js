@@ -115,13 +115,17 @@ const getExamsByFaculty = async (req, res) => {
 };
 
 const fetchExamId = async(req, res, next) => {
+  console.log(req.body);
   let exam = await examsModel.findOne({
     name: req.body.type,
-    subject: req.body.subject,
-    section: req.body.section
+    subject: { $regex: `${req.body.subject}`, $options: "i" },
+    section: req.body.section,
+    year:req.body.year
   })
-  console.log(exam);
-  if(exam) req.examId = exam._id;
+  if(exam){
+    console.log(exam);
+    req.examId = exam._id;
+  } 
   next();
 }
 
@@ -134,6 +138,7 @@ const examResults = async (req, res) => {
       let students = await studentModel.find({
         section: req.body.section,
         subjects: { $regex: `${req.body.subject}`, $options: "i" },
+        year: req.body.year
       });
       let results = [];
       console.log(examId.toString());
@@ -142,10 +147,12 @@ const examResults = async (req, res) => {
           console.log(exam);
           if (exam.examId === examId.toString()) {
             results.push({
-              studentName: student.name,
+              name: student.name,
               section: student.section,
               status: "P",
               marks: exam.result.marksObtained,
+              year:student.year,
+              rollNumber:student.rollNumber
             });
           }
         });

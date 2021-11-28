@@ -147,7 +147,10 @@ export default function InstructionPage() {
     }, [exam]);
 
     if(redirect){
-        return <Redirect to={`/exam/${examId}`}/>
+        return <Redirect to={{
+            pathname: `/exam/${examId}`,
+            state: {duration :exam.duration}
+        }}/>
     }
     return (
         <>
