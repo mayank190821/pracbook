@@ -260,8 +260,14 @@ export default function ExamPage({ location }) {
         curQuestion.question &&
         curQuestion.question.questionId.slice(0, 2) === "cp"
       ) {
-        localStorage.setItem(`cp${curQuestion.index + 1}`, sourceCode);
-        localStorage.setItem(`cpl${curQuestion.index + 1}`, language.value);
+        localStorage.setItem(
+          `cp${curQuestion.question.questionId}`,
+          sourceCode
+        );
+        localStorage.setItem(
+          `cpl${curQuestion.question.questionId}`,
+          language.value
+        );
       }
       setCurQuestion({
         question: ques[index],
@@ -272,9 +278,10 @@ export default function ExamPage({ location }) {
 
   React.useEffect(() => {
     console.log("language exam page");
-    handleLanguageChange(
-      localStorage.getItem(`cpl${curQuestion.index + 1}`) || "java"
-    );
+    if (curQuestion && curQuestion.question)
+      handleLanguageChange(
+        localStorage.getItem(`cpl${curQuestion.question.questionId}`) || "java"
+      );
   }, [curQuestion]);
 
   const handleSubmit = async (testCases) => {
@@ -469,7 +476,7 @@ export default function ExamPage({ location }) {
                 <Editor
                   editorTheme={editorTheme}
                   key={`cp${curQuestion.index}`}
-                  index={curQuestion.index}
+                  index={curQuestion.question.questionId}
                   language={language.value}
                 />
                 <h2
@@ -567,12 +574,13 @@ export default function ExamPage({ location }) {
                   // name="answer",
                   spacing="auto"
                   value={
-                    localStorage.getItem(`ans${curQuestion.index + 1}`) ||
-                    answer
+                    localStorage.getItem(
+                      `ans${curQuestion.question.questionId}`
+                    ) || answer
                   }
                   onChange={(event) => {
                     localStorage.setItem(
-                      `ans${curQuestion.index + 1}`,
+                      `ans${curQuestion.question.questionId}`,
                       event.target.value
                     );
                     setAnswer(event.target.value);

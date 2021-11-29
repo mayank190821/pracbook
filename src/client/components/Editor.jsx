@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import AceEditor from "react-ace";
 import { makeStyles } from "@mui/styles";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { saveCode } from "../redux/actions/code.action";
-import { getCode } from "../redux/selectors/code.selector";
 
 import "ace-builds/src-noconflict/ext-language_tools";
 
@@ -43,7 +42,7 @@ const Editor = ({ editorTheme, language, index }) => {
   };
 
   useEffect(() => {
-    let code = localStorage.getItem(`cp${index + 1}`);
+    let code = localStorage.getItem(`cp${index}`);
     if (!curSourceCode && code !== null) {
       console.log("saved local code");
       setCurSourceCode(code);
