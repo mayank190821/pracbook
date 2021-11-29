@@ -47,18 +47,24 @@ export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
   const facultyData = useSelector(getUser);
   const [curYear, setCurYear] = React.useState([]);
+  const [curSection, setCurSection] = React.useState([]);
+  const [subjectList, setSubjectList] = React.useState([]);
+  const [curSubjectList, setCurSubjectList] = React.useState([]);
   React.useEffect(() => {
+    let secArray = [];
     let yearArray = [];
-    let secArray=[];
     let secLen = facultyData.sections.length;
+    let subjectArray = [];
     for (let i = 0; i < secLen; i++) {
       yearArray.push(facultyData.sections[i].year)
-      secArray.push(facultyData.sections[i])
+      secArray.push(facultyData.sections[i].sectionName)
+      subjectArray.push(facultyData.sections[i])
     }
-    setCurYear(yearArray)
-    // for(let i=0;i<)
-    console.log(facultyData)
+    setCurYear(yearArray);
+    setSubjectList(subjectArray);
+    setCurSection(secArray)
   }, [facultyData])
+
   const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
   const [time, setTime] = React.useState(null);
@@ -100,6 +106,14 @@ export default function ScheduleExam({ handleClose }) {
         date: event.toLocaleString().split(",")[0],
       });
       setDate(event);
+    }
+    else if (props === "section") {
+      setData({ ...data, [props]: event.target.value });
+      subjectList.forEach((curSection) => {
+        if (curSection.sectionName === event.target.value) {
+          setCurSubjectList(curSection.subjects);
+        }
+      })
     }
     else
       setData({ ...data, [props]: event.target.value });
@@ -185,8 +199,14 @@ export default function ScheduleExam({ handleClose }) {
                 label="Section"
                 select
                 value={data.section}
-                onChange={handleChange("section")}
-              />
+                onChange={handleChange('section')}
+              >
+                {curSection.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 style={{ "width": "47%", "marginLeft": "25px" }}
                 select
@@ -195,7 +215,13 @@ export default function ScheduleExam({ handleClose }) {
                 value={data.subject}
                 onChange={handleChange("subject")}
                 required
-              />
+              >
+                {curSubjectList.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Box>
             <Box
               component="div"
