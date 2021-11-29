@@ -186,9 +186,9 @@ export default function ExamPage({ location }) {
     index: 0,
   });
 
-  const handleLanguageChange = (event) => {
+  const handleLanguageChange = (value) => {
     let code;
-    switch (event.target.value) {
+    switch (value) {
       case "javascript":
         code = 63;
         break;
@@ -198,7 +198,7 @@ export default function ExamPage({ location }) {
       default:
         code = 62;
     }
-    setLanguage({ ...language, value: event.target.value, code: code });
+    setLanguage({ ...language, value: value, code: code });
   };
 
   React.useEffect(() => {
@@ -260,7 +260,8 @@ export default function ExamPage({ location }) {
         curQuestion.question &&
         curQuestion.question.questionId.slice(0, 2) === "cp"
       ) {
-        localStorage.setItem(`ans${curQuestion.index + 1}`, sourceCode);
+        localStorage.setItem(`cp${curQuestion.index + 1}`, sourceCode);
+        localStorage.setItem(`cpl${curQuestion.index + 1}`, language.value);
       }
       setCurQuestion({
         question: ques[index],
@@ -270,12 +271,10 @@ export default function ExamPage({ location }) {
   };
 
   React.useEffect(() => {
-    if (
-      curQuestion.question &&
-      curQuestion.question.questionId.slice(0, 2) === "cp"
-    ) {
-      dispatch(saveCode(localStorage.getItem(`ans${curQuestion.index + 1}`)));
-    }
+    console.log("language exam page");
+    handleLanguageChange(
+      localStorage.getItem(`cpl${curQuestion.index + 1}`) || "java"
+    );
   }, [curQuestion]);
 
   const handleSubmit = async (testCases) => {
@@ -293,25 +292,25 @@ export default function ExamPage({ location }) {
           source_code: sourceCode,
           stdin: "",
           expected_output: testCases.output[i],
-        }
+        };
       } else {
         data = {
           language_id: language.code,
           source_code: sourceCode,
           stdin: testCases.input[i],
           expected_output: testCases.output[i],
-        }
-      };
+        };
+      }
       compile(data)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           if (response.stderr) {
             result += response.stderr;
             err = true;
-          } else if(response.compile_output !== null){
+          } else if (response.compile_output !== null) {
             result = response.compile_output;
             err = true;
-          }else if (response.stdout) {
+          } else if (response.stdout) {
             if (!err) {
               result += "TestCase " + i + ": " + response.stdout + "\n";
             }
@@ -322,30 +321,31 @@ export default function ExamPage({ location }) {
         })
         .then(async () => {
           await setOutput(result);
-        }).then(()=>{
-          setResults([...currStatus]);
         })
+        .then(() => {
+          setResults([...currStatus]);
+        });
     }
   };
 
   React.useEffect(() => {
     let flag = -1;
-    console.log(results);
-    for(let i=0; i<results.length;i++){
-      if(results[i] == "Accepted"){
+    // console.log(results);
+    for (let i = 0; i < results.length; i++) {
+      if (results[i] == "Accepted") {
         setStatus(results[i]);
-        if(i === 0) {
+        if (i === 0) {
           flag = 1;
-        }
-        else flag++;
-      }
-      else{
+        } else flag++;
+      } else {
         setStatus(results[i]);
         break;
       }
     }
-    if(flag === results.length){ setStatus("Accepted"); }
-  }, [results])
+    if (flag === results.length) {
+      setStatus("Accepted");
+    }
+  }, [results]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -439,7 +439,7 @@ export default function ExamPage({ location }) {
                   size="small"
                   // label="Select"
                   value={language.value}
-                  onChange={handleLanguageChange}
+                  onChange={(event) => handleLanguageChange(event.target.value)}
                   // helperText="Please select your language"
                   className={classes.inputArea}
                   style={{ marginRight: "5%", marginLeft: "20px" }}
@@ -466,7 +466,12 @@ export default function ExamPage({ location }) {
                     </MenuItem>
                   ))}
                 </TextField>
-                <Editor editorTheme={editorTheme} language={language.value} />
+                <Editor
+                  editorTheme={editorTheme}
+                  key={`cp${curQuestion.index}`}
+                  index={curQuestion.index}
+                  language={language.value}
+                />
                 <h2
                   style={{
                     marginLeft: "20px",
@@ -511,7 +516,7 @@ export default function ExamPage({ location }) {
                         input: curQuestion.question.sampleInput,
                         output: curQuestion.question.sampleOutput,
                       });
-                      console.log("clicked");
+                      // console.log("clicked");
                     }}
                     style={{ margin: "10px", marginBottom: "5px" }}
                   >
@@ -523,9 +528,8 @@ export default function ExamPage({ location }) {
                       handleSubmit({
                         input: curQuestion.question.inputTestCases,
                         output: curQuestion.question.outputTestCases,
-                      })
-                    }
-                    }
+                      });
+                    }}
                     variant="contained"
                     className={classes.submitCode}
                     style={{ margin: "10px", marginBottom: "5px" }}

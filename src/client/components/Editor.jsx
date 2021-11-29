@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import AceEditor from "react-ace";
 import { makeStyles } from "@mui/styles";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { saveCode } from "../redux/actions/code.action";
+import { getCode } from "../redux/selectors/code.selector";
 
 import "ace-builds/src-noconflict/ext-language_tools";
 
@@ -16,7 +17,7 @@ import "ace-builds/src-noconflict/theme-solarized_dark";
 import "ace-builds/src-noconflict/theme-eclipse";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 
-const Editor = ({ editorTheme, language }) => {
+const Editor = ({ editorTheme, language, index }) => {
   const useStyles = makeStyles((theme) => ({
     editorClass: {
       marginLeft: "20px",
@@ -26,8 +27,9 @@ const Editor = ({ editorTheme, language }) => {
     },
   }));
 
-  const [sourceCode, setSourceCode] = React.useState("// Write your code here");
+  const [curSourceCode, setCurSourceCode] = React.useState();
   const dispatch = useDispatch();
+  // const { sourceCode } = useSelector(getCode);
 
   const classes = useStyles();
 
@@ -41,15 +43,28 @@ const Editor = ({ editorTheme, language }) => {
   };
 
   useEffect(() => {
-    setTheme(editorTheme);
-    setMode(language);
-    setSourceCode(template[mode]);
-  }, [language, editorTheme, mode]);
+    let code = localStorage.getItem(`cp${index + 1}`);
+    if (!curSourceCode && code !== null) {
+      console.log("saved local code");
+      setCurSourceCode(code);
+      setTimeout(() => setCurSourceCode(code + " "), 500);
+    } else if (code !== curSourceCode) {
+      console.log("language editor");
+      setMode(language);
+      setCurSourceCode(template[mode]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, mode, index]);
 
   useEffect(() => {
-    dispatch(saveCode(sourceCode));
+    setTheme(editorTheme);
+  }, [editorTheme]);
+
+  useEffect(() => {
+    // console.log("editor to redux");
+    if (curSourceCode) dispatch(saveCode(curSourceCode));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sourceCode]);
+  }, [curSourceCode]);
 
   return (
     <AceEditor
@@ -58,12 +73,12 @@ const Editor = ({ editorTheme, language }) => {
       mode={mode}
       theme={theme}
       name="editor"
-      onChange={(value) => setSourceCode(value)}
+      onChange={(value) => setCurSourceCode(value)}
       fontSize={14}
       showPrintMargin={true}
       showGutter={true}
       highlightActiveLine={true}
-      value={sourceCode}
+      value={curSourceCode}
       setOptions={{
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,
