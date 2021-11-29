@@ -106,10 +106,7 @@ const CardList = ({ location }) => {
               Array.from(exams).map((dat, index) => {
                 return Array.from(dat).map((da, jndex) => {
                   return (
-                    <SectionCard
-                      key={`${da.section}-${index}`}
-                      props={{ data: da, i: index }}
-                    />
+                    <SectionCard key={`${da.section}-${index}`} props={da} />
                   );
                 });
               })}
@@ -122,7 +119,7 @@ const CardList = ({ location }) => {
                   >
                     <SectionCard
                       key={`${dat.section}-${dat.year}-${index}`}
-                      props={{ data: dat, i: index }}
+                      props={dat}
                     />
                   </Link>
                 );

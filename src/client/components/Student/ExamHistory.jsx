@@ -1,7 +1,7 @@
 import React from "react";
 import StudentMarksCard from "./StudentMarksCard";
 import { makeStyles } from "@mui/styles";
-import {Typography} from "@mui/material";
+import { Typography } from "@mui/material";
 import image from "../../images/exam.png";
 import { fetchExamById } from "../../api/utilities.api";
 import { useSelector } from "react-redux";
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "scaleY(0.5) scaleX(0.7)",
   },
   head: {
-    height:"20px !important",
+    height: "20px !important",
     width: "100%",
     marginLeft: "20px",
     marginBottom: "20px",
@@ -65,7 +65,7 @@ const History = () => {
     let values = [];
     user.exams.forEach((exam, index) => {
       fetchExamById(exam.examId).then((examData) => {
-        if(examData !== null && examData !== undefined){
+        if (examData !== null && examData !== undefined) {
           values.unshift({
             name: examData.name,
             subject: examData.subject,
@@ -74,7 +74,9 @@ const History = () => {
             date: examData.date,
             time: examData.time,
             duration: examData.duration,
-            marks: examData.marks,
+            marks:
+              examData.objMarks * examData.objectCount +
+              examData.codingMarks * examData.codingCount,
           });
           setData([...values]);
         }
@@ -85,30 +87,26 @@ const History = () => {
 
   return (
     <>
-        {!data || !data[0] || data.length === 0 ? (
-          <div className={classNames.empty}>
-            <div className={classNames.imageContainer}>
-              <img
-                alt="No Class"
-                src={image}
-                className={classNames.image}
-              ></img>
-              <h2 className={classNames.emptyHeading}>No Exam History</h2>
-            </div>
+      {!data || !data[0] || data.length === 0 ? (
+        <div className={classNames.empty}>
+          <div className={classNames.imageContainer}>
+            <img alt="No Class" src={image} className={classNames.image}></img>
+            <h2 className={classNames.emptyHeading}>No Exam History</h2>
           </div>
-        ) : (
-          <>
-            <Typography variant="h5" className={classNames.head}>
-              <b>Completed Exams</b>
-            </Typography>
+        </div>
+      ) : (
+        <>
+          <Typography variant="h5" className={classNames.head}>
+            <b>Completed Exams</b>
+          </Typography>
           <div className={classNames.cards}>
             {data.map((data, index) => {
               let key = Math.round(Math.random() * 200);
               return <StudentMarksCard key={`${key}`} props={{ data: data }} />;
             })}
-            </div>
-          </>
-        )}
+          </div>
+        </>
+      )}
     </>
   );
 };
