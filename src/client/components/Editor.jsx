@@ -65,9 +65,9 @@ const Editor = ({ editorTheme, language }) => {
       highlightActiveLine={true}
       value={sourceCode}
       setOptions={{
-        enableBasicAutocompletion: false,
-        enableLiveAutocompletion: false,
-        enableSnippets: false,
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        enableSnippets: true,
         showLineNumbers: true,
         tabSize: 2,
       }}
