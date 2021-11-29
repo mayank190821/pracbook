@@ -172,7 +172,7 @@ export default function Sidebar({ location }) {
           </ListItem>
           <ListItem button onClick={handleChange("profile")}>
             <ListItemIcon>{<PersonOutlineOutlinedIcon />}</ListItemIcon>
-            <ListItemText primary="Profile" />
+            <ListItemText primary="Student Result" />
           </ListItem>
           <ListItem button onClick={handleChange("bank")}>
             <ListItemIcon>{<FolderSpecialOutlinedIcon />}</ListItemIcon>

@@ -47,10 +47,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
   const facultyData = useSelector(getUser);
-  const [year, setYear] = React.useState([facultyData.sections[0].year]);
+  const [curYear,setCurYear] = React.useState([]);
   React.useEffect(() => {
-    setYear([facultyData.sections[0].year]);
-    console.log(facultyData.sections[0].year);
+    let yearArray=[];
+    let len = facultyData.sections.length;
+    for(let i=0;i<len;i++){
+      yearArray.push(facultyData.sections[i].year)
+    }
+    setCurYear(yearArray)
   }, [facultyData])
   const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
@@ -138,8 +142,8 @@ export default function ScheduleExam({ handleClose }) {
               onChange={handleChange("year")}
               required
             >
-              {year.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
+              {curYear.map((option) => (
+                <MenuItem key={option} value={option}>
                   {option}
                 </MenuItem>
               ))}
