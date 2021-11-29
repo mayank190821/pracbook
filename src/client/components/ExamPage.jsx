@@ -27,7 +27,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getCode } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
-import { saveQuestion } from "../redux/actions/code.action";
+import { saveQuestion, saveCode } from "../redux/actions/code.action";
 import { useParams } from "react-router-dom";
 import { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
@@ -74,8 +74,8 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "1px solid #e2e2e2 !important",
   },
   listItemSubmit: {
-    backgroundColor: theme.palette.success.main,
-    color: "white",
+    backgroundColor: `${theme.palette.primary.main} !important`,
+    color: "white !important",
     borderBottom: "1px solid #e2e2e2 !important",
   },
   listItemText: {
@@ -256,12 +256,27 @@ export default function ExamPage({ location }) {
         // calcResult();
       }
     } else {
+      if (
+        curQuestion.question &&
+        curQuestion.question.questionId.slice(0, 2) === "cp"
+      ) {
+        localStorage.setItem(`ans${curQuestion.index + 1}`, sourceCode);
+      }
       setCurQuestion({
         question: ques[index],
         index: index,
       });
     }
   };
+
+  React.useEffect(() => {
+    if (
+      curQuestion.question &&
+      curQuestion.question.questionId.slice(0, 2) === "cp"
+    ) {
+      dispatch(saveCode(localStorage.getItem(`ans${curQuestion.index + 1}`)));
+    }
+  }, [curQuestion]);
 
   const handleSubmit = async (testCases) => {
     let data;
@@ -397,7 +412,7 @@ export default function ExamPage({ location }) {
             className={classes.listItemSubmit}
             onClick={() => questionChange("submit")}
           >
-            <ListItemText primary="S" className={classes.listItemText} />
+            <ListItemText primary="Submit" className={classes.listItemText} />
           </ListItem>
         </List>
       </Drawer>
@@ -544,11 +559,20 @@ export default function ExamPage({ location }) {
                 <RadioGroup
                   column
                   aria-label="Choose Answer"
-                  name={`answer-${curQuestion.question.index}`}
+                  name={`answer-${curQuestion.index}`}
                   // name="answer",
                   spacing="auto"
-                  value={answer}
-                  onChange={(event) => {}}
+                  value={
+                    localStorage.getItem(`ans${curQuestion.index + 1}`) ||
+                    answer
+                  }
+                  onChange={(event) => {
+                    localStorage.setItem(
+                      `ans${curQuestion.index + 1}`,
+                      event.target.value
+                    );
+                    setAnswer(event.target.value);
+                  }}
                 >
                   <FormControlLabel
                     value={curQuestion.question.option1}
