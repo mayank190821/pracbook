@@ -24,15 +24,13 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { getCode, getQuestion } from "../redux/selectors/code.selector";
+import { getCode } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
-import { saveQuestion } from "../redux/actions/code.action";
+import { saveQuestion, saveCode } from "../redux/actions/code.action";
 import { useParams } from "react-router-dom";
-import Countdown, { zeroPad } from "react-countdown";
+import { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
-import {setObjectiveAnswer} from "../redux/actions/code.action"
-import { getObjAns } from "../redux/selectors/code.selector";
 
 const languages = [
   {
@@ -73,6 +71,11 @@ const useStyles = makeStyles((theme) => ({
     width: "80px",
   },
   listItem: {
+    borderBottom: "1px solid #e2e2e2 !important",
+  },
+  listItemSubmit: {
+    backgroundColor: `${theme.palette.primary.main} !important`,
+    color: "white !important",
     borderBottom: "1px solid #e2e2e2 !important",
   },
   listItemText: {
@@ -152,7 +155,14 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: "border-box",
 }));
 
-export default function ExamPage({location}) {
+function renderTime(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  return { hours, minutes, seconds };
+}
+export default function ExamPage({ location }) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [language, setLanguage] = React.useState({
@@ -161,7 +171,11 @@ export default function ExamPage({location}) {
   });
   const [output, setOutput] = React.useState("");
   const [status, setStatus] = React.useState("");
+  const [results, setResults] = React.useState([]);
   const [ques, setQues] = React.useState([]);
+  const [sec, setSec] = React.useState();
+  const [timer, setTimer] = React.useState(localStorage.getItem("time"));
+  const [time, setTime] = React.useState("00:00:00");
   const [header, setHeader] = React.useState("");
   const { examId } = useParams();
   const { sourceCode } = useSelector(getCode);
@@ -172,7 +186,6 @@ export default function ExamPage({location}) {
     index: 0,
   });
 
-  const objAns = useSelector(getObjAns); 
   const handleLanguageChange = (event) => {
     let code;
     switch (event.target.value) {
@@ -208,7 +221,25 @@ export default function ExamPage({location}) {
         });
       }
     }
+    let interval = setInterval(() => {
+      let curTime = localStorage.getItem("time");
+      if (curTime > 0) {
+        const { hours, minutes, seconds } = renderTime(parseInt(curTime) - 1);
+        setTime(`${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`);
+        localStorage.setItem("time", parseInt(curTime) - 1);
+        setTimer(parseInt(curTime) - 1);
+      }
+    }, 1000);
+
+    setSec(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  React.useEffect(() => {
+    if (timer <= 0) clearInterval(sec);
+  }, [timer]);
 
   const [editorTheme, setEditorTheme] = React.useState("github");
   const [answer, setAnswer] = React.useState("");
@@ -217,72 +248,104 @@ export default function ExamPage({location}) {
     setEditorTheme(event.target.value);
   };
   const questionChange = (index) => {
-    setCurQuestion({
-      question: ques[index],
-      index: index,
-    });
-    let flag = 0;
-    for (var i = 0; i < objAns.length; i++) {
-      if (objAns[i].id === curQuestion.question.index) {
-        setAnswer(objAns[i].examAns);
-        flag = 1;
-        break;
+    if (index === "submit") {
+      var r = window.confirm("This will end your exam, Do you agree?");
+      if (r === true) {
+        setTimer(0);
+        console.log("exam ended");
+        // calcResult();
       }
+    } else {
+      if (
+        curQuestion.question &&
+        curQuestion.question.questionId.slice(0, 2) === "cp"
+      ) {
+        localStorage.setItem(`ans${curQuestion.index + 1}`, sourceCode);
+      }
+      setCurQuestion({
+        question: ques[index],
+        index: index,
+      });
     }
   };
+
+  React.useEffect(() => {
+    if (
+      curQuestion.question &&
+      curQuestion.question.questionId.slice(0, 2) === "cp"
+    ) {
+      dispatch(saveCode(localStorage.getItem(`ans${curQuestion.index + 1}`)));
+    }
+  }, [curQuestion]);
+
   const handleSubmit = async (testCases) => {
     let data;
     let err = false;
     setOutput("");
     setStatus("");
+    let currStatus = [];
+    setResults([]);
     let result = "";
-    console.log(curQuestion.question.length);
-    for (let i = 0; i < (testCases.input ? testCases.input.length : 0); i++) {
-      data = {
-        language_id: language.code,
-        source_code: sourceCode,
-        stdin: testCases.input[i],
-        expected_output: testCases.output[i],
+    for (let i = 0; i < (testCases.output ? testCases.output.length : 0); i++) {
+      if (testCases.input.length === 0) {
+        data = {
+          language_id: language.code,
+          source_code: sourceCode,
+          stdin: "",
+          expected_output: testCases.output[i],
+        }
+      } else {
+        data = {
+          language_id: language.code,
+          source_code: sourceCode,
+          stdin: testCases.input[i],
+          expected_output: testCases.output[i],
+        }
       };
       compile(data)
         .then((response) => {
+          console.log(response);
           if (response.stderr) {
-            setOutput(response.status.description + "\n\n" + response.stderr);
+            result += response.stderr;
             err = true;
-          } else if (response.stdout) {
+          } else if(response.compile_output !== null){
+            result = response.compile_output;
+            err = true;
+          }else if (response.stdout) {
             if (!err) {
               result += "TestCase " + i + ": " + response.stdout + "\n";
             }
-            console.log(response.status, response, output);
           } else {
-            setOutput("");
+            result += "TestCase " + i + ": \n";
           }
+          currStatus.push(response.status.description);
         })
         .then(async () => {
           await setOutput(result);
+        }).then(()=>{
+          setResults([...currStatus]);
         })
-        .then(() => {
-          if (err) {
-            setStatus("Error");
-          } else {
-            setStatus("Accepted");
-          }
-        });
     }
   };
-  const renderer = ({ hours, minutes, seconds, completed }) => {
-    // if (completed) {
-    //   // Render a complete state
-    //   return <Completionist />;
-    // } else {
-    //   // Render a countdown
-    return (
-      <span>
-        {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
-      </span>
-    );
-    // }
-  };
+
+  React.useEffect(() => {
+    let flag = -1;
+    console.log(results);
+    for(let i=0; i<results.length;i++){
+      if(results[i] == "Accepted"){
+        setStatus(results[i]);
+        if(i === 0) {
+          flag = 1;
+        }
+        else flag++;
+      }
+      else{
+        setStatus(results[i]);
+        break;
+      }
+    }
+    if(flag === results.length){ setStatus("Accepted"); }
+  }, [results])
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -322,10 +385,7 @@ export default function ExamPage({location}) {
               marginRight: "3%",
             }}
           >
-            <Countdown
-              date={Date.now() + location.state.duration * 60000}
-              renderer={renderer}
-            />
+            {time}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -346,6 +406,14 @@ export default function ExamPage({location}) {
                 />
               </ListItem>
             ))}
+          <ListItem
+            button
+            key={"submit-test"}
+            className={classes.listItemSubmit}
+            onClick={() => questionChange("submit")}
+          >
+            <ListItemText primary="Submit" className={classes.listItemText} />
+          </ListItem>
         </List>
       </Drawer>
       <Box
@@ -438,6 +506,7 @@ export default function ExamPage({location}) {
                     variant="outlined"
                     className={classes.runCode}
                     onClick={() => {
+                      setResults([]);
                       handleSubmit({
                         input: curQuestion.question.sampleInput,
                         output: curQuestion.question.sampleOutput,
@@ -449,11 +518,13 @@ export default function ExamPage({location}) {
                     Run Code
                   </Button>
                   <Button
-                    onClick={() =>
+                    onClick={() => {
+                      setResults([]);
                       handleSubmit({
                         input: curQuestion.question.inputTestCases,
                         output: curQuestion.question.outputTestCases,
                       })
+                    }
                     }
                     variant="contained"
                     className={classes.submitCode}
@@ -488,17 +559,17 @@ export default function ExamPage({location}) {
                 <RadioGroup
                   column
                   aria-label="Choose Answer"
-                  name={`answer-${curQuestion.question.index}`}
+                  name={`answer-${curQuestion.index}`}
                   // name="answer",
                   spacing="auto"
-                  value={answer}
+                  value={
+                    localStorage.getItem(`ans${curQuestion.index + 1}`) ||
+                    answer
+                  }
                   onChange={(event) => {
-                    console.log(event.target.value);
-                    dispatch(
-                      setObjectiveAnswer(
-                        event.target.value,
-                        curQuestion.index + 1
-                      )
+                    localStorage.setItem(
+                      `ans${curQuestion.index + 1}`,
+                      event.target.value
                     );
                     setAnswer(event.target.value);
                   }}
