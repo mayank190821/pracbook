@@ -17,7 +17,6 @@ import { useDispatch } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
 import { getUser } from "../../redux/selectors/code.selector";
 import { useSelector } from "react-redux";
-import { setYear } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   dialog: {
@@ -47,11 +46,25 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
   const facultyData = useSelector(getUser);
-  const [year, setYear] = React.useState([facultyData.sections[0].year]);
+  const [curYear, setCurYear] = React.useState([]);
+  const [curSection, setCurSection] = React.useState([]);
+  const [subjectList, setSubjectList] = React.useState([]);
+  const [curSubjectList, setCurSubjectList] = React.useState([]);
   React.useEffect(() => {
-    setYear([facultyData.sections[0].year]);
-    console.log(facultyData.sections[0].year);
+    let secArray = [];
+    let yearArray = [];
+    let secLen = facultyData.sections.length;
+    let subjectArray = [];
+    for (let i = 0; i < secLen; i++) {
+      yearArray.push(facultyData.sections[i].year)
+      secArray.push(facultyData.sections[i].sectionName)
+      subjectArray.push(facultyData.sections[i])
+    }
+    setCurYear(yearArray);
+    setSubjectList(subjectArray);
+    setCurSection(secArray)
   }, [facultyData])
+
   const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
   const [time, setTime] = React.useState(null);
@@ -70,7 +83,7 @@ export default function ScheduleExam({ handleClose }) {
   });
   const handleScheduleExam = () => {
     scheduleExam(data).then(() => {
-      fetchCardDetails("61914f010d975acc5bace6a9").then((res) => {
+      fetchCardDetails(facultyData._id).then((res) => {
         dispatch(loadExams(res.exams));
       });
     })
@@ -94,6 +107,14 @@ export default function ScheduleExam({ handleClose }) {
       });
       setDate(event);
     }
+    else if (props === "section") {
+      setData({ ...data, [props]: event.target.value });
+      subjectList.forEach((curSection) => {
+        if (curSection.sectionName === event.target.value) {
+          setCurSubjectList(curSection.subjects);
+        }
+      })
+    }
     else
       setData({ ...data, [props]: event.target.value });
   };
@@ -107,150 +128,163 @@ export default function ScheduleExam({ handleClose }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <form id = "add_exam_form">
-        <Stack spacing={3}>
-          <Box spacing={1}
-            component="div"
-            sx={12}
-            autoComplete="off"
-          >
-            <TextField
-              style={{ "width": "47%" }}
-              id="outlined-select-exam-type"
-              select
-              label="Exam Type"
-              value={data.name}
-              onChange={handleChange("name")}
-              required
+        <form id="add_exam_form">
+          <Stack spacing={3}>
+            <Box spacing={1}
+              component="div"
+              sx={12}
+              autoComplete="off"
             >
-              {exams.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              style={{ "width": "47%", "marginLeft": "25px" }}
-              id="outlined-select-exam-type"
-              select
-              label="Year"
-              value={data.year}
-              onChange={handleChange("year")}
-              required
+              <TextField
+                style={{ "width": "47%" }}
+                id="outlined-select-exam-type"
+                select
+                label="Exam Type"
+                value={data.name}
+                onChange={handleChange("name")}
+                required
+              >
+                {exams.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                style={{ "width": "47%", "marginLeft": "25px" }}
+                id="outlined-select-exam-type"
+                select
+                label="Year"
+                value={data.year}
+                onChange={handleChange("year")}
+                required
+              >
+                {curYear.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                label="Date desktop"
+                inputFormat="dd/MM/yyyy"
+                value={date}
+                disablePast
+                onChange={handleChange("date")}
+                renderInput={(params) => <TextField {...params} />}
+                required
+              />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns} required>
+              <TimePicker
+                required
+                label="Time"
+                value={time}
+                onChange={handleChange("time")}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            <Box
+              component="div"
+              sx={12}
+              spacing={1}
+              autoComplete="off"
             >
-              {year.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DesktopDatePicker
-              label="Date desktop"
-              inputFormat="dd/MM/yyyy"
-              value={date}
-              disablePast
-              onChange={handleChange("date")}
-              renderInput={(params) => <TextField {...params} />}
-              required
-            />
-          </LocalizationProvider>
-          <LocalizationProvider dateAdapter={AdapterDateFns} required>
-            <TimePicker
-            required
-              label="Time"
-              value={time}
-              onChange={handleChange("time")}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-          <Box
-            component="div"
-            sx={12}
-            spacing={1}
-            autoComplete="off"
-          >
-            <TextField
-              required
-              id="outlined-required"
-              label="Subject"
-              value={data.subject}
-              onChange={handleChange("subject")}
-              required
-            />
-            <TextField
-              required
-              id="outlined-required"
-              className={classes.elements}
-              label="Section"
-              value={data.section}
-              onChange={handleChange("section")}
-              required
-            />
-          </Box>
-          <Box
-            component="div"
-            sx={12}
-            spacing={1}
-            autoComplete="off"
-          >
-            <TextField
-              required
-              id="outlined-required"
-              label="Time Duration"
-              value={data.duration}
-              onChange={handleChange("duration")}
-              required
-            />
-            <TextField
-              required
-              id="outlined-required"
-              label="Maximum Marks"
-              className={classes.elements}
-              value={data.marks}
-              onChange={handleChange("marks")}
-              required
-            />
-          </Box>
-          <Box
-            component="div"
-            sx={12}
-            spacing={1}
-            autoComplete="off"
-          >
-            <TextField
-              required
-              id="outlined-required"
-              label="Objective Count"
-              value={data.objectCount}
-              onChange={handleChange("objectCount")}
-              required
-            />
-            <TextField
-              required
-              id="outlined-required"
-              label="Coding Count"
-              className={classes.elements}
-              value={data.codingCount}
-              onChange={handleChange("codingCount")}
-              required
-            />
-          </Box>
-          <Button type = "submit" variant="contained" onClick={(e) => {
-            e.preventDefault();
-            const formId = document.getElementById("add_exam_form");
-            formId.checkValidity();
-            if(formId.reportValidity()){
-            handleScheduleExam(); fetchCardDetails(facultyData._id, facultyData.role).then((res) => {
-              console.log(res);
-              dispatch(loadExams(res.exams));
-            });
-          }
-          }}>
-            Add Exam
-          </Button>
-        </Stack>
+              <TextField
+                required
+                style={{ "width": "47%" }}
+                id="outlined-required"
+                label="Section"
+                select
+                value={data.section}
+                onChange={handleChange('section')}
+              >
+                {curSection.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                style={{ "width": "47%", "marginLeft": "25px" }}
+                select
+                id="outlined-required"
+                label="Subject"
+                value={data.subject}
+                onChange={handleChange("subject")}
+                required
+              >
+                {curSubjectList.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+            <Box
+              component="div"
+              sx={12}
+              spacing={1}
+              autoComplete="off"
+            >
+              <TextField
+                required
+                id="outlined-required"
+                label="Time Duration"
+                value={data.duration}
+                onChange={handleChange("duration")}
+                required
+              />
+              <TextField
+                required
+                id="outlined-required"
+                label="Maximum Marks"
+                className={classes.elements}
+                value={data.marks}
+                onChange={handleChange("marks")}
+                required
+              />
+            </Box>
+            <Box
+              component="div"
+              sx={12}
+              spacing={1}
+              autoComplete="off"
+            >
+              <TextField
+                required
+                id="outlined-required"
+                label="Objective Count"
+                value={data.objectCount}
+                onChange={handleChange("objectCount")}
+                required
+              />
+              <TextField
+                required
+                id="outlined-required"
+                label="Coding Count"
+                className={classes.elements}
+                value={data.codingCount}
+                onChange={handleChange("codingCount")}
+                required
+              />
+            </Box>
+            <Button type="submit" variant="contained" onClick={(e) => {
+              e.preventDefault();
+              const formId = document.getElementById("add_exam_form");
+              formId.checkValidity();
+              if (formId.reportValidity()) {
+                handleScheduleExam(); fetchCardDetails(facultyData._id, facultyData.role).then((res) => {
+                  console.log(res);
+                  dispatch(loadExams(res.exams));
+                });
+              }
+            }}>
+              Add Exam
+            </Button>
+          </Stack>
         </form>
       </Dialog>
     </div>
