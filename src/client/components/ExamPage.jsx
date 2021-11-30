@@ -247,6 +247,7 @@ export default function ExamPage({ location }) {
     try {
       for (let i = 0; i < resultList.length; i++) {
         if (resultList[i].id === curQuestion.question.questionId) {
+          localStorage.setItem(`mk${resultList[i].id}`, marks);
           curResult[i].marks = Math.max(curResult[i].marks, marks);
           setResultList([...curResult]);
           flag = 1;
@@ -258,6 +259,7 @@ export default function ExamPage({ location }) {
           id: curQuestion.question.questionId,
           marks: marks,
         });
+        localStorage.setItem(`mk${curQuestion.question.questionId}`, marks);
         console.log(curResult);
         setResultList([...curResult]);
       }

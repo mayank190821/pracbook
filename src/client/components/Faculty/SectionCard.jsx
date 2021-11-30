@@ -103,7 +103,7 @@ const SectionCard = ({ props, calcTime }) => {
         </Typography>
       </CardContent>
     </Card>
-  );git commit -m "completed result calculation, updated dashboard to show only upcoming exams according to date"
+  );
 };
 
 export default SectionCard;
