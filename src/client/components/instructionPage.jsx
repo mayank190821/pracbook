@@ -90,7 +90,8 @@ export default function InstructionPage() {
   });
 
   useEffect(() => {
-    fetchExam(examId).then((curExam) => {
+    console.log("aya");
+    fetchExam(examId.split("&")[0]).then((curExam) => {
       let questionIds = [];
       fetchQuesDetails()
         .then((res) => {

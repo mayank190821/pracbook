@@ -61,19 +61,57 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "20px",
   },
 }));
+
 const CardList = ({ location }) => {
   const classNames = useStyles();
   const dispatch = useDispatch();
   const exams = useSelector(getExams);
+  const [examList, setExamList] = React.useState([]);
   const user = useSelector(getUser);
   const { id } = useParams();
 
+  const calcTime = (exams, res) => {
+    for (let i = 0; i < res.length; i++) {
+      let date = new Date();
+      let examDate =
+        res[i].date.split("/")[2] +
+        "-" +
+        res[i].date.split("/")[0] +
+        "-" +
+        (parseInt(res[i].date.split("/")[1]) < 10
+          ? `0${res[i].date.split("/")[1]}`
+          : res[i].date.split("/")[1]) +
+        "T";
+      let hours = res[i].time.split(":")[0];
+      if (res[i].time.split(" ")[1] === "PM")
+        hours = (parseInt(res[i].time.split(":")[0]) + 12).toString();
+      let time = hours + ":" + res[i].time.split(" ")[0].split(":")[1] + ":00";
+      let matcher = examDate + time;
+      if (new Date(matcher) < date) {
+        res[i].started = true;
+      }
+      matcher = new Date(new Date(matcher).getTime() + res[i].duration * 60000);
+      console.log(new Date(matcher), date);
+      if (matcher > date) {
+        exams.push(res[i]);
+      } else console.log("removed");
+    }
+    return exams;
+  };
+
   React.useEffect(() => {
-    console.log(id);
-    if (id) {
+    console.log(id, user.role);
+    if (id && user) {
       fetchCardDetails(id, user.role).then((res) => {
-        console.log(res);
-        dispatch(loadExams(res.exams));
+        let exams = [];
+        if (user.role === "faculty") {
+          console.log(res.exams);
+          res.exams.forEach((data) => {
+            dispatch(loadExams(calcTime(exams, data)));
+          });
+        } else {
+          dispatch(loadExams(calcTime(exams, res.exams)));
+        }
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,6 +124,9 @@ const CardList = ({ location }) => {
   //   else if (a > b) return 1;
   //   else return 0;
   // });
+  React.useEffect(() => {
+    setExamList([...exams]);
+  }, [exams]);
 
   return (
     <>
@@ -103,25 +144,34 @@ const CardList = ({ location }) => {
           </Typography>
           <div className={classNames.cards}>
             {user.role === "faculty" &&
-              Array.from(exams).map((dat, index) => {
-                return Array.from(dat).map((da, jndex) => {
-                  return (
-                    <SectionCard key={`${da.section}-${index}`} props={da} />
-                  );
-                });
+              Array.from(examList).map((dat, index) => {
+                return (
+                  <SectionCard
+                    key={`${dat.section}-${index}`}
+                    calcTime={calcTime}
+                    props={dat}
+                  />
+                );
               })}
             {user.role === "student" &&
-              Array.from(exams).map((dat, index) => {
-                return (
+              Array.from(examList).map((dat, index) => {
+                return dat.started ? (
                   <Link
-                    to={`/exam/instruction/${dat._id}`}
+                    to={`/exam/instruction/${dat._id}&${user._id}`}
                     style={{ textDecoration: "none", height: "fit-content" }}
                   >
                     <SectionCard
                       key={`${dat.section}-${dat.year}-${index}`}
                       props={dat}
+                      calcTime={calcTime}
                     />
                   </Link>
+                ) : (
+                  <SectionCard
+                    key={`${dat.section}-${dat.year}-${index}`}
+                    props={dat}
+                    calcTime={calcTime}
+                  />
                 );
               })}
           </div>

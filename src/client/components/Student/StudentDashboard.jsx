@@ -22,8 +22,9 @@ import { Navbar } from "./StudentNavBar";
 import LogoutIcon from "@mui/icons-material/Logout";
 import QuestionCard from "../Faculty/QuestionCard";
 import StudentInfo from "../Faculty/StudentInfo";
-import ExamHistory from "./ExamHistory"
-import { Redirect } from "react-router-dom";
+import { getStudent } from "../../api/auth.api";
+import ExamHistory from "./ExamHistory";
+import { Redirect, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { saveUser } from "./../../redux/actions/code.action";
 
@@ -97,6 +98,7 @@ const Drawer = styled(MuiDrawer, {
 export default function Sidebar({ location }) {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { id } = useParams();
   const [open, setOpen] = React.useState(false);
   const [selectedTab, setSelectedTab] = React.useState("dashboard");
   const [redirect, setRedirect] = React.useState(false);
@@ -116,8 +118,17 @@ export default function Sidebar({ location }) {
   };
 
   React.useEffect(() => {
-    console.log(location);
-    dispatch(saveUser(location.state.user));
+    // console.log(location);
+    if (location.state) dispatch(saveUser(location.state.user));
+    else {
+      getStudent(id).then((response) => {
+        if (!response.error) {
+          console.log(response);
+          response.user.role = "student";
+          dispatch(saveUser(response.user));
+        }
+      });
+    }
   }, [location]);
 
   if (redirect) {

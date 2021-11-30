@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SectionCard = ({ props }) => {
+const SectionCard = ({ props, calcTime }) => {
   const user = useSelector(getUser);
   const classNames = useStyles();
   const dispatch = useDispatch();
@@ -55,13 +55,19 @@ const SectionCard = ({ props }) => {
           className={classNames.icon}
           onClick={() => {
             var r = window.confirm("Do you want to delete?");
-            if (r == true) {
-              deleteOneByID(props.data._id);
+            if (r === true) {
+              deleteOneByID(props._id);
               fetchCardDetails(user._id, user.role).then((res) => {
-                console.log(res);
-                dispatch(loadExams(res.exams));
+                let curExams = [];
+                if (user.role === "faculty") {
+                  console.log(res.exams);
+                  res.exams.forEach((data) => {
+                    dispatch(loadExams(calcTime(curExams, data)));
+                  });
+                } else {
+                  dispatch(loadExams(calcTime(curExams, res.exams)));
+                }
               });
-            } else {
             }
           }}
         />
@@ -88,7 +94,7 @@ const SectionCard = ({ props }) => {
           <b>Time :</b> {props.time}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Duration :</b> {props.duration}
+          <b>Duration :</b> {`${props.duration} min.`}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
           <b>Max Marks :</b>{" "}
@@ -97,7 +103,7 @@ const SectionCard = ({ props }) => {
         </Typography>
       </CardContent>
     </Card>
-  );
+  );git commit -m "completed result calculation, updated dashboard to show only upcoming exams according to date"
 };
 
 export default SectionCard;

@@ -27,11 +27,12 @@ import {
   studentById,
   getResultById,
   uploadResult,
+  getStudentById,
   changeStudentPassword,
   getExamsByStudentId,
   signOut,
 } from "../controllers/student.js";
-import { addExam, getExamById,deleteOneByID } from "../controllers/exam.js";
+import { addExam, getExamById, deleteOneByID } from "../controllers/exam.js";
 
 const routes = express();
 
@@ -59,6 +60,7 @@ routes
 routes
   .route("/api/student/change-password/:studentId") // req.body = {currentPassword, newPassword}, result = password changed.
   .put(changeStudentPassword);
+routes.route("/api/getStudent/:studentId").get(getStudentById);
 routes
   .route("/api/student/result/:studentId")
   .get(getResultById) // req.body = {examId}, result = {marks: value}.

@@ -15,7 +15,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Button from "@mui/material/Button";
-import { compile, fetchExam } from "./../api/exam.api";
+import { compile, uploadResult } from "./../api/exam.api";
 import {
   Card,
   CardContent,
@@ -27,8 +27,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { getCode } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
-import { saveQuestion, saveCode } from "../redux/actions/code.action";
-import { useParams } from "react-router-dom";
+import { saveQuestion } from "../redux/actions/code.action";
+import { useParams, Redirect } from "react-router-dom";
 import { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
 
@@ -167,6 +167,7 @@ export default function ExamPage({ location }) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [resultList, setResultList] = React.useState([]);
+  const [redirect, setRedirect] = React.useState(false);
   const [language, setLanguage] = React.useState({
     value: "java",
     code: 62,
@@ -205,7 +206,7 @@ export default function ExamPage({ location }) {
   };
 
   React.useEffect(() => {
-    fetchExamById(examId).then((exam) => {
+    fetchExamById(examId.split("&")[0]).then((exam) => {
       setHeader(`${exam.subject} - ${exam.name}`);
       setExamMarks({ objMarks: exam.objMarks, codingMarks: exam.codingMarks });
     });
@@ -240,7 +241,28 @@ export default function ExamPage({ location }) {
       clearInterval(interval);
     };
   }, []);
-
+  function updateMarks(marks) {
+    let flag = 0;
+    let curResult = resultList;
+    try {
+      for (let i = 0; i < resultList.length; i++) {
+        if (resultList[i].id === curQuestion.question.questionId) {
+          curResult[i].marks = Math.max(curResult[i].marks, marks);
+          setResultList([...curResult]);
+          flag = 1;
+          console.log("correct");
+        }
+      }
+      if (flag === 0) {
+        curResult.push({
+          id: curQuestion.question.questionId,
+          marks: marks,
+        });
+        console.log(curResult);
+        setResultList([...curResult]);
+      }
+    } catch (err) {}
+  }
   React.useEffect(() => {
     if (timer <= 0) clearInterval(sec);
   }, [timer]);
@@ -257,7 +279,33 @@ export default function ExamPage({ location }) {
       if (r === true) {
         setTimer(0);
         // setRedirect(true);
-        // calcResult();
+        localStorage.removeItem("time");
+        let ids = sessionStorage.getItem("TQID").split(",");
+
+        for (let i = 0; i < ids.length; i++) {
+          console.log(ids[i]);
+          if (ids[i].slice(0, 2) === "cp") {
+            localStorage.removeItem(`cp${ids[i]}`);
+            localStorage.removeItem(`cpl${ids[i]}`);
+          } else {
+            localStorage.removeItem(`ans${ids[i]}`);
+          }
+        }
+
+        let marks = 0;
+        resultList.forEach((curResult) => {
+          marks += curResult.marks;
+        });
+        uploadResult({
+          id: examId.split("&")[1],
+          examId: examId.split("&")[0],
+          marks: marks,
+        }).then((res) => {
+          if (!res.error) {
+            console.log(res);
+            setRedirect(true);
+          } else console.log(res.error);
+        });
       }
     } else {
       if (
@@ -340,9 +388,9 @@ export default function ExamPage({ location }) {
 
   React.useEffect(() => {
     let flag = -1;
-    // console.log(results);
+    console.log(results);
     for (let i = 0; i < results.length; i++) {
-      if (results[i] == "Accepted") {
+      if (results[i] === "Accepted") {
         setStatus(results[i]);
         if (i === 0) {
           flag = 1;
@@ -354,11 +402,21 @@ export default function ExamPage({ location }) {
     }
     if (flag === results.length) {
       setStatus("Accepted");
+      if (flag === curQuestion.question.outputTestCases.length) {
+        console.log(curQuestion.question.outputTestCases.length);
+        updateMarks(examMarks.codingMarks);
+      }
+    } else {
+      updateMarks(0);
     }
   }, [results]);
   React.useEffect(() => {
     console.log(resultList);
   }, [resultList]);
+
+  if (redirect) {
+    return <Redirect to={`/student/dashboard/${examId.split("&")[1]}`} />;
+  }
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
@@ -595,26 +653,7 @@ export default function ExamPage({ location }) {
                       console.log("false", curQuestion.question.answer);
                       marks = 0;
                     }
-                    let flag = 0;
-                    let curResult = resultList;
-                    for (let i = 0; i < resultList.length; i++) {
-                      if (
-                        resultList[i].id === curQuestion.question.questionId
-                      ) {
-                        curResult[i].marks = marks;
-                        setResultList([...curResult]);
-                        flag = 1;
-                        console.log("correct");
-                      }
-                    }
-                    if (flag === 0) {
-                      curResult.push({
-                        id: curQuestion.question.questionId,
-                        marks: marks,
-                      });
-                      console.log(curResult);
-                      setResultList([...curResult]);
-                    }
+                    updateMarks(marks);
                     setAnswer(event.target.value);
                   }}
                 >

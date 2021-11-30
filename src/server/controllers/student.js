@@ -83,7 +83,10 @@ const studentById = async (req, res, next, id) => {
     });
   }
 };
-
+const getStudentById = async (req, res) => {
+  if (!req.student) return res.status(404).json({ error: "user not found" });
+  return res.status(200).json({ user: req.student });
+};
 const getResultById = async (req, res) => {
   // console.log(req);
   try {
@@ -109,7 +112,6 @@ const uploadResult = async (req, res) => {
       examId: req.body.examId,
       result: {
         marksObtained: req.body.marks,
-        submissions: req.body.submissions,
       },
     });
     await examsModel.findByIdAndUpdate(req.body.examId, { completed: true });
@@ -146,6 +148,7 @@ export {
   getResultById,
   getExamsByStudentId,
   uploadResult,
+  getStudentById,
   changeStudentPassword,
   signOut,
   studentById,

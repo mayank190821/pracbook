@@ -15,6 +15,22 @@ const signin = async (data, role) => {
     console.log(err);
   }
 };
+const getStudent = async (id) => {
+  try {
+    let response = await fetch(`/api/getStudent/${id}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    return (await response)
+      ? response.json()
+      : { error: "check your internet" };
+  } catch (err) {
+    console.log(err);
+  }
+};
 const signup = async (data, role) => {
   try {
     let response = await fetch(`/auth/${role}/signup`, {
@@ -31,4 +47,4 @@ const signup = async (data, role) => {
   }
 };
 
-export { signin, signup };
+export { signin, signup, getStudent };
