@@ -1,18 +1,13 @@
 import React from "react";
-import {
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-} from "@mui/material";
+import { Card, CardMedia, CardContent, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
-import { getUser, getExams} from "../../redux/selectors/code.selector";
-import {useSelector } from "react-redux";
-import {useDispatch} from "react-redux";
+import { getUser, getExams } from "../../redux/selectors/code.selector";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
 import { deleteOneByID } from "../../api/exam.api";
-import {fetchCardDetails} from "../../api/utilities.api";
+import { fetchCardDetails } from "../../api/utilities.api";
 // import examsModel from "../../../server/models/exams.model.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -55,19 +50,26 @@ const SectionCard = ({ props }) => {
   // console.log(props);
   return (
     <Card className={classNames.card}>
-      {(user.role === "faculty")&&(
-      <CloseIcon className={classNames.icon} onClick={() => {var r = window.confirm("Do you want to delete?");if(r == true){deleteOneByID(props.data._id);fetchCardDetails(user._id, user.role).then((res) => {
-        console.log(res);
-        dispatch(loadExams(res.exams));
-      });}
-      else{
-
-      }}}/>
-   )}
+      {user.role === "faculty" && (
+        <CloseIcon
+          className={classNames.icon}
+          onClick={() => {
+            var r = window.confirm("Do you want to delete?");
+            if (r == true) {
+              deleteOneByID(props.data._id);
+              fetchCardDetails(user._id, user.role).then((res) => {
+                console.log(res);
+                dispatch(loadExams(res.exams));
+              });
+            } else {
+            }
+          }}
+        />
+      )}
       <Typography className={classNames.mediaHead}>
-        {`Section ${props.data.section}`}
+        {`Section ${props.section}, ${props.year} year`}
         <br />
-        {props.data.subject}
+        {props.subject}
       </Typography>
       <CardMedia
         component="img"
@@ -77,19 +79,21 @@ const SectionCard = ({ props }) => {
       />
       <CardContent>
         <Typography variant="body2" className={classNames.text}>
-          <b>Exam Type :</b> {props.data.name}
+          <b>Exam Type :</b> {props.name}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Date :</b> {props.data.date}
+          <b>Date :</b> {props.date}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Time :</b> {props.data.time}
+          <b>Time :</b> {props.time}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Duration :</b> {props.data.duration}
+          <b>Duration :</b> {props.duration}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Max Marks :</b> {props.data.marks}
+          <b>Max Marks :</b>{" "}
+          {props.objMarks * props.objectCount +
+            props.codingMarks * props.codingCount}
         </Typography>
       </CardContent>
     </Card>

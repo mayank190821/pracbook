@@ -169,7 +169,11 @@ export default function InstructionPage() {
             No. of questions:{" "}
             {parseInt(exam.objectCount) + parseInt(exam.codingCount)}
           </p>
-          <p className={classNames.ques}>Max. Marks: {exam.marks}</p>
+          <p className={classNames.ques}>
+            Max. Marks:{" "}
+            {exam.objMarks * exam.objectCount +
+              exam.codingMarks * exam.codingCount}
+          </p>
         </div>
         <div className={classNames.container2}>
           <h1>Intructions</h1>

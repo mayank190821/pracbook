@@ -56,14 +56,14 @@ export default function ScheduleExam({ handleClose }) {
     let secLen = facultyData.sections.length;
     let subjectArray = [];
     for (let i = 0; i < secLen; i++) {
-      yearArray.push(facultyData.sections[i].year)
-      secArray.push(facultyData.sections[i].sectionName)
-      subjectArray.push(facultyData.sections[i])
+      yearArray.push(facultyData.sections[i].year);
+      secArray.push(facultyData.sections[i].sectionName);
+      subjectArray.push(facultyData.sections[i]);
     }
     setCurYear(yearArray);
     setSubjectList(subjectArray);
-    setCurSection(secArray)
-  }, [facultyData])
+    setCurSection(secArray);
+  }, [facultyData]);
 
   const dispatch = useDispatch();
   const [date, setDate] = React.useState(null);
@@ -76,6 +76,8 @@ export default function ScheduleExam({ handleClose }) {
     subject: "",
     marks: "",
     section: "",
+    objMarks: "",
+    codingMarks: "",
     time: "",
     objectCount: "",
     codingCount: "",
@@ -86,7 +88,7 @@ export default function ScheduleExam({ handleClose }) {
       fetchCardDetails(facultyData._id).then((res) => {
         dispatch(loadExams(res.exams));
       });
-    })
+    });
     handleClose();
   };
   const handleChange = (props) => (event) => {
@@ -95,28 +97,23 @@ export default function ScheduleExam({ handleClose }) {
       time = time.slice(0, time.length - 6) + time.slice(time.length - 3);
       setData({
         ...data,
-        time:
-          time,
+        time: time,
       });
       setTime(event);
-    }
-    else if (props === "date") {
+    } else if (props === "date") {
       setData({
         ...data,
         date: event.toLocaleString().split(",")[0],
       });
       setDate(event);
-    }
-    else if (props === "section") {
+    } else if (props === "section") {
       setData({ ...data, [props]: event.target.value });
       subjectList.forEach((curSection) => {
         if (curSection.sectionName === event.target.value) {
           setCurSubjectList(curSection.subjects);
         }
-      })
-    }
-    else
-      setData({ ...data, [props]: event.target.value });
+      });
+    } else setData({ ...data, [props]: event.target.value });
   };
   return (
     <div>
@@ -130,13 +127,17 @@ export default function ScheduleExam({ handleClose }) {
       >
         <form id="add_exam_form">
           <Stack spacing={3}>
-            <Box spacing={1}
+            <Box
+              spacing={1}
               component="div"
-              sx={12}
-              autoComplete="off"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
             >
               <TextField
-                style={{ "width": "47%" }}
+                style={{ width: "43%" }}
                 id="outlined-select-exam-type"
                 select
                 label="Exam Type"
@@ -151,7 +152,7 @@ export default function ScheduleExam({ handleClose }) {
                 ))}
               </TextField>
               <TextField
-                style={{ "width": "47%", "marginLeft": "25px" }}
+                style={{ width: "43%" }}
                 id="outlined-select-exam-type"
                 select
                 label="Year"
@@ -166,40 +167,59 @@ export default function ScheduleExam({ handleClose }) {
                 ))}
               </TextField>
             </Box>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DesktopDatePicker
-                label="Date desktop"
-                inputFormat="dd/MM/yyyy"
-                value={date}
-                disablePast
-                onChange={handleChange("date")}
-                renderInput={(params) => <TextField {...params} />}
+            <Box
+              spacing={1}
+              component="div"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <LocalizationProvider dateAdapter={AdapterDateFns} required>
+                <DesktopDatePicker
+                  label="Date desktop"
+                  inputFormat="dd/MM/yyyy"
+                  value={date}
+                  disablePast
+                  style={{ width: "43%" }}
+                  onChange={handleChange("date")}
+                  renderInput={(params) => <TextField {...params} />}
+                  required
+                />
+              </LocalizationProvider>
+              <LocalizationProvider
+                className={classes.elements}
+                dateAdapter={AdapterDateFns}
                 required
-              />
-            </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns} required>
-              <TimePicker
-                required
-                label="Time"
-                value={time}
-                onChange={handleChange("time")}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
+              >
+                <TimePicker
+                  required
+                  label="Time"
+                  value={time}
+                  style={{ width: "43%" }}
+                  onChange={handleChange("time")}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </Box>
             <Box
               component="div"
-              sx={12}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
               spacing={1}
-              autoComplete="off"
             >
               <TextField
                 required
-                style={{ "width": "47%" }}
+                style={{ width: "43%" }}
                 id="outlined-required"
                 label="Section"
                 select
                 value={data.section}
-                onChange={handleChange('section')}
+                onChange={handleChange("section")}
               >
                 {curSection.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -208,7 +228,7 @@ export default function ScheduleExam({ handleClose }) {
                 ))}
               </TextField>
               <TextField
-                style={{ "width": "47%", "marginLeft": "25px" }}
+                style={{ width: "43%" }}
                 select
                 id="outlined-required"
                 label="Subject"
@@ -225,39 +245,56 @@ export default function ScheduleExam({ handleClose }) {
             </Box>
             <Box
               component="div"
-              sx={12}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
               spacing={1}
-              autoComplete="off"
             >
               <TextField
                 required
                 id="outlined-required"
                 label="Time Duration"
+                style={{ width: "30%" }}
                 value={data.duration}
                 onChange={handleChange("duration")}
                 required
               />
               <TextField
                 required
+                style={{ width: "30%" }}
                 id="outlined-required"
-                label="Maximum Marks"
-                className={classes.elements}
-                value={data.marks}
-                onChange={handleChange("marks")}
+                label="ObjMarks / Ques"
+                value={data.objMarks}
+                onChange={handleChange("objMarks")}
+                required
+              />
+              <TextField
+                required
+                style={{ width: "30%" }}
+                id="outlined-required"
+                label="CodingMarks / Ques"
+                value={data.codingMarks}
+                onChange={handleChange("codingMarks")}
                 required
               />
             </Box>
             <Box
               component="div"
-              sx={12}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
               spacing={1}
-              autoComplete="off"
             >
               <TextField
                 required
                 id="outlined-required"
                 label="Objective Count"
                 value={data.objectCount}
+                style={{ width: "43%" }}
                 onChange={handleChange("objectCount")}
                 required
               />
@@ -267,21 +304,29 @@ export default function ScheduleExam({ handleClose }) {
                 label="Coding Count"
                 className={classes.elements}
                 value={data.codingCount}
+                style={{ width: "43%" }}
                 onChange={handleChange("codingCount")}
                 required
               />
             </Box>
-            <Button type="submit" variant="contained" onClick={(e) => {
-              e.preventDefault();
-              const formId = document.getElementById("add_exam_form");
-              formId.checkValidity();
-              if (formId.reportValidity()) {
-                handleScheduleExam(); fetchCardDetails(facultyData._id, facultyData.role).then((res) => {
-                  console.log(res);
-                  dispatch(loadExams(res.exams));
-                });
-              }
-            }}>
+            <Button
+              type="submit"
+              variant="contained"
+              onClick={(e) => {
+                e.preventDefault();
+                const formId = document.getElementById("add_exam_form");
+                formId.checkValidity();
+                if (formId.reportValidity()) {
+                  handleScheduleExam();
+                  fetchCardDetails(facultyData._id, facultyData.role).then(
+                    (res) => {
+                      console.log(res);
+                      dispatch(loadExams(res.exams));
+                    }
+                  );
+                }
+              }}
+            >
               Add Exam
             </Button>
           </Stack>
