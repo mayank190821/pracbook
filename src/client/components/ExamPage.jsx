@@ -162,9 +162,11 @@ function renderTime(seconds) {
   seconds = seconds % 60;
   return { hours, minutes, seconds };
 }
+
 export default function ExamPage({ location }) {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const [resultList, setResultList] = React.useState([]);
   const [language, setLanguage] = React.useState({
     value: "java",
     code: 62,
@@ -174,6 +176,7 @@ export default function ExamPage({ location }) {
   const [results, setResults] = React.useState([]);
   const [ques, setQues] = React.useState([]);
   const [sec, setSec] = React.useState();
+  const [examMarks, setExamMarks] = React.useState({});
   const [timer, setTimer] = React.useState(localStorage.getItem("time"));
   const [time, setTime] = React.useState("00:00:00");
   const [header, setHeader] = React.useState("");
@@ -204,6 +207,7 @@ export default function ExamPage({ location }) {
   React.useEffect(() => {
     fetchExamById(examId).then((exam) => {
       setHeader(`${exam.subject} - ${exam.name}`);
+      setExamMarks({ objMarks: exam.objMarks, codingMarks: exam.codingMarks });
     });
     if (ques.length === 0 && quesIds.length !== 0) {
       let currentQues = [];
@@ -252,7 +256,7 @@ export default function ExamPage({ location }) {
       var r = window.confirm("This will end your exam, Do you agree?");
       if (r === true) {
         setTimer(0);
-        console.log("exam ended");
+        // setRedirect(true);
         // calcResult();
       }
     } else {
@@ -277,7 +281,6 @@ export default function ExamPage({ location }) {
   };
 
   React.useEffect(() => {
-    console.log("language exam page");
     if (curQuestion && curQuestion.question)
       handleLanguageChange(
         localStorage.getItem(`cpl${curQuestion.question.questionId}`) || "java"
@@ -353,7 +356,9 @@ export default function ExamPage({ location }) {
       setStatus("Accepted");
     }
   }, [results]);
-
+  React.useEffect(() => {
+    console.log(resultList);
+  }, [resultList]);
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
@@ -583,6 +588,33 @@ export default function ExamPage({ location }) {
                       `ans${curQuestion.question.questionId}`,
                       event.target.value
                     );
+                    let marks;
+                    if (curQuestion.question.answer === event.target.value) {
+                      marks = examMarks.objMarks;
+                    } else {
+                      console.log("false", curQuestion.question.answer);
+                      marks = 0;
+                    }
+                    let flag = 0;
+                    let curResult = resultList;
+                    for (let i = 0; i < resultList.length; i++) {
+                      if (
+                        resultList[i].id === curQuestion.question.questionId
+                      ) {
+                        curResult[i].marks = marks;
+                        setResultList([...curResult]);
+                        flag = 1;
+                        console.log("correct");
+                      }
+                    }
+                    if (flag === 0) {
+                      curResult.push({
+                        id: curQuestion.question.questionId,
+                        marks: marks,
+                      });
+                      console.log(curResult);
+                      setResultList([...curResult]);
+                    }
                     setAnswer(event.target.value);
                   }}
                 >
