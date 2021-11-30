@@ -266,7 +266,10 @@ export default function ExamPage({ location }) {
     } catch (err) {}
   }
   React.useEffect(() => {
-    if (timer <= 0) clearInterval(sec);
+    if (timer <= 0) {
+      clearInterval(sec);
+      questionChange("submit", true);
+    }
   }, [timer]);
 
   const [editorTheme, setEditorTheme] = React.useState("github");
@@ -275,9 +278,11 @@ export default function ExamPage({ location }) {
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
   };
-  const questionChange = (index) => {
+  const questionChange = (index, flag = false) => {
     if (index === "submit") {
-      var r = window.confirm("This will end your exam, Do you agree?");
+      if (!flag) {
+        var r = window.confirm("This will end your exam, Do you agree?");
+      } else r = true;
       if (r === true) {
         setTimer(0);
         // setRedirect(true);
