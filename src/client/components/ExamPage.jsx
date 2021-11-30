@@ -297,6 +297,7 @@ export default function ExamPage({ location }) {
           } else {
             localStorage.removeItem(`ans${ids[i]}`);
           }
+          localStorage.removeItem(`mk${ids[i]}`);
         }
 
         let marks = 0;
