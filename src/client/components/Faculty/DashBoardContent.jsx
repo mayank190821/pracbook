@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
-import {Typography} from "@mui/material";
+import { Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import Add from "@mui/icons-material/Add";
 import CardList from "./CardList";

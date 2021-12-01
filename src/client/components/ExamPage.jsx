@@ -15,7 +15,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Button from "@mui/material/Button";
-import { compile, fetchExam } from "./../api/exam.api";
+import { compile, uploadResult } from "./../api/exam.api";
 import {
   Card,
   CardContent,
@@ -27,8 +27,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { getCode } from "../redux/selectors/code.selector";
 import CodingQuestion from "../components/coding.question";
 import { fetchExamQuestion } from "../api/exam.api";
-import { saveQuestion, saveCode } from "../redux/actions/code.action";
-import { useParams } from "react-router-dom";
+import { saveQuestion } from "../redux/actions/code.action";
+import { useParams, Redirect } from "react-router-dom";
 import { zeroPad } from "react-countdown";
 import { fetchExamById } from "../api/utilities.api";
 
@@ -162,9 +162,12 @@ function renderTime(seconds) {
   seconds = seconds % 60;
   return { hours, minutes, seconds };
 }
+
 export default function ExamPage({ location }) {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const [resultList, setResultList] = React.useState([]);
+  const [redirect, setRedirect] = React.useState(false);
   const [language, setLanguage] = React.useState({
     value: "java",
     code: 62,
@@ -174,6 +177,7 @@ export default function ExamPage({ location }) {
   const [results, setResults] = React.useState([]);
   const [ques, setQues] = React.useState([]);
   const [sec, setSec] = React.useState();
+  const [examMarks, setExamMarks] = React.useState({});
   const [timer, setTimer] = React.useState(localStorage.getItem("time"));
   const [time, setTime] = React.useState("00:00:00");
   const [header, setHeader] = React.useState("");
@@ -202,8 +206,9 @@ export default function ExamPage({ location }) {
   };
 
   React.useEffect(() => {
-    fetchExamById(examId).then((exam) => {
+    fetchExamById(examId.split("&")[0]).then((exam) => {
       setHeader(`${exam.subject} - ${exam.name}`);
+      setExamMarks({ objMarks: exam.objMarks, codingMarks: exam.codingMarks });
     });
     if (ques.length === 0 && quesIds.length !== 0) {
       let currentQues = [];
@@ -236,9 +241,35 @@ export default function ExamPage({ location }) {
       clearInterval(interval);
     };
   }, []);
-
+  function updateMarks(marks) {
+    let flag = 0;
+    let curResult = resultList;
+    try {
+      for (let i = 0; i < resultList.length; i++) {
+        if (resultList[i].id === curQuestion.question.questionId) {
+          localStorage.setItem(`mk${resultList[i].id}`, marks);
+          curResult[i].marks = Math.max(curResult[i].marks, marks);
+          setResultList([...curResult]);
+          flag = 1;
+          console.log("correct");
+        }
+      }
+      if (flag === 0) {
+        curResult.push({
+          id: curQuestion.question.questionId,
+          marks: marks,
+        });
+        localStorage.setItem(`mk${curQuestion.question.questionId}`, marks);
+        console.log(curResult);
+        setResultList([...curResult]);
+      }
+    } catch (err) {}
+  }
   React.useEffect(() => {
-    if (timer <= 0) clearInterval(sec);
+    if (timer <= 0) {
+      clearInterval(sec);
+      questionChange("submit", true);
+    }
   }, [timer]);
 
   const [editorTheme, setEditorTheme] = React.useState("github");
@@ -247,13 +278,42 @@ export default function ExamPage({ location }) {
   const handleThemeChange = (event) => {
     setEditorTheme(event.target.value);
   };
-  const questionChange = (index) => {
+  const questionChange = (index, flag = false) => {
     if (index === "submit") {
-      var r = window.confirm("This will end your exam, Do you agree?");
+      if (!flag) {
+        var r = window.confirm("This will end your exam, Do you agree?");
+      } else r = true;
       if (r === true) {
         setTimer(0);
-        console.log("exam ended");
-        // calcResult();
+        // setRedirect(true);
+        localStorage.removeItem("time");
+        let ids = sessionStorage.getItem("TQID").split(",");
+
+        for (let i = 0; i < ids.length; i++) {
+          console.log(ids[i]);
+          if (ids[i].slice(0, 2) === "cp") {
+            localStorage.removeItem(`cp${ids[i]}`);
+            localStorage.removeItem(`cpl${ids[i]}`);
+          } else {
+            localStorage.removeItem(`ans${ids[i]}`);
+          }
+          localStorage.removeItem(`mk${ids[i]}`);
+        }
+
+        let marks = 0;
+        resultList.forEach((curResult) => {
+          marks += curResult.marks;
+        });
+        uploadResult({
+          id: examId.split("&")[1],
+          examId: examId.split("&")[0],
+          marks: marks,
+        }).then((res) => {
+          if (!res.error) {
+            console.log(res);
+            setRedirect(true);
+          } else console.log(res.error);
+        });
       }
     } else {
       if (
@@ -277,7 +337,6 @@ export default function ExamPage({ location }) {
   };
 
   React.useEffect(() => {
-    console.log("language exam page");
     if (curQuestion && curQuestion.question)
       handleLanguageChange(
         localStorage.getItem(`cpl${curQuestion.question.questionId}`) || "java"
@@ -337,9 +396,9 @@ export default function ExamPage({ location }) {
 
   React.useEffect(() => {
     let flag = -1;
-    // console.log(results);
+    console.log(results);
     for (let i = 0; i < results.length; i++) {
-      if (results[i] == "Accepted") {
+      if (results[i] === "Accepted") {
         setStatus(results[i]);
         if (i === 0) {
           flag = 1;
@@ -351,9 +410,21 @@ export default function ExamPage({ location }) {
     }
     if (flag === results.length) {
       setStatus("Accepted");
+      if (flag === curQuestion.question.outputTestCases.length) {
+        console.log(curQuestion.question.outputTestCases.length);
+        updateMarks(examMarks.codingMarks);
+      }
+    } else {
+      updateMarks(0);
     }
   }, [results]);
+  React.useEffect(() => {
+    console.log(resultList);
+  }, [resultList]);
 
+  if (redirect) {
+    return <Redirect to={`/student/dashboard/${examId.split("&")[1]}`} />;
+  }
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
@@ -583,6 +654,14 @@ export default function ExamPage({ location }) {
                       `ans${curQuestion.question.questionId}`,
                       event.target.value
                     );
+                    let marks;
+                    if (curQuestion.question.answer === event.target.value) {
+                      marks = examMarks.objMarks;
+                    } else {
+                      console.log("false", curQuestion.question.answer);
+                      marks = 0;
+                    }
+                    updateMarks(marks);
                     setAnswer(event.target.value);
                   }}
                 >
