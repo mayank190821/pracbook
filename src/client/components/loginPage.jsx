@@ -22,6 +22,7 @@ import { signin } from "../api/auth.api";
 import { useDispatch } from "react-redux";
 import Snackbars from "./ErrorMessages";
 import { saveUser } from "../redux/actions/code.action";
+import { authenticate } from "../helpermethods/helper.js";
 const useStyles = makeStyles((theme) => ({
   test: {
     color: "green",
@@ -135,6 +136,7 @@ export default function ImgMediaCard(props) {
       if (!response.error) {
         response.user.role = role;
         setUser(response.user);
+        authenticate(response.token);
         dispatch(saveUser(response.user));
         setExtras({ ...extras, redirect: true, error: "" });
         // if(extras.remember)

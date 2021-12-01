@@ -7,18 +7,30 @@ import { Switch, Route } from "react-router";
 import ExamPage from "./ExamPage";
 import InstructionPage from "./instructionPage";
 import StudentDashBoard from "./Student/StudentDashboard";
+import PrivateRouter from "../helpermethods/PrivateRouter";
 
 export default function AppRouter() {
   return (
     <Switch>
-      <Route path="/exam/instruction/:examId" component={InstructionPage} />
-      <Route path="/exam/:examId" component={ExamPage} />
+      <PrivateRouter
+        exact
+        path="/exam/instruction/:examId"
+        component={InstructionPage}
+      />
+      <PrivateRouter exact path="/exam/:examId" component={ExamPage} />
+      <PrivateRouter
+        exact
+        path="/faculty/dashboard/:id"
+        component={DashBoard}
+      />
+      <PrivateRouter
+        exact
+        path="/student/dashboard/:id"
+        component={StudentDashBoard}
+      />
       <Route path="/login/:role" component={LoginPage} />
       <Route path="/signup/:role" component={SignupPage} />
-      <Route path="/faculty/dashboard/:id" component={DashBoard} />
-      <Route path="/student/dashboard/:id" component={StudentDashBoard} />
       <Route exact path="/" component={LandingPage} />
-      {/* <Route exact path="/" component={SendingFile} />  */}
     </Switch>
   );
 }
