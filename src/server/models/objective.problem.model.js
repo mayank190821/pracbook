@@ -2,10 +2,7 @@ import mongoose from "mongoose";
 
 const objectiveProblem = new mongoose.Schema({
   topicName: String,
-  questionId: {
-    type: String,
-    default: "ob" + Math.round(new Date() * Math.random() + 0.1),
-  },
+  questionId: String,
   question: String,
   option1: String,
   option2: String,

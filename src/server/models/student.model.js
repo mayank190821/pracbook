@@ -5,23 +5,25 @@ const studentModel = new mongoose.Schema({
   name: String,
   email: String,
   hashedPassword: String,
-  year:String,
-  rollNumber:String,
+  year: String,
+  rollNumber: String,
   salt: String,
   section: String,
   subjects: [String],
-  exams: [{
-    examId: String,
-    result: {
-      marksObtained: Number,
-      submissions: [
-        {
-          index: Number,
-          solution: String,
-        }
-      ]
-    }
-  }]
+  exams: [
+    {
+      examId: String,
+      result: {
+        marksObtained: Number,
+        submissions: [
+          {
+            index: Number,
+            solution: String,
+          },
+        ],
+      },
+    },
+  ],
 });
 
 studentModel
