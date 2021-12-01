@@ -108,13 +108,23 @@ const uploadResult = async (req, res) => {
       return res.status(400).json({ message: "Student does not exist!" });
     }
     const student = req.student;
-    student.exams.push({
-      examId: req.body.examId,
-      result: {
-        marksObtained: req.body.marks,
-      },
-    });
-    await examsModel.findByIdAndUpdate(req.body.examId, { completed: true });
+    let flag = 0;
+    for (let i = 0; i < student.exams.length; i++) {
+      if (student.exams[i].examId === req.body.examId) {
+        student.exams[i].result = {
+          marksObtained: req.body.marks,
+        };
+        flag = 1;
+      }
+    }
+    if (flag === 0) {
+      student.exams.push({
+        examId: req.body.examId,
+        result: {
+          marksObtained: req.body.marks,
+        },
+      });
+    }
     await student.save();
     return res.status(200).json({ message: "Result Uploaded!" });
   } catch (err) {

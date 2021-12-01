@@ -288,7 +288,6 @@ export default function ExamPage({ location }) {
         // setRedirect(true);
         localStorage.removeItem("time");
         let ids = sessionStorage.getItem("TQID").split(",");
-
         for (let i = 0; i < ids.length; i++) {
           console.log(ids[i]);
           if (ids[i].slice(0, 2) === "cp") {
@@ -310,7 +309,6 @@ export default function ExamPage({ location }) {
           marks: marks,
         }).then((res) => {
           if (!res.error) {
-            console.log(res);
             setRedirect(true);
           } else console.log(res.error);
         });
