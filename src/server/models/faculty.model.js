@@ -8,7 +8,7 @@ const facultyModel = new mongoose.Schema({
   salt: String,
   sections: [
     {
-      year:String,
+      year: String,
       sectionName: String,
       subjects: [String],
     },

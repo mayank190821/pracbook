@@ -105,6 +105,50 @@ export default function Signup(props) {
     setUser({ ...user, [name]: event.target.value });
   };
 
+  const passwordWeak = () => {
+    if (user.password.length < 8) {
+      setExtras({
+        ...extras,
+        error: "password must have 8 characters!",
+        message: "",
+      });
+      return true;
+    }
+    if (!/([A-Z])+/.test(user.password)) {
+      setExtras({
+        ...extras,
+        error: "password must contain uppercase letters!",
+        message: "",
+      });
+      return true;
+    }
+    if (!/([a-z])+/.test(user.password)) {
+      setExtras({
+        ...extras,
+        error: "password must contain lowercase letters!",
+        message: "",
+      });
+      return true;
+    }
+    if (!/([!@#$&*])+/.test(user.password)) {
+      setExtras({
+        ...extras,
+        error: "password must contain special characters!",
+        message: "",
+      });
+      return true;
+    }
+    if (!/([0-9])+/.test(user.password)) {
+      setExtras({
+        ...extras,
+        error: "password must contain a digit!",
+        message: "",
+      });
+      return true;
+    }
+    return false;
+  };
+
   const handleClickShowPassword = () => {
     setExtras({ ...extras, showPassword: !extras.showPassword });
   };
@@ -134,6 +178,8 @@ export default function Signup(props) {
       });
       setOpenSnackBar(true);
       return;
+    } else if (passwordWeak()) {
+      setOpenSnackBar(true);
     } else {
       const faculty = {
         name: user.firstName + " " + user.lastName,

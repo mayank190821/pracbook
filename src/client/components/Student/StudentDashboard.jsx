@@ -27,6 +27,7 @@ import ExamHistory from "./ExamHistory";
 import { Redirect, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { saveUser } from "./../../redux/actions/code.action";
+import { clearJWT } from "../../helpermethods/helper";
 
 const drawerWidth = 240;
 
@@ -106,8 +107,7 @@ export default function Sidebar({ location }) {
     setSelectedTab(prop);
   };
   const handleLogOut = () => {
-    console.log("agaya");
-    setRedirect(true);
+    clearJWT(() => setRedirect(true));
   };
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -129,6 +129,7 @@ export default function Sidebar({ location }) {
         }
       });
     }
+    if (sessionStorage.getItem("TQID")) sessionStorage.removeItem("TQID");
   }, [location]);
 
   if (redirect) {

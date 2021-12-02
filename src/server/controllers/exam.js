@@ -14,16 +14,16 @@ const addExam = async (req, res) => {
   }
 };
 const getExamById = async (req, res) => {
-  try{
+  try {
     console.log(req);
-    const exam = await examsModel.findById({_id: req.headers.id});
+    const exam = await examsModel.findById({ _id: req.headers.id });
     res.status(200).json(exam);
-  }catch(err){
+  } catch (err) {
     res.status(400).json({
-      error: err.message
-    })
+      error: err.message,
+    });
   }
-}
+};
 const deleteOneByID = async (req, res) => {
   try {
     const exam = await examsModel.findByIdAndDelete(req.body.id);

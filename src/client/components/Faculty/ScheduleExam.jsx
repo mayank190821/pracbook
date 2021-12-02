@@ -286,7 +286,7 @@ export default function ScheduleExam({ handleClose }) {
               <TextField
                 required
                 id="outlined-required"
-                label="Time Duration"
+                label="Time Duration(Minutes)"
                 style={{ width: "30%" }}
                 value={data.duration}
                 onChange={handleChange("duration")}
