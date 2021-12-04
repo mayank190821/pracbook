@@ -114,52 +114,54 @@ const getExamsByFaculty = async (req, res) => {
   }
 };
 
-const fetchExamId = async(req, res, next) => {
+const fetchExamId = async (req, res, next) => {
   console.log(req.body);
   let exam = await examsModel.findOne({
     name: req.body.type,
     subject: { $regex: `${req.body.subject}`, $options: "i" },
     section: req.body.section,
-    year:req.body.year
-  })
-  if(exam){
+    year: req.body.year,
+  });
+  if (exam) {
     console.log(exam);
     req.examId = exam._id;
-  } 
+  }
   next();
-}
+};
 
 const examResults = async (req, res) => {
   try {
     if (!req.faculty) {
       res.status(400).json({ message: "Faculty not found!" });
     }
-      let examId = req.examId;
-      let students = await studentModel.find({
-        section: req.body.section,
-        subjects: { $regex: `${req.body.subject}`, $options: "i" },
-        year: req.body.year
+    let examId = req.examId;
+    let students = await studentModel.find({
+      section: req.body.section,
+      subjects: { $regex: `${req.body.subject}`, $options: "i" },
+      year: req.body.year,
+    });
+    let results = [],
+      marks;
+    console.log(examId.toString());
+    students.forEach((student) => {
+      marks = -1;
+      student.exams.forEach((exam) => {
+        if (exam.examId === examId.toString()) {
+          marks = exam.result.marksObtained;
+        }
       });
-      let results = [];
-      console.log(examId.toString());
-      students.forEach((student) => {
-        student.exams.forEach((exam) => {
-          console.log(exam);
-          if (exam.examId === examId.toString()) {
-            results.push({
-              name: student.name,
-              section: student.section,
-              status: "P",
-              marks: exam.result.marksObtained,
-              year:student.year,
-              rollNumber:student.rollNumber
-            });
-          }
-        });
+      results.push({
+        name: student.name,
+        section: student.section,
+        status: marks === -1 ? "A" : "P",
+        marks: marks === -1 ? "N/A" : marks,
+        year: student.year,
+        rollNumber: student.rollNumber,
       });
-      res.status(200).json({
-        results: results,
-      });
+    });
+    res.status(200).json({
+      results: results,
+    });
   } catch (err) {
     res.status(400).json({
       error: err,
@@ -174,5 +176,5 @@ export {
   facultyById,
   getExamsByFaculty,
   changeFacultyPassword,
-  fetchExamId
+  fetchExamId,
 };
