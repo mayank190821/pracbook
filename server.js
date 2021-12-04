@@ -1,8 +1,8 @@
-// import config from "./config/config.js";
 import express from "express";
 import path from "path";
 import mongoose from "mongoose";
 import routes from "./routes/routes.js";
+
 const app = express();
 
 mongoose.connect(process.env.mongourl);

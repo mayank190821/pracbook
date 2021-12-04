@@ -22,6 +22,7 @@ import { makeStyles, styled } from "@mui/styles";
 import { addVivaQuestion, addCodingQuestion } from "../../api/exam.api";
 import { EventNote, Add } from "@mui/icons-material";
 import QuestionCard from "./QuestionCard";
+import { ClassNames } from "@emotion/react";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -62,36 +63,26 @@ const InputBox = styled("div")(({ theme }) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    "& .css-fzk8t3-MuiPaper-root-MuiDialog-paper": {
-      padding: "10px !important",
-      overflow: "hidden",
-    },
+  form: {
+    padding: "20px !important",
   },
   input: {
     padding: "0px !important",
     margin: `${theme.spacing(1)} !important`,
   },
   textArea: {
-    width: "95%",
-    margin: theme.spacing(0, 2),
+    width: "100%",
     outline: "none",
     resize: "none",
     overflowWrap: "break-word !important",
     height: `${theme.spacing(7)} !important`,
   },
   topicname: {
-    width: "95%",
-    margin: theme.spacing(0, 2),
+    width: "100%",
     outline: "none",
     resize: "none",
     overflowWrap: "break-word !important",
     height: "50px !important",
-  },
-  button: {
-    // width: "50px !important",
-    // height: "50px !important",
-    // fontSize: "3px !important",
   },
 }));
 
@@ -142,10 +133,6 @@ export default function AddQuestion({ handleClose }) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
   const classNames = useStyles();
   const [QuestionType, setQuestionType] = useState("Objective");
   const [difficulty, setDifficultyLevel] = useState("easy");
@@ -186,8 +173,8 @@ export default function AddQuestion({ handleClose }) {
 
   const [sampInput, setSampInput] = useState("");
   const [sampOutput, setSampOutput] = useState("");
-  const [sampInputTestCase, setSampInputTestCases] = useState("");
-  const [sampOutputTestCase, setSampOutputTestcase] = useState("");
+  const [sampInputTestCases, setSampInputTestCases] = useState("");
+  const [sampOutputTestCases, setSampOutputTestcases] = useState("");
 
   return (
     <div>
@@ -199,7 +186,7 @@ export default function AddQuestion({ handleClose }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <form id="add_ques_form">
+        <form className={classNames.form} id="add_ques_form">
           <TextField
             id="filled-select-currency"
             select
@@ -219,7 +206,7 @@ export default function AddQuestion({ handleClose }) {
           </TextField>
           <Typography
             style={{
-              width: "100px",
+              lineHeight: "42px",
             }}
           >
             Topic Name :
@@ -237,7 +224,6 @@ export default function AddQuestion({ handleClose }) {
               <Typography
                 style={{
                   lineHeight: "48px",
-                  width: "100px",
                 }}
               >
                 Question :
@@ -249,7 +235,14 @@ export default function AddQuestion({ handleClose }) {
                   setVivaData({ ...setVivaData, question: e.target.value })
                 }
               />
-              <Typography>Options :</Typography>
+              <Typography
+                style={{
+                  lineHeight: "42px",
+                }}
+              >
+                {" "}
+                Options :
+              </Typography>
               <Box style={{ marginLeft: "20px" }}>
                 <TextField
                   className={classNames.input}
@@ -297,7 +290,13 @@ export default function AddQuestion({ handleClose }) {
                   required
                 />
               </Box>
-              <Typography style={{ lineHeight: "42px" }}>Answer :</Typography>
+              <Typography
+                style={{
+                  lineHeight: "42px",
+                }}
+              >
+                Answer :
+              </Typography>
               <RadioGroup
                 row
                 aria-label="Choose Answer"
@@ -392,8 +391,7 @@ export default function AddQuestion({ handleClose }) {
                           </TextField>
                           <Typography
                             style={{
-                              lineHeight: "48px",
-                              width: "120px",
+                              lineHeight: "42px",
                             }}
                           >
                             Name:
@@ -410,8 +408,7 @@ export default function AddQuestion({ handleClose }) {
                           />
                           <Typography
                             style={{
-                              // lineHeight: "48px",
-                              width: "120px",
+                              lineHeight: "42px",
                             }}
                           >
                             Question:
@@ -433,8 +430,7 @@ export default function AddQuestion({ handleClose }) {
                         <React.Fragment>
                           <Typography
                             style={{
-                              // lineHeight: "48px",
-                              width: "120px",
+                              lineHeight: "42px",
                             }}
                           >
                             Constraints:
@@ -451,8 +447,7 @@ export default function AddQuestion({ handleClose }) {
                           />
                           <Typography
                             style={{
-                              // lineHeight: "48px",
-                              width: "120px",
+                              lineHeight: "42px",
                             }}
                           >
                             Input Format:
@@ -469,8 +464,7 @@ export default function AddQuestion({ handleClose }) {
                           />
                           <Typography
                             style={{
-                              // lineHeight: "48px",
-                              width: "120px",
+                              lineHeight: "42px",
                             }}
                           >
                             Output Format:
@@ -493,7 +487,6 @@ export default function AddQuestion({ handleClose }) {
                           <InputBox>
                             <Typography
                               style={{
-                                // lineHeight: "48px",
                                 width: "120px",
                               }}
                             >
@@ -522,7 +515,6 @@ export default function AddQuestion({ handleClose }) {
                             >
                               <Badge
                                 badgeContent={codeProbData.sampleInput.length}
-                                // classes={{ badge: classNames.badge }}
                               >
                                 <Add />
                               </Badge>
@@ -531,7 +523,6 @@ export default function AddQuestion({ handleClose }) {
                           <InputBox>
                             <Typography
                               style={{
-                                // lineHeight: "48px",
                                 width: "120px",
                               }}
                             >
@@ -560,7 +551,6 @@ export default function AddQuestion({ handleClose }) {
                             >
                               <Badge
                                 badgeContent={codeProbData.sampleOutput.length}
-                                // classes={{ badge: classNames.badge }}
                               >
                                 <Add />
                               </Badge>
@@ -568,9 +558,7 @@ export default function AddQuestion({ handleClose }) {
                           </InputBox>
                           <Typography
                             style={{
-                              // lineHeight: "48px",
-                              float: "left",
-                              width: "120px",
+                              lineHeight: "42px",
                             }}
                           >
                             Explanation:
@@ -594,8 +582,8 @@ export default function AddQuestion({ handleClose }) {
                           <InputBox>
                             <Typography
                               style={{
-                                // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px !important",
+                                marginRight: "5px",
                               }}
                             >
                               Input Test Cases:
@@ -605,18 +593,18 @@ export default function AddQuestion({ handleClose }) {
                               onChange={(e) =>
                                 setSampInputTestCases(e.target.value)
                               }
-                              value={sampInputTestCase}
+                              value={sampInputTestCases}
                             />
                             <IconButton
                               size="small"
                               color="primary"
                               onClick={(e) => {
-                                if (sampInput !== "") {
+                                if (sampInputTestCases !== "") {
                                   setCodeProbData({
                                     ...codeProbData,
                                     inputTestCases: [
                                       ...codeProbData.inputTestCases,
-                                      sampInputTestCase,
+                                      sampInputTestCases,
                                     ],
                                   });
                                   setSampInputTestCases("");
@@ -627,7 +615,6 @@ export default function AddQuestion({ handleClose }) {
                                 badgeContent={
                                   codeProbData.inputTestCases.length
                                 }
-                                // classes={{ badge: classNames.badge }}
                               >
                                 <Add />
                               </Badge>
@@ -636,8 +623,7 @@ export default function AddQuestion({ handleClose }) {
                           <InputBox>
                             <Typography
                               style={{
-                                // lineHeight: "48px",
-                                width: "100px",
+                                width: "120px !important",
                               }}
                             >
                               Output Test Cases:
@@ -645,23 +631,23 @@ export default function AddQuestion({ handleClose }) {
                             <textarea
                               className={classNames.textArea}
                               onChange={(e) =>
-                                setSampOutputTestcase(e.target.value)
+                                setSampOutputTestcases(e.target.value)
                               }
-                              value={sampOutputTestCase}
+                              value={sampOutputTestCases}
                             />
                             <IconButton
                               size="small"
                               color="primary"
                               onClick={(e) => {
-                                if (sampInput !== "") {
+                                if (sampOutputTestCases !== "") {
                                   setCodeProbData({
                                     ...codeProbData,
                                     outputTestCases: [
                                       ...codeProbData.outputTestCases,
-                                      sampOutputTestCase,
+                                      sampOutputTestCases,
                                     ],
                                   });
-                                  setSampOutputTestcase("");
+                                  setSampOutputTestcases("");
                                 }
                               }}
                             >
@@ -669,7 +655,6 @@ export default function AddQuestion({ handleClose }) {
                                 badgeContent={
                                   codeProbData.outputTestCases.length
                                 }
-                                // classes={{ badge: classNames.badge }}
                               >
                                 <Add />
                               </Badge>

@@ -88,7 +88,6 @@ const getStudentById = async (req, res) => {
   return res.status(200).json({ user: req.student });
 };
 const getResultById = async (req, res) => {
-  // console.log(req);
   try {
     for (
       let i = 0;

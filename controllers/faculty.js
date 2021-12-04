@@ -115,7 +115,6 @@ const getExamsByFaculty = async (req, res) => {
 };
 
 const fetchExamId = async (req, res, next) => {
-  console.log(req.body);
   let exam = await examsModel.findOne({
     name: req.body.type,
     subject: { $regex: `${req.body.subject}`, $options: "i" },
@@ -123,7 +122,6 @@ const fetchExamId = async (req, res, next) => {
     year: req.body.year,
   });
   if (exam) {
-    console.log(exam);
     req.examId = exam._id;
   }
   next();
@@ -142,7 +140,6 @@ const examResults = async (req, res) => {
     });
     let results = [],
       marks;
-    console.log(examId.toString());
     students.forEach((student) => {
       marks = -1;
       student.exams.forEach((exam) => {
