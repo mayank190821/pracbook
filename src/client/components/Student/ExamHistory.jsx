@@ -3,7 +3,7 @@ import StudentMarksCard from "./StudentMarksCard";
 import { makeStyles } from "@mui/styles";
 import { Typography } from "@mui/material";
 import image from "../../images/exam.png";
-import { fetchExamById } from "../../api/utilities.api";
+import { fetchExamById, fetchCardDetails } from "../../api/utilities.api";
 import { useSelector } from "react-redux";
 import { getUser } from "../../redux/selectors/code.selector";
 
@@ -60,28 +60,69 @@ const History = () => {
   const classNames = useStyles();
   const user = useSelector(getUser);
   const [data, setData] = React.useState([]);
+  const [completedExams, setCompletedExams] = React.useState([]);
+
+  const calcTime = (res) => {
+    let exams = [];
+    for (let i = 0; i < res.length; i++) {
+      let date = new Date();
+      let examDate =
+        res[i].date.split("/")[2] +
+        "-" +
+        res[i].date.split("/")[0] +
+        "-" +
+        (parseInt(res[i].date.split("/")[1]) < 10
+          ? `0${res[i].date.split("/")[1]}`
+          : res[i].date.split("/")[1]) +
+        "T";
+      let hours = res[i].time.split(":")[0];
+      if (res[i].time.split(" ")[1] === "PM")
+        hours = (parseInt(res[i].time.split(":")[0]) + 12).toString();
+      let time = hours + ":" + res[i].time.split(" ")[0].split(":")[1] + ":00";
+      let matcher = examDate + time;
+      if (new Date(matcher) <= date) {
+        res[i].started = true;
+      }
+      matcher = new Date(new Date(matcher).getTime() + res[i].duration * 60000);
+      console.log(new Date(matcher), date);
+      if (matcher <= date) {
+        exams.push(res[i]);
+        console.log(res[i]._id, " added");
+      } else console.log("removed");
+    }
+    return exams;
+  };
 
   React.useEffect(() => {
-    let values = [];
-    user.exams.forEach((exam, index) => {
-      fetchExamById(exam.examId).then((examData) => {
-        if (examData !== null && examData !== undefined) {
+    let values = [],
+      marks;
+    fetchCardDetails(user._id, user.role)
+      .then((res) => {
+        return calcTime(res.exams);
+      })
+      .then((filteredExams) => {
+        filteredExams.forEach((curExam) => {
+          marks = -1;
+          user.exams.forEach((exam, index) => {
+            if (curExam._id === exam.examId) marks = exam.result.marksObtained;
+          });
+          if (marks === -1) marks = "absent";
           values.unshift({
-            name: examData.name,
-            subject: examData.subject,
-            marksObtained: exam.result.marksObtained,
-            section: examData.section,
-            date: examData.date,
-            time: examData.time,
-            duration: examData.duration,
+            name: curExam.name,
+            subject: curExam.subject,
+            marksObtained: marks,
+            section: curExam.section,
+            date: curExam.date,
+            time: curExam.time,
+            duration: curExam.duration,
             marks:
-              examData.objMarks * examData.objectCount +
-              examData.codingMarks * examData.codingCount,
+              curExam.objMarks * curExam.objectCount +
+              curExam.codingMarks * curExam.codingCount,
           });
           setData([...values]);
-        }
+        });
       });
-    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
