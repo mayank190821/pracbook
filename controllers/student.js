@@ -1,6 +1,6 @@
 import studentModel from "../models/student.model.js";
 import examsModel from "../models/exams.model.js";
-import config from "../../config/config.js";
+// import config from "../config/config.js";
 import extend from "lodash/extend.js";
 import jwt from "jsonwebtoken";
 
@@ -29,7 +29,7 @@ const signIn = async (req, res) => {
       {
         _id: student._id,
       },
-      config.jwtSecret
+      process.env.jwtSecret
     );
 
     res.cookie("st", token, { expire: new Date() + 9999 });
