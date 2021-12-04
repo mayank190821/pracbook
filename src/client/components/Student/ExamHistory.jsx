@@ -106,7 +106,7 @@ const History = () => {
           user.exams.forEach((exam, index) => {
             if (curExam._id === exam.examId) marks = exam.result.marksObtained;
           });
-          if (marks === -1) marks = "absent";
+          if (marks === -1) marks = " Absent";
           values.unshift({
             name: curExam.name,
             subject: curExam.subject,

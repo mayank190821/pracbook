@@ -50,19 +50,6 @@ const fetchStudentDetails = async (props) => {
   return await res.json();
 };
 
-const fetchResultByStudentId = async (id) => {
-  console.log(id);
-  let response = await fetch(`/api/student/result/${id}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  });
-  // console.log(response);
-
-  return await response.json();
-};
 const fetchExamById = async (id) => {
   let response = await fetch(`/api/exam`, {
     method: "GET",
@@ -78,7 +65,6 @@ export {
   fetchCardDetails,
   fetchQuesDetails,
   fetchCpQuesDetails,
-  fetchResultByStudentId,
   fetchExamById,
   fetchStudentDetails,
 };
