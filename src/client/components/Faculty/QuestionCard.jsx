@@ -5,7 +5,7 @@ import { fetchQuesDetails } from "../../api/utilities.api";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import BankCodingQuestion from "../Faculty/bank.coding.question"
+import BankCodingQuestion from "../Faculty/bank.coding.question";
 
 const types = [
   {
@@ -30,12 +30,10 @@ export default function QuestionCard() {
       answer: "",
     },
   ]);
-  
 
   React.useEffect(() => {
     fetchQuesDetails().then((res) => {
       setViva(res.questions);
-      console.log(res.questions);
     });
   }, []);
 
@@ -75,31 +73,23 @@ export default function QuestionCard() {
       </TextField>
       {type === "Objective" ? (
         vivaQues.map((data, index) => {
-          console.log(data);
           return (
-            <Card sx={{ minWidth: 275 }} style={{"marginBottom":"15px"}}>
+            <Card sx={{ minWidth: 275 }} style={{ marginBottom: "15px" }}>
               <CardContent>
                 <Typography
                   sx={{ fontSize: 22 }}
                   color="text.secondary"
                   gutterBottom
                 >
-                  {index + 1}{". "+data.question}
+                  {index + 1}
+                  {". " + data.question}
                 </Typography>
-                <Typography component="div">
-                  {"a. "+data.option1}
-                </Typography>
-                <Typography component="div">
-                  {"b. "+data.option2}
-                </Typography>
-                <Typography component="div">
-                  {"c. "+data.option3}
-                </Typography>
-                <Typography component="div">
-                  {"d. "+data.option4}
-                </Typography>
+                <Typography component="div">{"a. " + data.option1}</Typography>
+                <Typography component="div">{"b. " + data.option2}</Typography>
+                <Typography component="div">{"c. " + data.option3}</Typography>
+                <Typography component="div">{"d. " + data.option4}</Typography>
                 <br />
-                <Typography variant="body2" style={{"color": "green"}}>
+                <Typography variant="body2" style={{ color: "green" }}>
                   {"Answer: " + data.answer}
                 </Typography>
               </CardContent>

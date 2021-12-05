@@ -2,7 +2,6 @@ import facultyModel from "../models/faculty.model.js";
 import examsModel from "../models/exams.model.js";
 import extend from "lodash/extend.js";
 import jwt from "jsonwebtoken";
-// import config from "./../../config/config.js";
 import studentModel from "../models/student.model.js";
 
 const createFaculty = async (req, res) => {
@@ -13,9 +12,15 @@ const createFaculty = async (req, res) => {
       message: "Faculty Added",
     });
   } catch (err) {
-    return res.status(400).json({
-      message: err.message,
-    });
+    if (err.code === 11000) {
+      return res.status(400).json({
+        error: "Email already exists!",
+      });
+    } else {
+      return res.status(400).json({
+        error: "Check your internet connection",
+      });
+    }
   }
 };
 
@@ -34,7 +39,7 @@ const login = async (req, res) => {
       process.env.jwtSecret
     );
 
-    res.cookie("ft", token, { expire: new Date() + 9999 });
+    res.cookie("t", token, { expire: new Date() + 9999 });
 
     return res.status(200).json({
       token: token,
@@ -48,7 +53,7 @@ const login = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie("ft");
+  res.clearCookie("t");
   return res.status(200).json({
     message: "Successfully logged out",
   });

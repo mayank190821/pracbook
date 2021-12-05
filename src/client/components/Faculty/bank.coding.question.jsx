@@ -28,7 +28,6 @@ export default function ControlledAccordions() {
     React.useEffect(() => {
         fetchCpQuesDetails().then((res) => {
             setCodeQues(res.questions);
-            console.log(res.questions);
         });
     }, [])
     function changeColor(difficultyData){

@@ -3,7 +3,10 @@ import crypto from "crypto";
 
 const studentModel = new mongoose.Schema({
   name: String,
-  email: String,
+  email: {
+    type: String,
+    unique: "Email already exists",
+  },
   hashedPassword: String,
   year: String,
   rollNumber: String,

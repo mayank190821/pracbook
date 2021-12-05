@@ -47,7 +47,6 @@ const SectionCard = ({ props, calcTime }) => {
   const classNames = useStyles();
   const dispatch = useDispatch();
   const exams = useSelector(getExams);
-  // console.log(props);
   return (
     <Card className={classNames.card}>
       {user.role === "faculty" && (
@@ -60,7 +59,6 @@ const SectionCard = ({ props, calcTime }) => {
               fetchCardDetails(user._id, user.role).then((res) => {
                 let curExams = [];
                 if (user.role === "faculty") {
-                  console.log(res.exams);
                   res.exams.forEach((data) => {
                     dispatch(loadExams(calcTime(curExams, data)));
                   });

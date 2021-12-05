@@ -90,17 +90,13 @@ export default function InstructionPage() {
   });
 
   useEffect(() => {
-    console.log("aya");
     fetchExam(examId.split("&")[0]).then((curExam) => {
       let questionIds = [];
       fetchQuesDetails()
         .then((res) => {
-          // console.log(res.questions, res.questions.length);
-          console.log(res);
           let number = Math.floor(Math.random() * res.questions.length);
           let count = 0;
           let visited = new Array(res.questions.length).fill(false);
-          // console.log(visited + " " + number + "/ " + curExam.objectCount);
           for (
             let i = number;
             count < curExam.objectCount;
@@ -118,11 +114,9 @@ export default function InstructionPage() {
         })
         .then(() => {
           fetchCpQuesDetails().then((res) => {
-            // console.log(res.questions, res.questions.length);
             let number = Math.floor(Math.random() * res.questions.length);
             let count = 0;
             let visited = new Array(res.questions.length).fill(false);
-            console.log(visited + " " + number + "/ " + curExam.codingCount);
             for (
               let i = number;
               count < curExam.codingCount;

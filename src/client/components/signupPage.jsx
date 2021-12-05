@@ -70,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.dark,
     float: "right",
     marginTop: theme.spacing(2),
+    textDecoration: "none",
     "&:hover": {
       textDecoration: "underline",
     },
@@ -196,10 +197,13 @@ export default function Signup(props) {
       };
       if (/([a-zA-Z0-9])+@([a-zA-Z0-9])+.([a-zA-Z])+/.test(user.email)) {
         signup(role === "faculty" ? faculty : student, role).then((res) => {
-          if (!res.error) {
+          if (res && !res.error) {
             setExtras({ ...extras, open: true });
+          } else if (res) {
+            setExtras({ error: res.error });
+            setOpenSnackBar(true);
           } else {
-            setExtras({ error: "Check your internet connection" });
+            setExtras({ error: "Internal server error!" });
             setOpenSnackBar(true);
           }
         });

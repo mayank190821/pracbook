@@ -1,5 +1,4 @@
 const fetchCardDetails = async (id, role) => {
-  console.log(`/api/${role}/exams/${id}`);
   let response = await fetch(`/api/${role}/exams/${id}`, {
     method: "GET",
     headers: {
@@ -33,7 +32,6 @@ const fetchCpQuesDetails = async () => {
 };
 
 const fetchStudentDetails = async (props) => {
-  console.log(props.section, props.type, props.id);
   let res = await fetch(`/api/faculty/result/${props.id}`, {
     method: "PUT",
     headers: {

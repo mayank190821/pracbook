@@ -21,7 +21,7 @@ const useStyle = makeStyles((theme) => ({
   profileSection: {
     position: "absolute",
     right: "20px",
-    top: "16px",
+    top: "-10px",
   },
   header: {
     padding: theme.spacing(1),
@@ -61,32 +61,6 @@ const Navbar = () => {
         )}
       </div>
       <div className={classes.header}>
-        <Stack className={classes.years} spacing={2} direction="row">
-          <Button
-            variant="outlined"
-            style={{ color: "white", borderColor: "white" }}
-          >
-            1st Year
-          </Button>
-          <Button
-            variant="outlined"
-            style={{ color: "white", borderColor: "white" }}
-          >
-            2nd Year
-          </Button>
-          <Button
-            variant="outlined"
-            style={{ color: "white", borderColor: "white" }}
-          >
-            3rd Year
-          </Button>
-          <Button
-            variant="outlined"
-            style={{ color: "white", borderColor: "white" }}
-          >
-            4th Year
-          </Button>
-        </Stack>
         <Stack className={classes.profileSection} spacing={2} direction="row">
           <Button
             variant="standard"

@@ -112,7 +112,6 @@ export default function StudentTable({ results }) {
           )
         );
       });
-      console.log(results);
       setRows(data);
     }
   }, [results]);

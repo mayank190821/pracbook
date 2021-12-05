@@ -248,10 +248,11 @@ export default function ExamPage({ location }) {
       for (let i = 0; i < resultList.length; i++) {
         if (resultList[i].id === curQuestion.question.questionId) {
           localStorage.setItem(`mk${resultList[i].id}`, marks);
-          curResult[i].marks = Math.max(curResult[i].marks, marks);
+          if (curResult[i].id.slice(0, 2) === "cp")
+            curResult[i].marks = Math.max(curResult[i].marks, marks);
+          else curResult[i].marks = marks;
           setResultList([...curResult]);
           flag = 1;
-          console.log("correct");
         }
       }
       if (flag === 0) {
@@ -260,7 +261,6 @@ export default function ExamPage({ location }) {
           marks: marks,
         });
         localStorage.setItem(`mk${curQuestion.question.questionId}`, marks);
-        console.log(curResult);
         setResultList([...curResult]);
       }
     } catch (err) {}
@@ -285,11 +285,9 @@ export default function ExamPage({ location }) {
       } else r = true;
       if (r === true) {
         setTimer(0);
-        // setRedirect(true);
         localStorage.removeItem("time");
         let ids = sessionStorage.getItem("TQID").split(",");
         for (let i = 0; i < ids.length; i++) {
-          console.log(ids[i]);
           if (ids[i].slice(0, 2) === "cp") {
             localStorage.removeItem(`cp${ids[i]}`);
             localStorage.removeItem(`cpl${ids[i]}`);
@@ -310,7 +308,7 @@ export default function ExamPage({ location }) {
         }).then((res) => {
           if (!res.error) {
             setRedirect(true);
-          } else console.log(res.error);
+          }
         });
       }
     } else {
@@ -367,7 +365,6 @@ export default function ExamPage({ location }) {
       }
       compile(data)
         .then((response) => {
-          // console.log(response);
           if (response.stderr) {
             result += response.stderr;
             err = true;
@@ -394,7 +391,6 @@ export default function ExamPage({ location }) {
 
   React.useEffect(() => {
     let flag = -1;
-    console.log(results);
     for (let i = 0; i < results.length; i++) {
       if (results[i] === "Accepted") {
         setStatus(results[i]);
@@ -409,16 +405,12 @@ export default function ExamPage({ location }) {
     if (flag === results.length) {
       setStatus("Accepted");
       if (flag === curQuestion.question.outputTestCases.length) {
-        console.log(curQuestion.question.outputTestCases.length);
         updateMarks(examMarks.codingMarks);
       }
     } else {
       updateMarks(0);
     }
   }, [results]);
-  React.useEffect(() => {
-    console.log(resultList);
-  }, [resultList]);
 
   if (redirect) {
     return <Redirect to={`/student/dashboard/${examId.split("&")[1]}`} />;
@@ -592,7 +584,6 @@ export default function ExamPage({ location }) {
                         input: curQuestion.question.sampleInput,
                         output: curQuestion.question.sampleOutput,
                       });
-                      // console.log("clicked");
                     }}
                     style={{ margin: "10px", marginBottom: "5px" }}
                   >
@@ -656,7 +647,6 @@ export default function ExamPage({ location }) {
                     if (curQuestion.question.answer === event.target.value) {
                       marks = examMarks.objMarks;
                     } else {
-                      console.log("false", curQuestion.question.answer);
                       marks = 0;
                     }
                     updateMarks(marks);

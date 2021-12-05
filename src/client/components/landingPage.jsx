@@ -1,13 +1,14 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
-import Card from '@mui/material/Card';
-import Typography from '@mui/material/Typography';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import { Link } from "react-router-dom";
 
-const source_img = "https://cb-thumbnails.s3.ap-south-1.amazonaws.com/accounts-vector.svg"
+const source_img =
+  "https://cb-thumbnails.s3.ap-south-1.amazonaws.com/accounts-vector.svg";
 const useStyles = makeStyles((theme) => ({
   container: {
     height: "100vh",
@@ -29,7 +30,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
-
   },
   card_1: {
     display: "flex",
@@ -37,15 +37,14 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     overflow: "hidden",
     [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   image: {
     width: "100%",
     marginTop: "auto",
     marginBottom: "auto",
     height: "70%",
-
   },
   heading_1: {
     fontFamily: "'Lobster', cursive",
@@ -58,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down("sm")]: {
       fontSize: "70px",
-    }
+    },
   },
   heading_2: {
     color: "white",
@@ -110,27 +109,60 @@ function LandingPage() {
           <div className={style.card_container}>
             <Card className={style.stCard} elevation={0}>
               <CardContent>
-                <Typography style={{ marginBottom: "30px", color: "white", fontWeight: "500", fontSize: "20px" }}>
+                <Typography
+                  style={{
+                    marginBottom: "30px",
+                    color: "white",
+                    fontWeight: "500",
+                    fontSize: "20px",
+                  }}
+                >
                   Login to portal for practical exams.
                 </Typography>
               </CardContent>
-              <CardActions >
+              <CardActions>
                 <Link
                   to={{
-                    pathname: "/login/student"
+                    pathname: "/login/student",
                   }}
-                  style={{ textDecoration: "none" }}>
-                  <Button varient="contained" style={{ backgroundColor: "#005cff" }} className={style.button_styleSt} >
-                    <Typography style={{ fontWeight: "700", padding: "4px 12px", fontSize: "20px"}} >Student</Typography>
+                  style={{ textDecoration: "none" }}
+                >
+                  <Button
+                    varient="contained"
+                    style={{ backgroundColor: "#005cff" }}
+                    className={style.button_styleSt}
+                  >
+                    <Typography
+                      style={{
+                        fontWeight: "700",
+                        padding: "4px 12px",
+                        fontSize: "20px",
+                      }}
+                    >
+                      Student
+                    </Typography>
                   </Button>
                 </Link>
                 <Link
                   to={{
                     pathname: "/login/faculty",
                   }}
-                  style={{ textDecoration: "none" }}>
-                  <Button varient="contained" style={{ background: "#c333a4" }} className={style.button_styleFt} >
-                    <Typography style={{ fontWeight: "500", padding: "4px 12px", fontSize: "20px"}}>faculty</Typography>
+                  style={{ textDecoration: "none" }}
+                >
+                  <Button
+                    varient="contained"
+                    style={{ background: "#c333a4" }}
+                    className={style.button_styleFt}
+                  >
+                    <Typography
+                      style={{
+                        fontWeight: "500",
+                        padding: "4px 12px",
+                        fontSize: "20px",
+                      }}
+                    >
+                      faculty
+                    </Typography>
                   </Button>
                 </Link>
               </CardActions>

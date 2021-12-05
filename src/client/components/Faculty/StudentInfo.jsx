@@ -82,7 +82,6 @@ function StudentInfo() {
     }).then((res) => {
       setResults(res.results);
       if (!res.results || res.results.length === 0) {
-        console.log(res);
         setResults([]);
         setOpen(true);
       }

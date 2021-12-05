@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -155,7 +155,7 @@ export default function AddQuestion({ handleClose }) {
     option4: "",
     answer: "",
   });
-
+  const [answer, setAnswer] = useState("PR#BK");
   const [codeProbData, setCodeProbData] = useState({
     type: vivaData.topicName,
     difficulty: "easy",
@@ -230,6 +230,7 @@ export default function AddQuestion({ handleClose }) {
               </Typography>
               <textarea
                 required
+                id="new-one"
                 className={classNames.textArea}
                 onChange={(e) =>
                   setVivaData({ ...setVivaData, question: e.target.value })
@@ -302,11 +303,10 @@ export default function AddQuestion({ handleClose }) {
                 aria-label="Choose Answer"
                 name="answer"
                 spacing="auto"
-                value={vivaData.answer !== "" ? vivaData.answer : "@PR#BK"}
+                value={answer}
                 required
                 onChange={(event) => {
-                  setVivaData({ ...vivaData, answer: event.target.value });
-                  console.log(event.target.value);
+                  setAnswer(event.target.value);
                 }}
               >
                 <FormControlLabel
@@ -339,7 +339,9 @@ export default function AddQuestion({ handleClose }) {
                     const formId = document.getElementById("add_ques_form");
                     formId.checkValidity();
                     if (formId.reportValidity()) {
-                      addVivaQuestion(vivaData);
+                      let data = vivaData;
+                      data.answer = answer;
+                      addVivaQuestion(data);
                       handleClose();
                     }
                   }}
