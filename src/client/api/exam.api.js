@@ -65,7 +65,6 @@ const addCodingQuestion = async (data) => {
 };
 
 const compile = async (data) => {
-  // console.log(data);
   var options = {
     method: "POST",
     url: "https://judge0-ce.p.rapidapi.com/submissions",

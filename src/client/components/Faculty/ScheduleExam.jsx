@@ -19,10 +19,8 @@ import { getUser } from "../../redux/selectors/code.selector";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
-  dialog: {
-    "& .css-fzk8t3-MuiPaper-root-MuiDialog-paper": {
-      padding: "40px !important",
-    },
+  form: {
+    padding: "30px !important",
   },
   elements: {
     marginLeft: "25px !important",
@@ -47,22 +45,22 @@ export default function ScheduleExam({ handleClose }) {
   const classes = useStyles();
   const facultyData = useSelector(getUser);
   const [curYear, setCurYear] = React.useState([]);
-  const [curSection, setCurSection] = React.useState([]);
+  const [sectionList, setSectionList] = React.useState([]);
   const [subjectList, setSubjectList] = React.useState([]);
   const [curSubjectList, setCurSubjectList] = React.useState([]);
   React.useEffect(() => {
-    let secArray = [];
+    let sectionArray = [];
     let yearArray = [];
     let secLen = facultyData.sections.length;
     let subjectArray = [];
     for (let i = 0; i < secLen; i++) {
       yearArray.push(facultyData.sections[i].year);
-      secArray.push(facultyData.sections[i].sectionName);
+      sectionArray.push(facultyData.sections[i].sectionName);
       subjectArray.push(facultyData.sections[i]);
     }
     setCurYear(yearArray);
     setSubjectList(subjectArray);
-    setCurSection(secArray);
+    setSectionList(sectionArray);
   }, [facultyData]);
 
   const dispatch = useDispatch();
@@ -101,10 +99,9 @@ export default function ScheduleExam({ handleClose }) {
       let time = hours + ":" + res[i].time.split(" ")[0].split(":")[1] + ":00";
       let matcher = examDate + time;
       matcher = new Date(new Date(matcher).getTime() + res[i].duration * 60000);
-      console.log(new Date(matcher), date);
       if (matcher > date) {
         exams.push(res[i]);
-      } else console.log("removed");
+      }
     }
     return exams;
   };
@@ -113,7 +110,6 @@ export default function ScheduleExam({ handleClose }) {
     scheduleExam(data).then(() => {
       fetchCardDetails(facultyData._id, "faculty").then((res) => {
         let curExams = [];
-        console.log(res.exams);
         res.exams.forEach((data) => {
           dispatch(loadExams(calcTime(curExams, data)));
         });
@@ -144,6 +140,15 @@ export default function ScheduleExam({ handleClose }) {
           setCurSubjectList(curSection.subjects);
         }
       });
+    } else if (props === "year") {
+      setData({ ...data, [props]: event.target.value });
+      let curSectionList = [];
+      subjectList.forEach((curSection) => {
+        if (curSection.year === event.target.value) {
+          curSectionList.push(curSection.sectionName);
+        }
+      });
+      setSectionList([...curSectionList]);
     } else setData({ ...data, [props]: event.target.value });
   };
   return (
@@ -156,7 +161,7 @@ export default function ScheduleExam({ handleClose }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <form id="add_exam_form">
+        <form className={classes.form} id="add_exam_form">
           <Stack spacing={3}>
             <Box
               spacing={1}
@@ -252,7 +257,7 @@ export default function ScheduleExam({ handleClose }) {
                 value={data.section}
                 onChange={handleChange("section")}
               >
-                {curSection.map((option) => (
+                {sectionList.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
                   </MenuItem>
@@ -351,7 +356,6 @@ export default function ScheduleExam({ handleClose }) {
                   handleScheduleExam();
                   fetchCardDetails(facultyData._id, facultyData.role).then(
                     (res) => {
-                      console.log(res);
                       dispatch(loadExams(res.exams));
                     }
                   );

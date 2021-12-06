@@ -19,7 +19,6 @@ export const ques = (state = initialQuestion, { question, type }) => {
 };
 
 export const exams = (state = examList, { exams, type }) => {
-  // console.log("updated");
   if (type === "LOAD_EXAMS") {
     return exams;
   }
@@ -50,7 +49,7 @@ export const objAns = (state = objectiveAnswers, { examAns, id, type }) => {
           break;
         }
       }
-      if (flag == 0) {
+      if (flag === 0) {
         data.push({
           examAns: examAns,
           id: id,

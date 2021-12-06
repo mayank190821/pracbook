@@ -118,12 +118,6 @@ export default function Sidebar({ location }) {
 
   useEffect(() => {
     if (location.state) dispatch(saveUser(location.state.user));
-    else {
-      // getUser(id, location.pathname.split("/")[0]).then((response) => {
-      //   if (!response.error) {
-      //   }
-      // });
-    }
   }, [location]);
 
   if (redirect) {

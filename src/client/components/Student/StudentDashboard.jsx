@@ -118,12 +118,10 @@ export default function Sidebar({ location }) {
   };
 
   React.useEffect(() => {
-    // console.log(location);
     if (location.state) dispatch(saveUser(location.state.user));
     else {
       getStudent(id).then((response) => {
         if (!response.error) {
-          console.log(response);
           response.user.role = "student";
           dispatch(saveUser(response.user));
         }

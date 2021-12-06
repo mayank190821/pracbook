@@ -1,32 +1,24 @@
 import mongoose from "mongoose";
 import crypto from "crypto";
 
-const studentModel = new mongoose.Schema({
+const facultyModel = new mongoose.Schema({
   name: String,
-  email: String,
+  email: {
+    type: String,
+    unique: "Email already exists",
+  },
   hashedPassword: String,
-  year: String,
-  rollNumber: String,
   salt: String,
-  section: String,
-  subjects: [String],
-  exams: [
+  sections: [
     {
-      examId: String,
-      result: {
-        marksObtained: Number,
-        submissions: [
-          {
-            index: Number,
-            solution: String,
-          },
-        ],
-      },
+      year: String,
+      sectionName: String,
+      subjects: [String],
     },
   ],
 });
 
-studentModel
+facultyModel
   .virtual("password")
   .set(function (input) {
     this._password = input;
@@ -37,7 +29,7 @@ studentModel
     return this._password;
   });
 
-studentModel.methods = {
+facultyModel.methods = {
   makeSalt: function () {
     return Math.round(new Date().valueOf() * (Math.random() + 0.1)) + "";
   },
@@ -52,10 +44,9 @@ studentModel.methods = {
       return "";
     }
   },
-
   authenticate: function (password) {
     return this.encryptPassword(password) === this.hashedPassword;
   },
 };
 
-export default mongoose.model("studentModel", studentModel);
+export default mongoose.model("facultyModel", facultyModel);

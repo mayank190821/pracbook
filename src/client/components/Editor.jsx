@@ -44,11 +44,9 @@ const Editor = ({ editorTheme, language, index }) => {
   useEffect(() => {
     let code = localStorage.getItem(`cp${index}`);
     if (!curSourceCode && code !== null) {
-      console.log("saved local code");
       setCurSourceCode(code);
       setTimeout(() => setCurSourceCode(code + " "), 500);
     } else if (code !== curSourceCode) {
-      console.log("language editor");
       setMode(language);
       setCurSourceCode(template[mode]);
     }
@@ -60,7 +58,6 @@ const Editor = ({ editorTheme, language, index }) => {
   }, [editorTheme]);
 
   useEffect(() => {
-    // console.log("editor to redux");
     if (curSourceCode) dispatch(saveCode(curSourceCode));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curSourceCode]);

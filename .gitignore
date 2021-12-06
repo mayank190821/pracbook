@@ -3,7 +3,8 @@
 # dependencies
 /node_modules/
 /.pnp
-/src/config/
+config.js
+.env
 .pnp.js
 # testing
 /coverage

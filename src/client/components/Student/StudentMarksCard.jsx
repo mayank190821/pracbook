@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "25px",
     position: "relative",
     // cursor: "pointer",
-    boxShadow: "0px 0px 7px 0px rgba(0,0,0,0.2)"
+    boxShadow: "0px 0px 7px 0px rgba(0,0,0,0.2)",
   },
   text: {
     marginTop: "5px !important",
@@ -39,8 +39,6 @@ const SectionCard = ({ props }) => {
   return (
     <Card className={classNames.card}>
       <Typography className={classNames.mediaHead}>
-        {`Section ${props.data.section}`}
-        <br />
         {props.data.subject}
       </Typography>
       <CardMedia
@@ -60,7 +58,7 @@ const SectionCard = ({ props }) => {
           <b>Time :</b> {props.data.time}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Duration :</b> {props.data.duration}
+          <b>Duration :</b> {`${props.data.duration} min.`}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
           <b>Max Marks :</b> {props.data.marks}

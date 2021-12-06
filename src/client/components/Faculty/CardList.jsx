@@ -83,29 +83,27 @@ const CardList = ({ location }) => {
           : res[i].date.split("/")[1]) +
         "T";
       let hours = res[i].time.split(":")[0];
-      if (res[i].time.split(" ")[1] === "PM")
-        hours = (parseInt(res[i].time.split(":")[0]) + 12).toString();
+      if (res[i].time.split(" ")[1] === "PM") {
+        if (parseInt(hours) !== 12) hours = (parseInt(hours) + 12).toString();
+      } else if (parseInt(hours) === 12) hours = "00";
       let time = hours + ":" + res[i].time.split(" ")[0].split(":")[1] + ":00";
       let matcher = examDate + time;
       if (new Date(matcher) < date) {
         res[i].started = true;
       }
       matcher = new Date(new Date(matcher).getTime() + res[i].duration * 60000);
-      console.log(new Date(matcher), date);
       if (matcher > date) {
         exams.push(res[i]);
-      } else console.log("removed");
+      }
     }
     return exams;
   };
 
   React.useEffect(() => {
-    console.log(id, user.role);
     if (id && user) {
       fetchCardDetails(id, user.role).then((res) => {
         let exams = [];
         if (user.role === "faculty") {
-          console.log(res.exams);
           res.exams.forEach((data) => {
             dispatch(loadExams(calcTime(exams, data)));
           });

@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
   text: {
     color: theme.palette.primary.dark,
-    textAlign: "center",
+    float: "right",
     textDecoration: "none",
     "&:hover": {
       textDecoration: "underline",
@@ -240,14 +240,9 @@ export default function ImgMediaCard(props) {
             >
               Sign In
             </Button>
-            <div className={classNames.links}>
-              <Link to="/forgot" className={classNames.text}>
-                {"Forgot password?"}
-              </Link>
-              <Link to={`/signup/${role}`} className={classNames.text}>
-                {"New user? Sign Up"}
-              </Link>
-            </div>
+            <Link to={`/signup/${role}`} className={classNames.text}>
+              {"New user? Sign Up"}
+            </Link>
           </form>
         </div>
         <Box mt={4}>

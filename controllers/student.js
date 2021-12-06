@@ -1,6 +1,5 @@
 import studentModel from "../models/student.model.js";
 import examsModel from "../models/exams.model.js";
-import config from "../../config/config.js";
 import extend from "lodash/extend.js";
 import jwt from "jsonwebtoken";
 
@@ -12,9 +11,15 @@ const createStudent = async (req, res) => {
       message: "Student Added",
     });
   } catch (err) {
-    return res.status(400).json({
-      error: err.message,
-    });
+    if (err.code === 11000) {
+      return res.status(400).json({
+        error: "Email already exists!",
+      });
+    } else {
+      return res.status(400).json({
+        error: "Check your internet connection",
+      });
+    }
   }
 };
 
@@ -29,10 +34,10 @@ const signIn = async (req, res) => {
       {
         _id: student._id,
       },
-      config.jwtSecret
+      process.env.jwtSecret
     );
 
-    res.cookie("st", token, { expire: new Date() + 9999 });
+    res.cookie("t", token, { expire: new Date() + 9999 });
 
     return res.status(200).json({
       token: token,
@@ -46,7 +51,7 @@ const signIn = async (req, res) => {
 };
 
 const signOut = (req, res) => {
-  res.clearCookie("st");
+  res.clearCookie("t");
   return res.status(200).json({
     message: "Successfully Signed Out",
   });
@@ -88,7 +93,6 @@ const getStudentById = async (req, res) => {
   return res.status(200).json({ user: req.student });
 };
 const getResultById = async (req, res) => {
-  // console.log(req);
   try {
     for (
       let i = 0;

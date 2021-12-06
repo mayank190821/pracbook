@@ -2,7 +2,6 @@ import facultyModel from "../models/faculty.model.js";
 import examsModel from "../models/exams.model.js";
 import extend from "lodash/extend.js";
 import jwt from "jsonwebtoken";
-import config from "./../../config/config.js";
 import studentModel from "../models/student.model.js";
 
 const createFaculty = async (req, res) => {
@@ -13,9 +12,15 @@ const createFaculty = async (req, res) => {
       message: "Faculty Added",
     });
   } catch (err) {
-    return res.status(400).json({
-      message: err.message,
-    });
+    if (err.code === 11000) {
+      return res.status(400).json({
+        error: "Email already exists!",
+      });
+    } else {
+      return res.status(400).json({
+        error: "Check your internet connection",
+      });
+    }
   }
 };
 
@@ -31,10 +36,10 @@ const login = async (req, res) => {
       {
         _id: faculty._id,
       },
-      config.jwtSecret
+      process.env.jwtSecret
     );
 
-    res.cookie("ft", token, { expire: new Date() + 9999 });
+    res.cookie("t", token, { expire: new Date() + 9999 });
 
     return res.status(200).json({
       token: token,
@@ -48,7 +53,7 @@ const login = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie("ft");
+  res.clearCookie("t");
   return res.status(200).json({
     message: "Successfully logged out",
   });
@@ -115,7 +120,6 @@ const getExamsByFaculty = async (req, res) => {
 };
 
 const fetchExamId = async (req, res, next) => {
-  console.log(req.body);
   let exam = await examsModel.findOne({
     name: req.body.type,
     subject: { $regex: `${req.body.subject}`, $options: "i" },
@@ -123,7 +127,6 @@ const fetchExamId = async (req, res, next) => {
     year: req.body.year,
   });
   if (exam) {
-    console.log(exam);
     req.examId = exam._id;
   }
   next();
@@ -142,7 +145,6 @@ const examResults = async (req, res) => {
     });
     let results = [],
       marks;
-    console.log(examId.toString());
     students.forEach((student) => {
       marks = -1;
       student.exams.forEach((exam) => {

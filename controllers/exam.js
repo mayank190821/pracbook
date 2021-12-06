@@ -15,7 +15,6 @@ const addExam = async (req, res) => {
 };
 const getExamById = async (req, res) => {
   try {
-    console.log(req);
     const exam = await examsModel.findById({ _id: req.headers.id });
     res.status(200).json(exam);
   } catch (err) {
