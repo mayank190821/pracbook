@@ -365,6 +365,7 @@ export default function ExamPage({ location }) {
       }
       compile(data)
         .then((response) => {
+          response = response.data;
           if (response.stderr) {
             result += response.stderr;
             err = true;

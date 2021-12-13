@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import authCheck from "./controllers/authController.js";
 import mongoose from "mongoose";
 import routes from "./routes/routes.js";
 
@@ -9,7 +10,8 @@ mongoose.connect(process.env.mongourl);
 const __dirname = path.resolve();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/", routes);
+app.use("/api", authCheck, routes);
+app.use("/auth", routes);
 
 mongoose.connection.on("connected", () => {
   console.log("connected to mongo server.");

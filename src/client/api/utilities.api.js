@@ -2,6 +2,7 @@ const fetchCardDetails = async (id, role) => {
   let response = await fetch(`/api/${role}/exams/${id}`, {
     method: "GET",
     headers: {
+      prackey: "pracbookauthkey",
       Accept: "application/json",
       "Content-Type": "application/json",
     },
@@ -13,6 +14,7 @@ const fetchQuesDetails = async () => {
   let response = await fetch(`/api/questions/objective/fetchQuestions`, {
     method: "GET",
     headers: {
+      prackey: "pracbookauthkey",
       Accept: "application/json",
       "Content-Type": "application/json",
     },
@@ -24,6 +26,7 @@ const fetchCpQuesDetails = async () => {
   let response = await fetch(`/api/questions/coding/fetchCpQuestions`, {
     method: "GET",
     headers: {
+      prackey: "pracbookauthkey",
       Accept: "application/json",
       "Content-Type": "application/json",
     },
@@ -35,6 +38,7 @@ const fetchStudentDetails = async (props) => {
   let res = await fetch(`/api/faculty/result/${props.id}`, {
     method: "PUT",
     headers: {
+      prackey: "pracbookauthkey",
       Accept: "application/json",
       "Content-Type": "application/json",
     },
@@ -53,6 +57,7 @@ const fetchExamById = async (id) => {
     method: "GET",
     headers: {
       id: id,
+      prackey: "pracbookauthkey",
       Accept: "application/json",
       "Content-Type": "application/json",
     },

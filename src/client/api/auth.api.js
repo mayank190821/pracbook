@@ -20,6 +20,7 @@ const getStudent = async (id) => {
     let response = await fetch(`/api/getStudent/${id}`, {
       method: "GET",
       headers: {
+        prackey: "pracbookauthkey",
         Accept: "application/json",
         "Content-Type": "application/json",
       },

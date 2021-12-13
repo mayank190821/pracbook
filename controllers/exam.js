@@ -1,4 +1,5 @@
 import examsModel from "../models/exams.model.js";
+import axios from "axios";
 
 const addExam = async (req, res) => {
   const exam = new examsModel(req.body);
@@ -13,6 +14,30 @@ const addExam = async (req, res) => {
     });
   }
 };
+const compile = async (req, res) => {
+  var options = {
+    method: "POST",
+    url: "https://judge0-ce.p.rapidapi.com/submissions",
+    params: { base64_encoded: "false", fields: "*", wait: true },
+    headers: {
+      "content-type": "application/json",
+      "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+      "x-rapidapi-key": process.env.compileKey,
+    },
+    data: req.body,
+  };
+
+  await axios
+    .request(options)
+    .then((response) => {
+      console.log(response.data);
+      return res.status(200).json({ data: response.data });
+    })
+    .catch((error) => {
+      return res.status(400).json({ error: error });
+    });
+};
+
 const getExamById = async (req, res) => {
   try {
     const exam = await examsModel.findById({ _id: req.headers.id });
@@ -34,4 +59,4 @@ const deleteOneByID = async (req, res) => {
   }
 };
 
-export { addExam, getExamById, deleteOneByID };
+export { addExam, getExamById, deleteOneByID, compile };

@@ -6,6 +6,7 @@
 config.js
 .env
 .pnp.js
+/src/client/components/ClassComponent.jsx
 # testing
 /coverage
 
