@@ -39,7 +39,7 @@
   },
   "scripts": {
     "heroku-postbuild": "npm install && npm run build",
-    "start": "node -r dotenv/config server.js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

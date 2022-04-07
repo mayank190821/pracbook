@@ -71,27 +71,33 @@ const CardList = ({ location }) => {
   const { id } = useParams();
 
   const calcTime = (exams, res) => {
+    console.log(res);
     for (let i = 0; i < res.length; i++) {
       let date = new Date();
       let examDate =
         res[i].date.split("/")[2] +
         "-" +
-        res[i].date.split("/")[0] +
-        "-" +
         (parseInt(res[i].date.split("/")[1]) < 10
           ? `0${res[i].date.split("/")[1]}`
           : res[i].date.split("/")[1]) +
+          "-" +
+        res[i].date.split("/")[0] +
         "T";
       let hours = res[i].time.split(":")[0];
-      if (res[i].time.split(" ")[1] === "PM") {
+      if (res[i].time.split(" ")[1] === "pm") {
         if (parseInt(hours) !== 12) hours = (parseInt(hours) + 12).toString();
       } else if (parseInt(hours) === 12) hours = "00";
       let time = hours + ":" + res[i].time.split(" ")[0].split(":")[1] + ":00";
+      // console.log(hours, res[i].time.split(" ")[1], time);
       let matcher = examDate + time;
+      console.log(matcher, time, date);
       if (new Date(matcher) < date) {
         res[i].started = true;
       }
-      matcher = new Date(new Date(matcher).getTime() + res[i].duration * 60000);
+      matcher = new Date(matcher).getTime() + res[i].duration * 60000;
+      console.log("new 1 ",matcher);
+      matcher = new Date(matcher);
+      console.log("new",matcher);
       if (matcher > date) {
         exams.push(res[i]);
       }
