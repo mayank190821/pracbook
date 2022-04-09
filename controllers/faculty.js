@@ -105,11 +105,15 @@ const getExamsByFaculty = async (req, res) => {
           j < JSON.parse(JSON.stringify(sections[i].subjects)).length;
           j++
         ) {
-          const exam = await examsModel.find({
+          await examsModel.find({
             section: sections[i].sectionName,
             subject: { $regex: `${sections[i].subjects[j]}`, $options: "i" },
+            $expr:{$lte:[{$subtract:[new Date(), "$dateTime"]},{$multiply:["$duration", 60000]}]}
+          }).then(exam => {
+            for(let i = 0; i < exam.length ; i++){
+              exams.push(exam[i]);
+            }
           });
-          if (exam.length !== 0) exams.push(exam);
         }
       }
     }

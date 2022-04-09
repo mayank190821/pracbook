@@ -6,13 +6,12 @@ import Box from "@mui/material/Box";
 import Slide from "@mui/material/Slide";
 import { makeStyles } from "@mui/styles";
 import MenuItem from "@mui/material/MenuItem";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Stack from "@mui/material/Stack";
+import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import TimePicker from "@mui/lab/TimePicker";
 import { scheduleExam } from "../../api/exam.api";
-import { fetchCardDetails } from "../../api/utilities.api";
+import { fetchUpcomingExams } from "../../api/utilities.api";
 import { useDispatch } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
 import { getUser } from "../../redux/selectors/code.selector";
@@ -64,75 +63,38 @@ export default function ScheduleExam({ handleClose }) {
   }, [facultyData]);
 
   const dispatch = useDispatch();
-  const [date, setDate] = React.useState(null);
-  const [time, setTime] = React.useState(null);
   const [data, setData] = React.useState({
     name: "",
-    date: "",
     duration: "",
     year: "",
     subject: "",
+    dateTime:new Date(),
     marks: "",
     section: "",
     objMarks: "",
     codingMarks: "",
-    time: "",
     objectCount: "",
     codingCount: "",
     completed: false,
   });
-  const calcTime = (exams, res) => {
-    for (let i = 0; i < res.length; i++) {
-      let date = new Date();
-      let examDate =
-        res[i].date.split("/")[2] +
-        "-" +
-        res[i].date.split("/")[0] +
-        "-" +
-        (parseInt(res[i].date.split("/")[1]) < 10
-          ? `0${res[i].date.split("/")[1]}`
-          : res[i].date.split("/")[1]) +
-        "T";
-      let hours = res[i].time.split(":")[0];
-      if (res[i].time.split(" ")[1] === "PM")
-        hours = (parseInt(res[i].time.split(":")[0]) + 12).toString();
-      let time = hours + ":" + res[i].time.split(" ")[0].split(":")[1] + ":00";
-      let matcher = examDate + time;
-      matcher = new Date(new Date(matcher).getTime() + res[i].duration * 60000);
-      if (matcher > date) {
-        exams.push(res[i]);
-      }
-    }
-    return exams;
-  };
+  
 
   const handleScheduleExam = () => {
     scheduleExam(data).then(() => {
-      fetchCardDetails(facultyData._id, "faculty").then((res) => {
-        let curExams = [];
-        res.exams.forEach((data) => {
-          dispatch(loadExams(calcTime(curExams, data)));
-        });
+      fetchUpcomingExams(facultyData._id, "faculty").then((res) => {
+          dispatch(loadExams(res.exams));
       });
     });
     handleClose();
   };
 
   const handleChange = (props) => (event) => {
-    if (props === "time") {
-      let time = event.toLocaleString().split(", ")[1];
-      time = time.slice(0, time.length - 6) + time.slice(time.length - 3);
+    
+    if(props === "dateTime"){
       setData({
         ...data,
-        time: time,
-      });
-      setTime(event);
-    } else if (props === "date") {
-      setData({
-        ...data,
-        date: event.toLocaleString().split(",")[0],
-      });
-      setDate(event);
+        dateTime: new Date(event.getTime()).toUTCString()
+      })
     } else if (props === "section") {
       setData({ ...data, [props]: event.target.value });
       subjectList.forEach((curSection) => {
@@ -151,6 +113,7 @@ export default function ScheduleExam({ handleClose }) {
       setSectionList([...curSectionList]);
     } else setData({ ...data, [props]: event.target.value });
   };
+
   return (
     <div>
       <Dialog
@@ -173,7 +136,7 @@ export default function ScheduleExam({ handleClose }) {
               }}
             >
               <TextField
-                style={{ width: "43%" }}
+                style={{ width: "45%" }}
                 id="outlined-select-exam-type"
                 select
                 label="Exam Type"
@@ -188,7 +151,7 @@ export default function ScheduleExam({ handleClose }) {
                 ))}
               </TextField>
               <TextField
-                style={{ width: "43%" }}
+                style={{ width: "45%" }}
                 id="outlined-select-exam-type"
                 select
                 label="Year"
@@ -212,45 +175,22 @@ export default function ScheduleExam({ handleClose }) {
                 justifyContent: "space-between",
               }}
             >
-              <LocalizationProvider dateAdapter={AdapterDateFns} required>
-                <DesktopDatePicker
-                  label="Date desktop"
-                  inputFormat="dd/MM/yyyy"
-                  value={date}
-                  disablePast
-                  style={{ width: "43%" }}
-                  onChange={handleChange("date")}
-                  renderInput={(params) => <TextField {...params} />}
-                  required
-                />
+              <LocalizationProvider 
+                dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                  renderInput={(props) => 
+                  <TextField 
+                    {...props}
+                    sx={{ width: "45%"}}/>}
+                  label="Date and Time"
+                  value={data.dateTime}
+                  onChange={handleChange("dateTime")}
+                  minDate={new Date()}
+                  />
               </LocalizationProvider>
-              <LocalizationProvider
-                className={classes.elements}
-                dateAdapter={AdapterDateFns}
-                required
-              >
-                <TimePicker
-                  required
-                  label="Time"
-                  value={time}
-                  style={{ width: "43%" }}
-                  onChange={handleChange("time")}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </Box>
-            <Box
-              component="div"
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-              spacing={1}
-            >
               <TextField
                 required
-                style={{ width: "43%" }}
+                style={{ width: "45%" }}
                 id="outlined-required"
                 label="Section"
                 select
@@ -263,8 +203,19 @@ export default function ScheduleExam({ handleClose }) {
                   </MenuItem>
                 ))}
               </TextField>
+            </Box>
+            <Box
+              component="div"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+              spacing={1}
+            >
+              
               <TextField
-                style={{ width: "43%" }}
+                style={{ width: "45%" }}
                 select
                 id="outlined-required"
                 label="Subject"
@@ -278,6 +229,14 @@ export default function ScheduleExam({ handleClose }) {
                   </MenuItem>
                 ))}
               </TextField>
+              <TextField
+                required
+                id="outlined-required"
+                label="Time Duration(Minutes)"
+                style={{ width: "45%" }}
+                value={data.duration}
+                onChange={handleChange("duration")}
+              />
             </Box>
             <Box
               component="div"
@@ -288,32 +247,22 @@ export default function ScheduleExam({ handleClose }) {
               }}
               spacing={1}
             >
+              
               <TextField
                 required
-                id="outlined-required"
-                label="Time Duration(Minutes)"
-                style={{ width: "30%" }}
-                value={data.duration}
-                onChange={handleChange("duration")}
-                required
-              />
-              <TextField
-                required
-                style={{ width: "30%" }}
+                style={{ width: "45%" }}
                 id="outlined-required"
                 label="ObjMarks / Ques"
                 value={data.objMarks}
                 onChange={handleChange("objMarks")}
-                required
               />
               <TextField
                 required
-                style={{ width: "30%" }}
+                style={{ width: "45%" }}
                 id="outlined-required"
                 label="CodingMarks / Ques"
                 value={data.codingMarks}
                 onChange={handleChange("codingMarks")}
-                required
               />
             </Box>
             <Box
@@ -330,9 +279,8 @@ export default function ScheduleExam({ handleClose }) {
                 id="outlined-required"
                 label="Objective Count"
                 value={data.objectCount}
-                style={{ width: "43%" }}
+                style={{ width: "45%" }}
                 onChange={handleChange("objectCount")}
-                required
               />
               <TextField
                 required
@@ -340,9 +288,8 @@ export default function ScheduleExam({ handleClose }) {
                 label="Coding Count"
                 className={classes.elements}
                 value={data.codingCount}
-                style={{ width: "43%" }}
+                style={{ width: "45%" }}
                 onChange={handleChange("codingCount")}
-                required
               />
             </Box>
             <Button
@@ -354,7 +301,7 @@ export default function ScheduleExam({ handleClose }) {
                 formId.checkValidity();
                 if (formId.reportValidity()) {
                   handleScheduleExam();
-                  fetchCardDetails(facultyData._id, facultyData.role).then(
+                  fetchUpcomingExams(facultyData._id, facultyData.role).then(
                     (res) => {
                       dispatch(loadExams(res.exams));
                     }
