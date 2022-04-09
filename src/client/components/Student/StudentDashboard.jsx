@@ -20,8 +20,6 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import Dashboard from "./StudentNavBar";
 import { Navbar } from "./StudentNavBar";
 import LogoutIcon from "@mui/icons-material/Logout";
-import QuestionCard from "../Faculty/QuestionCard";
-import StudentInfo from "../Faculty/StudentInfo";
 import { getStudent } from "../../api/auth.api";
 import ExamHistory from "./ExamHistory";
 import { Redirect, useParams } from "react-router-dom";
@@ -128,6 +126,7 @@ export default function Sidebar({ location }) {
       });
     }
     if (sessionStorage.getItem("TQID")) sessionStorage.removeItem("TQID");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   if (redirect) {

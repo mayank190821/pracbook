@@ -1,13 +1,13 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Card, CardMedia, CardContent, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
-import { getUser, getExams } from "../../redux/selectors/code.selector";
+import { getUser} from "../../redux/selectors/code.selector";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loadExams } from "../../redux/actions/code.action";
 import { deleteOneByID } from "../../api/exam.api";
-import { fetchCardDetails } from "../../api/utilities.api";
+import { fetchUpcomingExams } from "../../api/utilities.api";
 // import examsModel from "../../../server/models/exams.model.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,11 +42,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SectionCard = ({ props, calcTime }) => {
+const SectionCard = ({ props}) => {
   const user = useSelector(getUser);
   const classNames = useStyles();
   const dispatch = useDispatch();
-  const exams = useSelector(getExams);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  function zeroPad(value){
+    return (value<10)?"0"+value:value;
+  }
+
+  useEffect(() => {
+    let date = new Date(new Date(props.dateTime).getTime());
+    setDate(zeroPad(date.getDate())+"/"+zeroPad(date.getMonth()+1)+"/"+date.getFullYear());
+    let h = date.getHours();
+    setTime(((h===12 || h === 0)?12:zeroPad(h%12))+":"+zeroPad(date.getMinutes())+" "+((h<12)?"AM":"PM"));
+  }, [props]);
+
   return (
     <Card className={classNames.card}>
       {user.role === "faculty" && (
@@ -56,15 +69,8 @@ const SectionCard = ({ props, calcTime }) => {
             var r = window.confirm("Do you want to delete?");
             if (r === true) {
               deleteOneByID(props._id);
-              fetchCardDetails(user._id, user.role).then((res) => {
-                let curExams = [];
-                if (user.role === "faculty") {
-                  res.exams.forEach((data) => {
-                    dispatch(loadExams(calcTime(curExams, data)));
-                  });
-                } else {
-                  dispatch(loadExams(calcTime(curExams, res.exams)));
-                }
+              fetchUpcomingExams(user._id, user.role).then((res) => {
+                  dispatch(loadExams(res.exams));
               });
             }
           }}
@@ -86,10 +92,10 @@ const SectionCard = ({ props, calcTime }) => {
           <b>Exam Type :</b> {props.name}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Date :</b> {props.date}
+          <b>Date :</b> {date}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Time :</b> {props.time}
+          <b>Time :</b> {time}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
           <b>Duration :</b> {`${props.duration} min.`}

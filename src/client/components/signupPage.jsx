@@ -107,42 +107,26 @@ export default function Signup(props) {
   };
 
   const passwordWeak = () => {
+    let errors = "password must contain";
     if (user.password.length < 8) {
-      setExtras({
-        ...extras,
-        error: "password must have 8 characters!",
-        message: "",
-      });
-      return true;
+      errors += " 8 characters,";
     }
     if (!/([A-Z])+/.test(user.password)) {
-      setExtras({
-        ...extras,
-        error: "password must contain uppercase letters!",
-        message: "",
-      });
-      return true;
+      errors += " an uppercase letter,";
     }
     if (!/([a-z])+/.test(user.password)) {
-      setExtras({
-        ...extras,
-        error: "password must contain lowercase letters!",
-        message: "",
-      });
-      return true;
+      errors += " a lowercase letter,";
     }
     if (!/([!@#$&*])+/.test(user.password)) {
-      setExtras({
-        ...extras,
-        error: "password must contain special characters!",
-        message: "",
-      });
-      return true;
+      errors += " a special character,";
     }
     if (!/([0-9])+/.test(user.password)) {
+      errors += " a digit,";
+    }
+    if (errors !== "password must contain") {
       setExtras({
         ...extras,
-        error: "password must contain a digit!",
+        error: errors.substring(0, errors.length - 1),
         message: "",
       });
       return true;
@@ -195,22 +179,43 @@ export default function Signup(props) {
         year: user.year,
         rollNumber: user.rollNumber,
       };
-      if (/([a-zA-Z0-9])+@([a-zA-Z0-9])+.([a-zA-Z])+/.test(user.email)) {
-        signup(role === "faculty" ? faculty : student, role).then((res) => {
-          if (res && !res.error) {
-            setExtras({ ...extras, open: true });
-          } else if (res) {
-            setExtras({ error: res.error });
-            setOpenSnackBar(true);
-          } else {
-            setExtras({ error: "Internal server error!" });
-            setOpenSnackBar(true);
-          }
-        });
-        setExtras({ ...extras, error: "" });
-      } else {
-        setExtras({ ...extras, error: "Enter a valid Email address!" });
-        setOpenSnackBar(true);
+      if (user.email.includes("@")) {
+        let flag = true;
+        if (user.email.split("@")[2] || /[@]+$/.test(user.email)) flag = false;
+        else {
+          let user_part = user.email.split("@")[0];
+          let domain = user.email.split("@")[1];
+          domain = domain.split(".");
+          if (!/^[@]+$/.test(user_part)) user_part = user_part.split(".");
+          else flag = false;
+          user_part.forEach((sub) => {
+            if (!/^[a-z0-9_]+$/.test(sub)) {
+              flag = false;
+            }
+          });
+          domain.forEach((sub) => {
+            if (!/^[a-z]+$/.test(sub)) {
+              flag = false;
+            }
+          });
+        }
+        if (flag) {
+          signup(role === "faculty" ? faculty : student, role).then((res) => {
+            if (res && !res.error) {
+              setExtras({ ...extras, open: true });
+            } else if (res) {
+              setExtras({ error: res.error });
+              setOpenSnackBar(true);
+            } else {
+              setExtras({ error: "Internal server error!" });
+              setOpenSnackBar(true);
+            }
+          });
+          setExtras({ ...extras, error: "" });
+        } else {
+          setExtras({ ...extras, error: "Enter a valid Email address!" });
+          setOpenSnackBar(true);
+        }
       }
     }
   };

@@ -240,6 +240,7 @@ export default function ExamPage({ location }) {
     return () => {
       clearInterval(interval);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   function updateMarks(marks) {
     let flag = 0;
@@ -270,6 +271,7 @@ export default function ExamPage({ location }) {
       clearInterval(sec);
       questionChange("submit", true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer]);
 
   const [editorTheme, setEditorTheme] = React.useState("github");
@@ -337,6 +339,7 @@ export default function ExamPage({ location }) {
       handleLanguageChange(
         localStorage.getItem(`cpl${curQuestion.question.questionId}`) || "java"
       );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curQuestion]);
 
   const handleSubmit = async (testCases) => {
@@ -365,6 +368,7 @@ export default function ExamPage({ location }) {
       }
       compile(data)
         .then((response) => {
+          response = response.data;
           if (response.stderr) {
             result += response.stderr;
             err = true;
@@ -410,6 +414,7 @@ export default function ExamPage({ location }) {
     } else {
       updateMarks(0);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results]);
 
   if (redirect) {

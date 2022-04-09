@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, CardMedia, CardContent, Typography } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,6 +34,19 @@ const useStyles = makeStyles((theme) => ({
 
 const SectionCard = ({ props }) => {
   const classNames = useStyles();
+  const [date, setDate] = React.useState();
+  const [time, setTime] = React.useState();
+
+  function zeroPad(value){
+    return (value<10)?"0"+value:value;
+  }
+
+  React.useEffect(() => {
+    let date = new Date(new Date(props.data.dateTime).getTime());
+    setDate(zeroPad(date.getDate())+"/"+zeroPad(date.getMonth()+1)+"/"+date.getFullYear());
+    let h = date.getHours();
+    setTime(((h===12 || h === 0)?12:zeroPad(h%12))+":"+zeroPad(date.getMinutes())+" "+((h<12)?"AM":"PM"));
+  }, [props]);
 
   return (
     <Card className={classNames.card}>
@@ -52,10 +64,10 @@ const SectionCard = ({ props }) => {
           <b>Exam Type :</b> {props.data.name}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Date :</b> {props.data.date}
+          <b>Date :</b> {date}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
-          <b>Time :</b> {props.data.time}
+          <b>Time :</b> {time}
         </Typography>
         <Typography variant="body2" className={classNames.text}>
           <b>Duration :</b> {`${props.data.duration} min.`}

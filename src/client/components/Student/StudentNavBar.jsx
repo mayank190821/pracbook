@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@mui/styles";
 import Card from "@mui/material/Card";
 import CardList from "../Faculty/CardList";
-import {Typography} from "@mui/material";
 
 const useStyle = makeStyles((theme) => ({
   years: {
@@ -33,7 +32,6 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 const Navbar = () => {
-  const classes = useStyle();
 
   return <React.Fragment></React.Fragment>;
 };

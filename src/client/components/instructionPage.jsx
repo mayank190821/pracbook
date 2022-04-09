@@ -4,10 +4,9 @@ import { Button } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Redirect, useParams } from "react-router-dom";
 import image from "./../images/pracbook.png";
-import { fetchExam, fetchExamQuestion } from "../api/exam.api";
-import { useDispatch } from "react-redux";
+import { fetchExam } from "../api/exam.api";
 import { fetchQuesDetails, fetchCpQuesDetails } from "../api/utilities.api";
-import { saveQuestion } from "../redux/actions/code.action";
+
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     width: "100vw",
@@ -69,7 +68,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function InstructionPage() {
   const classNames = useStyles();
-  const dispatch = useDispatch();
   const [redirect, setRedirect] = React.useState(false);
   const [fetched, setFetched] = React.useState(false);
   const { examId } = useParams();
