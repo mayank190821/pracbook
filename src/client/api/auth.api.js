@@ -12,7 +12,7 @@ const signin = async (data, role) => {
       ? response.json()
       : { error: "check your internet" };
   } catch (err) {
-    console.log(err);
+    return { error: "check your internet" };
   }
 };
 const getStudent = async (id) => {
@@ -29,7 +29,7 @@ const getStudent = async (id) => {
       ? response.json()
       : { error: "check your internet" };
   } catch (err) {
-    console.log(err);
+    return { error: "check your internet" }
   }
 };
 const signup = async (data, role) => {
@@ -44,7 +44,7 @@ const signup = async (data, role) => {
     });
     return await response.json();
   } catch (err) {
-    console.log(err);
+    return { error: "check your internet" }
   }
 };
 

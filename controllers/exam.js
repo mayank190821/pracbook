@@ -30,7 +30,6 @@ const compile = async (req, res) => {
   await axios
     .request(options)
     .then((response) => {
-      console.log(response.data);
       return res.status(200).json({ data: response.data });
     })
     .catch((error) => {

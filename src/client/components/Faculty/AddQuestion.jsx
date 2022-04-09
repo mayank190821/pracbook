@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useEffect } from "react";
+import React, { useState, forwardRef } from "react";
 import {
   Button,
   Dialog,
@@ -20,9 +20,7 @@ import {
 } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
 import { addVivaQuestion, addCodingQuestion } from "../../api/exam.api";
-import { EventNote, Add } from "@mui/icons-material";
-import QuestionCard from "./QuestionCard";
-import { ClassNames } from "@emotion/react";
+import { Add } from "@mui/icons-material";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
