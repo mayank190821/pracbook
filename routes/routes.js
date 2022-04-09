@@ -29,6 +29,7 @@ import {
   uploadResult,
   getStudentById,
   changeStudentPassword,
+  getExamHistoryByStudentId,
   getExamsByStudentId,
   signOut,
 } from "../controllers/student.js";
@@ -71,6 +72,7 @@ routes
   .get(getResultById) // req.body = {examId}, result = {marks: value}.
   .put(uploadResult); // req.body = {examId, marks, submissions}, result = result uploaded.
 routes.route("/student/exams/:studentId").get(getExamsByStudentId); // empty request body, result = list of exams.
+routes.route("/student/examHistory/:studentId").get(getExamHistoryByStudentId); // empty request body, result = list of exams.
 
 //***************************************** Exam API
 

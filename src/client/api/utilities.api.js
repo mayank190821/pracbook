@@ -1,5 +1,17 @@
-const fetchCardDetails = async (id, role) => {
+const fetchUpcomingExams = async (id, role) => {
   let response = await fetch(`/api/${role}/exams/${id}`, {
+    method: "GET",
+    headers: {
+      prackey: "pracbookauthkey",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+};
+
+const fetchCompletedExams = async (id) => {
+  let response = await fetch(`/api/student/examHistory/${id}`, {
     method: "GET",
     headers: {
       prackey: "pracbookauthkey",
@@ -65,7 +77,8 @@ const fetchExamById = async (id) => {
   return await response.json();
 };
 export {
-  fetchCardDetails,
+  fetchUpcomingExams,
+  fetchCompletedExams,
   fetchQuesDetails,
   fetchCpQuesDetails,
   fetchExamById,

@@ -3,7 +3,7 @@ import StudentMarksCard from "./StudentMarksCard";
 import { makeStyles } from "@mui/styles";
 import { Typography } from "@mui/material";
 import image from "../../images/exam.png";
-import { fetchExamById, fetchCardDetails } from "../../api/utilities.api";
+import { fetchCompletedExams } from "../../api/utilities.api";
 import { useSelector } from "react-redux";
 import { getUser } from "../../redux/selectors/code.selector";
 
@@ -60,44 +60,13 @@ const History = () => {
   const classNames = useStyles();
   const user = useSelector(getUser);
   const [data, setData] = React.useState([]);
-  const [completedExams, setCompletedExams] = React.useState([]);
-
-  const calcTime = (res) => {
-    let exams = [];
-    for (let i = 0; i < res.length; i++) {
-      let date = new Date();
-      let examDate =
-        res[i].date.split("/")[2] +
-        "-" +
-        res[i].date.split("/")[0] +
-        "-" +
-        (parseInt(res[i].date.split("/")[1]) < 10
-          ? `0${res[i].date.split("/")[1]}`
-          : res[i].date.split("/")[1]) +
-        "T";
-      let hours = res[i].time.split(":")[0];
-      if (res[i].time.split(" ")[1] === "PM") {
-        if (parseInt(hours) !== 12) hours = (parseInt(hours) + 12).toString();
-      } else if (parseInt(hours) === 12) hours = "00";
-      let time = hours + ":" + res[i].time.split(" ")[0].split(":")[1] + ":00";
-      let matcher = examDate + time;
-      if (new Date(matcher) <= date) {
-        res[i].started = true;
-      }
-      matcher = new Date(new Date(matcher).getTime() + res[i].duration * 60000);
-      if (matcher <= date) {
-        exams.push(res[i]);
-      }
-    }
-    return exams;
-  };
 
   React.useEffect(() => {
     let values = [],
       marks;
-    fetchCardDetails(user._id, user.role)
+    fetchCompletedExams(user._id)
       .then((res) => {
-        return calcTime(res.exams);
+        return res.exams;
       })
       .then((filteredExams) => {
         filteredExams.forEach((curExam) => {
@@ -111,8 +80,7 @@ const History = () => {
             subject: curExam.subject,
             marksObtained: marks,
             section: curExam.section,
-            date: curExam.date,
-            time: curExam.time,
+            dateTime: curExam.dateTime,
             duration: curExam.duration,
             marks:
               curExam.objMarks * curExam.objectCount +

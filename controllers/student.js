@@ -148,6 +148,28 @@ const getExamsByStudentId = async (req, res) => {
       let exams = await examsModel.find({
         section: req.student.section,
         subject: { $regex: regexs, $options: "i" },
+        $expr:{$lte:[{$subtract:[new Date(), "$dateTime"]},{$multiply:["$duration", 60000]}]}
+      });
+      return res.status(200).json({ exams: exams });
+    }
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+};
+
+const getExamHistoryByStudentId = async (req, res) => {
+  try {
+    if (req.student) {
+      let regexs = req.student.subjects.toString();
+      for (let i = 0; i < regexs.length; i++) {
+        if (regexs[i] === ",")
+          regexs =
+            regexs.substr(0, i) + "|" + regexs.substr(i + 1, regexs.length);
+      }
+      let exams = await examsModel.find({
+        section: req.student.section,
+        subject: { $regex: regexs, $options: "i" },
+        dateTime:{$lt:new Date()}
       });
       return res.status(200).json({ exams: exams });
     }
@@ -164,6 +186,7 @@ export {
   uploadResult,
   getStudentById,
   changeStudentPassword,
+  getExamHistoryByStudentId,
   signOut,
   studentById,
 };
